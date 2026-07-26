@@ -1,0 +1,20 @@
+import { afterEach } from "vitest";
+
+// Must be set before anything imports lib/db/prisma.
+process.env.DATABASE_URL = "file:./data/test.db";
+process.env.AUTH_SECRET = "test-only-secret-do-not-use-outside-vitest-aaaaaaaaaaaaaaaaaaaaaaaa";
+process.env.COOKIE_SECURE = "false";
+
+afterEach(async () => {
+  const { prisma } = await import("@/lib/db/prisma");
+  // FK-safe order: children before parents.
+  await prisma.message.deleteMany();
+  await prisma.decisionMaker.deleteMany();
+  await prisma.applyRun.deleteMany();
+  await prisma.application.deleteMany();
+  await prisma.jobBoardPin.deleteMany();
+  await prisma.jobBoard.deleteMany();
+  await prisma.resumeTemplate.deleteMany();
+  await prisma.profileField.deleteMany();
+  await prisma.user.deleteMany();
+});

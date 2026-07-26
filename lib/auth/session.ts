@@ -3,42 +3,17 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
-import { SignJWT, jwtVerify } from "jose";
+import { signSessionToken, verifySessionToken } from "./jwt";
 
+export { signSessionToken, verifySessionToken } from "./jwt";
 export const SESSION_COOKIE = "session";
 const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days — a local single-machine app, long-lived login is fine
-
-function getSecretKey() {
-  const secret = process.env.AUTH_SECRET;
-  if (!secret) {
-    throw new Error("AUTH_SECRET is not set — see .env.example");
-  }
-  return new TextEncoder().encode(secret);
-}
 
 // This app's own "production" (`next start -H 127.0.0.1`) is still plain
 // HTTP, not TLS — deriving `secure` from NODE_ENV would silently break
 // login. Set COOKIE_SECURE=true only once this is actually served over HTTPS.
 function cookieSecure() {
   return process.env.COOKIE_SECURE === "true";
-}
-
-export async function signSessionToken(userId: string): Promise<string> {
-  return new SignJWT({ userId })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime(`${SESSION_TTL_SECONDS}s`)
-    .sign(getSecretKey());
-}
-
-export async function verifySessionToken(token: string): Promise<{ userId: string } | null> {
-  try {
-    const { payload } = await jwtVerify(token, getSecretKey(), { algorithms: ["HS256"] });
-    if (typeof payload.userId !== "string") return null;
-    return { userId: payload.userId };
-  } catch {
-    return null;
-  }
 }
 
 export async function createSession(userId: string) {
