@@ -65,72 +65,56 @@ export function JobSearchForm() {
 
   return (
     <div>
-      <form onSubmit={search} className="mb-6 flex flex-wrap gap-2">
+      <form onSubmit={search} className="card-soft mb-6 flex flex-wrap gap-2 p-4">
         <input
           value={keywords}
           onChange={(e) => setKeywords(e.target.value)}
           placeholder="Keywords (e.g. backend engineer)"
           required
-          className="min-w-[220px] flex-1 rounded border border-neutral-300 px-3 py-2 text-sm"
+          className="input-soft min-w-[220px] flex-1 px-3 py-2 text-sm"
         />
         <input
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="Location (optional)"
-          className="w-48 rounded border border-neutral-300 px-3 py-2 text-sm"
+          className="input-soft w-48 px-3 py-2 text-sm"
         />
-        <label className="flex items-center gap-1 text-sm">
-          <input type="checkbox" checked={remoteOnly} onChange={(e) => setRemoteOnly(e.target.checked)} />
+        <label className="flex items-center gap-1 text-sm text-foreground-muted">
+          <input type="checkbox" checked={remoteOnly} onChange={(e) => setRemoteOnly(e.target.checked)} className="accent-primary" />
           Remote only
         </label>
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700 disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading} className="btn-primary px-4 py-2 text-sm">
           {loading ? "Searching…" : "Search"}
         </button>
       </form>
 
       {results.map((group) => (
         <div key={group.source} className="mb-6">
-          <h2 className="mb-2 text-sm font-semibold text-neutral-600">
-            {group.label} {group.error && <span className="text-red-600">— {group.error}</span>}
+          <h2 className="mb-2 text-sm font-bold text-foreground-muted">
+            {group.label} {group.error && <span className="text-danger-dark">— {group.error}</span>}
           </h2>
           <ul className="space-y-2">
             {group.listings.map((listing) => (
-              <li
-                key={listing.id}
-                className="flex items-center justify-between rounded border border-neutral-200 p-3 text-sm"
-              >
+              <li key={listing.id} className="card-soft flex items-center justify-between p-3 text-sm">
                 <div>
-                  <div className="font-medium">{listing.role}</div>
-                  <div className="text-neutral-600">
+                  <div className="font-semibold text-foreground">{listing.role}</div>
+                  <div className="text-foreground-muted">
                     {listing.company}
                     {listing.location ? ` · ${listing.location}` : ""}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <a
-                    href={listing.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded border border-neutral-300 px-3 py-1.5 hover:bg-neutral-100"
-                  >
+                  <a href={listing.url} target="_blank" rel="noopener noreferrer" className="btn-secondary px-3 py-1.5">
                     Open posting
                   </a>
-                  <button
-                    onClick={() => track(listing)}
-                    disabled={tracked.has(listing.id)}
-                    className="rounded bg-neutral-900 px-3 py-1.5 text-white hover:bg-neutral-700 disabled:opacity-50"
-                  >
+                  <button onClick={() => track(listing)} disabled={tracked.has(listing.id)} className="btn-primary px-3 py-1.5">
                     {tracked.has(listing.id) ? "Tracked" : "Track"}
                   </button>
                 </div>
               </li>
             ))}
             {group.listings.length === 0 && !group.error && (
-              <li className="text-xs text-neutral-400">No results</li>
+              <li className="text-xs text-foreground-muted">No results</li>
             )}
           </ul>
         </div>

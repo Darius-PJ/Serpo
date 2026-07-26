@@ -67,16 +67,16 @@ export function ApplyPanel({
   }
 
   return (
-    <section className="mb-6 rounded border border-neutral-200 p-4">
-      <h2 className="mb-2 font-semibold">Auto-apply</h2>
-      <p className="mb-3 text-xs text-neutral-500">
+    <section className="card-soft mb-6 p-4">
+      <h2 className="mb-2 font-bold text-foreground">Auto-apply</h2>
+      <p className="mb-3 text-xs text-foreground-muted">
         Tailors your resume to this posting, then opens a visible browser window and fills the
         application. It pauses for your review right before the final submit click — nothing is
         sent until you resume it in that window.
       </p>
 
       {!hasResumeTemplate && (
-        <div className="mb-3 rounded border border-amber-300 bg-amber-50 p-2 text-sm text-amber-900">
+        <div className="mb-3 rounded-xl border border-amber-300 bg-amber-50 p-2 text-sm text-amber-900">
           Upload a resume template (.md or .docx) before you can auto-apply.
         </div>
       )}
@@ -89,18 +89,14 @@ export function ApplyPanel({
           className="hidden"
           onChange={(e) => e.target.files?.[0] && uploadResume(e.target.files[0])}
         />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="rounded border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-100 disabled:opacity-50"
-        >
+        <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="btn-secondary px-3 py-1.5 text-sm">
           {uploading ? "Uploading…" : hasResumeTemplate ? "Replace resume" : "Upload resume"}
         </button>
 
         <button
           onClick={() => setConfirmOpen(true)}
           disabled={!hasResumeTemplate || applying}
-          className="rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700 disabled:opacity-50"
+          className="btn-primary px-3 py-1.5 text-sm"
         >
           {applying ? "Running…" : "Tailor & Apply"}
         </button>
@@ -117,38 +113,34 @@ export function ApplyPanel({
       />
 
       {latestRun && (
-        <div className="rounded border border-neutral-200 p-3 text-sm">
-          <div className="mb-1 font-medium">Latest run: {latestRun.status}</div>
+        <div className="rounded-xl border border-border-soft p-3 text-sm">
+          <div className="mb-1 font-semibold text-foreground">Latest run: {latestRun.status}</div>
 
           {latestRun.status === "needs_input" && (
             <div className="mt-2">
-              <label className="mb-1 block text-xs text-neutral-600">{latestRun.missingFieldLabel}</label>
+              <label className="mb-1 block text-xs text-foreground-muted">{latestRun.missingFieldLabel}</label>
               <div className="flex gap-2">
                 <input
                   value={missingValue}
                   onChange={(e) => setMissingValue(e.target.value)}
-                  className="flex-1 rounded border border-neutral-300 px-2 py-1"
+                  className="input-soft flex-1 px-2 py-1"
                 />
-                <button
-                  onClick={submitMissingFieldAndRetry}
-                  disabled={applying}
-                  className="rounded bg-neutral-900 px-3 py-1 text-white hover:bg-neutral-700 disabled:opacity-50"
-                >
+                <button onClick={submitMissingFieldAndRetry} disabled={applying} className="btn-primary px-3 py-1 text-sm">
                   Save &amp; continue
                 </button>
               </div>
-              <p className="mt-1 text-xs text-neutral-500">Saved for this and every future application.</p>
+              <p className="mt-1 text-xs text-foreground-muted">Saved for this and every future application.</p>
             </div>
           )}
 
           {latestRun.status === "failed" && latestRun.error && (
-            <p className="text-red-600">{latestRun.error}</p>
+            <p className="text-danger-dark">{latestRun.error}</p>
           )}
 
           {latestRun.status === "submitted" && (
-            <p className="text-neutral-600">
+            <p className="text-foreground-muted">
               Submitted {latestRun.submittedAt?.toLocaleString()} —{" "}
-              <a href={`/api/applications/${applicationId}/resume`} className="underline">
+              <a href={`/api/applications/${applicationId}/resume`} className="text-primary-dark underline">
                 download the resume that was used
               </a>
             </p>

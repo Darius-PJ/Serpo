@@ -26,7 +26,7 @@ export default async function SourcingPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-semibold">Source Jobs</h1>
+      <h1 className="mb-4 text-xl font-extrabold text-foreground">Source Jobs</h1>
       <JobBoardPanel boards={boardsWithEffectivePinned} />
       <JobSearchForm />
     </div>

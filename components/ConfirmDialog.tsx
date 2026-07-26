@@ -47,28 +47,21 @@ export function ConfirmDialog({
       onClick={(e) => {
         if (e.target === dialogRef.current) onCancel();
       }}
-      className="w-full max-w-sm rounded border border-neutral-300 p-0 backdrop:bg-black/40"
+      className="card-soft fixed top-1/2 left-1/2 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 p-0 backdrop:bg-primary-dark/20 backdrop:backdrop-blur-sm"
     >
       <div className="p-4">
-        <h2 className={`mb-2 font-semibold ${tone === "danger" ? "text-red-700" : "text-neutral-900"}`}>{title}</h2>
-        <p className="mb-4 text-sm text-neutral-600">{description}</p>
+        <h2 className={`mb-2 font-bold ${tone === "danger" ? "text-danger-dark" : "text-foreground"}`}>{title}</h2>
+        <p className="mb-4 text-sm text-foreground-muted">{description}</p>
         {children && <div className="mb-4">{children}</div>}
         <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={busy}
-            className="rounded border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-100 disabled:opacity-50"
-          >
+          <button type="button" onClick={onCancel} disabled={busy} className="btn-secondary px-3 py-1.5 text-sm">
             {cancelLabel}
           </button>
           <button
             type="button"
             onClick={onConfirm}
             disabled={busy}
-            className={`rounded px-3 py-1.5 text-sm text-white disabled:opacity-50 ${
-              tone === "danger" ? "bg-red-700 hover:bg-red-800" : "bg-neutral-900 hover:bg-neutral-700"
-            }`}
+            className={tone === "danger" ? "btn-danger px-3 py-1.5 text-sm" : "btn-primary px-3 py-1.5 text-sm"}
           >
             {busy ? "Working…" : confirmLabel}
           </button>

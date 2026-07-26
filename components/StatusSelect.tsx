@@ -22,7 +22,7 @@ export function StatusSelect({ applicationId, status }: { applicationId: string;
       value={status}
       disabled={isPending}
       onChange={(e) => onChange(e.target.value)}
-      className="rounded border border-neutral-300 bg-white px-2 py-1 text-xs"
+      className="input-soft px-2 py-1 text-xs font-medium"
     >
       {APPLICATION_STATUSES.map((s) => (
         <option key={s} value={s}>

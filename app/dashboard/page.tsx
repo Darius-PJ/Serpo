@@ -29,11 +29,8 @@ export default async function DashboardPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Applications</h1>
-        <Link
-          href="/sourcing"
-          className="rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700"
-        >
+        <h1 className="text-xl font-extrabold text-foreground">Applications</h1>
+        <Link href="/sourcing" className="btn-primary px-3 py-1.5 text-sm">
           Source jobs
         </Link>
       </div>
@@ -44,23 +41,23 @@ export default async function DashboardPage() {
         {COLUMNS.map((column) => {
           const items = applications.filter((a) => a.status === column);
           return (
-            <div key={column} className="rounded border border-neutral-200 p-3">
-              <h2 className="mb-2 text-sm font-semibold text-neutral-600">
+            <div key={column} className="card-soft p-3">
+              <h2 className="mb-2 text-sm font-bold text-primary-dark">
                 {column} ({items.length})
               </h2>
               <ul className="space-y-2">
                 {items.map((app) => (
-                  <li key={app.id} className="rounded border border-neutral-200 p-2 text-sm">
-                    <Link href={`/applications/${app.id}`} className="font-medium hover:underline">
+                  <li key={app.id} className="rounded-xl border border-border-soft p-2 text-sm">
+                    <Link href={`/applications/${app.id}`} className="font-semibold text-foreground hover:text-primary-dark hover:underline">
                       {app.company}
                     </Link>
-                    <div className="text-neutral-600">{app.role}</div>
+                    <div className="text-foreground-muted">{app.role}</div>
                     <div className="mt-2">
                       <StatusSelect applicationId={app.id} status={app.status} />
                     </div>
                   </li>
                 ))}
-                {items.length === 0 && <li className="text-xs text-neutral-400">None</li>}
+                {items.length === 0 && <li className="text-xs text-foreground-muted">None</li>}
               </ul>
             </div>
           );

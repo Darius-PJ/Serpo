@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fdfbf3;
+  --surface: #fffefb;
+  --foreground: #3a3530;
+  --foreground-muted: #7a7166;
+
+  --primary: #5eae9e;
+  --primary-light: #a8e6cf;
+  --primary-dark: #2f6d5f;
+
+  --accent: #ffb997;
+  --accent-light: #ffd8a8;
+
+  --danger: #e07856;
+  --danger-light: #f4a583;
+  --danger-dark: #a84a2c;
+
+  --border-soft: #dcebe3;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground-muted: var(--foreground-muted);
+
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+
+  --color-danger: var(--danger);
+  --color-danger-light: var(--danger-light);
+  --color-danger-dark: var(--danger-dark);
+
+  --color-border-soft: var(--border-soft);
+
+  --font-sans: var(--font-nunito);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #16231f;
+    --surface: #1e2e29;
+    --foreground: #f1e9da;
+    --foreground-muted: #b7ab97;
+
+    --primary: #6fc2ae;
+    --primary-light: #9fe0c9;
+    --primary-dark: #bfe9da;
+
+    --accent: #f0a978;
+    --accent-light: #f7c896;
+
+    --danger: #e28a68;
+    --danger-light: #f0ac8c;
+    --danger-dark: #f6c3a9;
+
+    --border-soft: #33473f;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% -10%, color-mix(in oklab, var(--primary-light) 35%, transparent), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 5%, color-mix(in oklab, var(--accent-light) 30%, transparent), transparent);
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-nunito), Arial, Helvetica, sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-light font-semibold text-white shadow-sm shadow-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-border-soft bg-surface font-medium text-foreground transition-all hover:border-primary/40 hover:bg-primary-light/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-danger to-danger-light font-semibold text-white shadow-sm shadow-danger/30 transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-danger/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0;
+  }
+
+  .btn-danger-outline {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-danger/40 font-medium text-danger-dark transition-all hover:bg-danger-light/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .card-soft {
+    @apply rounded-2xl border border-border-soft bg-surface/90 shadow-sm shadow-primary/5 backdrop-blur-sm;
+  }
+
+  .input-soft {
+    @apply rounded-xl border border-border-soft bg-surface text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40;
+  }
 }

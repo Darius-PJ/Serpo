@@ -42,33 +42,25 @@ export function MessagePanel({ applicationId, messages }: { applicationId: strin
   }
 
   return (
-    <section className="mb-6 rounded border border-neutral-200 p-4">
+    <section className="card-soft mb-6 p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-semibold">Messages</h2>
+        <h2 className="font-bold text-foreground">Messages</h2>
         <div className="flex gap-2">
-          <button
-            onClick={() => generate("IMMEDIATE")}
-            disabled={generating !== null}
-            className="rounded border border-neutral-300 px-3 py-1.5 text-xs hover:bg-neutral-100 disabled:opacity-50"
-          >
+          <button onClick={() => generate("IMMEDIATE")} disabled={generating !== null} className="btn-secondary px-3 py-1.5 text-xs">
             {generating === "IMMEDIATE" ? "Generating…" : "Generate immediate draft"}
           </button>
-          <button
-            onClick={() => generate("FOLLOW_UP")}
-            disabled={generating !== null}
-            className="rounded border border-neutral-300 px-3 py-1.5 text-xs hover:bg-neutral-100 disabled:opacity-50"
-          >
+          <button onClick={() => generate("FOLLOW_UP")} disabled={generating !== null} className="btn-secondary px-3 py-1.5 text-xs">
             {generating === "FOLLOW_UP" ? "Generating…" : "Generate follow-up draft"}
           </button>
         </div>
       </div>
 
-      {messages.length === 0 && <p className="text-sm text-neutral-500">No drafts yet.</p>}
+      {messages.length === 0 && <p className="text-sm text-foreground-muted">No drafts yet.</p>}
 
       <ul className="space-y-4">
         {messages.map((message) => (
-          <li key={message.id} className="rounded border border-neutral-200 p-3">
-            <div className="mb-2 flex items-center justify-between text-xs text-neutral-500">
+          <li key={message.id} className="rounded-xl border border-border-soft p-3">
+            <div className="mb-2 flex items-center justify-between text-xs text-foreground-muted">
               <span>
                 {message.type} — {message.status}
               </span>
@@ -79,14 +71,11 @@ export function MessagePanel({ applicationId, messages }: { applicationId: strin
               onChange={(e) => setDrafts((prev) => ({ ...prev, [message.id]: e.target.value }))}
               disabled={message.status === "SENT"}
               rows={5}
-              className="w-full rounded border border-neutral-300 p-2 text-sm disabled:bg-neutral-50"
+              className="input-soft w-full p-2 text-sm disabled:opacity-60"
             />
             <div className="mt-2 flex gap-2 text-xs">
               {message.status === "DRAFT" && (
-                <button
-                  onClick={() => approve(message)}
-                  className="rounded bg-neutral-900 px-3 py-1.5 text-white hover:bg-neutral-700"
-                >
+                <button onClick={() => approve(message)} className="btn-primary px-3 py-1.5">
                   Approve
                 </button>
               )}
@@ -94,26 +83,23 @@ export function MessagePanel({ applicationId, messages }: { applicationId: strin
                 <>
                   <button
                     onClick={() => navigator.clipboard.writeText(drafts[message.id] ?? message.draftText)}
-                    className="rounded border border-neutral-300 px-3 py-1.5 hover:bg-neutral-100"
+                    className="btn-secondary px-3 py-1.5"
                   >
                     Copy
                   </button>
                   <a
                     href={`mailto:?body=${encodeURIComponent(drafts[message.id] ?? message.draftText)}`}
-                    className="rounded border border-neutral-300 px-3 py-1.5 hover:bg-neutral-100"
+                    className="btn-secondary px-3 py-1.5"
                   >
                     Open in email
                   </a>
-                  <button
-                    onClick={() => markSent(message)}
-                    className="rounded bg-neutral-900 px-3 py-1.5 text-white hover:bg-neutral-700"
-                  >
+                  <button onClick={() => markSent(message)} className="btn-primary px-3 py-1.5">
                     Mark sent
                   </button>
                 </>
               )}
               {message.status === "SENT" && (
-                <span className="text-neutral-500">Sent {message.sentAt?.toLocaleString()}</span>
+                <span className="text-foreground-muted">Sent {message.sentAt?.toLocaleString()}</span>
               )}
             </div>
           </li>

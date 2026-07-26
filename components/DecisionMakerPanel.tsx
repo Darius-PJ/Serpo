@@ -42,26 +42,22 @@ export function DecisionMakerPanel({
   }
 
   return (
-    <section className="mb-6 rounded border border-neutral-200 p-4">
+    <section className="card-soft mb-6 p-4">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="font-semibold">Decision makers</h2>
-        <button
-          onClick={() => setConfirmOpen(true)}
-          disabled={loading}
-          className="rounded bg-neutral-900 px-3 py-1.5 text-xs text-white hover:bg-neutral-700 disabled:opacity-50"
-        >
+        <h2 className="font-bold text-foreground">Decision makers</h2>
+        <button onClick={() => setConfirmOpen(true)} disabled={loading} className="btn-primary px-3 py-1.5 text-xs">
           {loading ? "Researching…" : "Find decision maker"}
         </button>
       </div>
-      {error && <p className="mb-2 text-xs text-red-600">{error}</p>}
+      {error && <p className="mb-2 text-xs text-danger-dark">{error}</p>}
       {decisionMakers.length === 0 ? (
-        <p className="text-sm text-neutral-500">None found yet.</p>
+        <p className="text-sm text-foreground-muted">None found yet.</p>
       ) : (
         <ul className="space-y-1 text-sm">
           {decisionMakers.map((d) => (
             <li key={d.id}>
               {d.name ?? "(name unknown)"} {d.title ? `— ${d.title}` : ""} {d.email ? `— ${d.email}` : ""}{" "}
-              <span className="text-neutral-400">via {d.sourceTool}</span>
+              <span className="text-foreground-muted">via {d.sourceTool}</span>
             </li>
           ))}
         </ul>
@@ -76,12 +72,12 @@ export function DecisionMakerPanel({
         onConfirm={research}
         onCancel={() => setConfirmOpen(false)}
       >
-        <label className="mb-1 block text-xs text-neutral-600">Domain</label>
+        <label className="mb-1 block text-xs text-foreground-muted">Domain</label>
         <input
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
           placeholder="example.com"
-          className="w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+          className="input-soft w-full px-2.5 py-1.5 text-sm"
         />
       </ConfirmDialog>
     </section>

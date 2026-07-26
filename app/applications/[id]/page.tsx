@@ -28,21 +28,21 @@ export default async function ApplicationDetailPage({
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold">
-          {application.role} <span className="text-neutral-500">at {application.company}</span>
+      <div className="card-soft mb-6 p-4">
+        <h1 className="text-xl font-extrabold text-foreground">
+          {application.role} <span className="font-medium text-foreground-muted">at {application.company}</span>
         </h1>
-        <div className="mt-2 flex items-center gap-3 text-sm text-neutral-600">
+        <div className="mt-2 flex items-center gap-3 text-sm text-foreground-muted">
           <StatusSelect applicationId={application.id} status={application.status} />
           {application.url && (
-            <a href={application.url} target="_blank" rel="noopener noreferrer" className="underline">
+            <a href={application.url} target="_blank" rel="noopener noreferrer" className="text-primary-dark underline">
               Original posting
             </a>
           )}
           <span>Source: {application.source}</span>
         </div>
         {application.appliedAt && (
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-xs text-foreground-muted">
             Applied {application.appliedAt.toLocaleDateString()}
           </p>
         )}

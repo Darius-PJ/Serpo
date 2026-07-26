@@ -35,18 +35,26 @@ export function LoginForm({ next }: { next?: string }) {
 
   return (
     <div>
-      <div className="mb-4 flex rounded border border-neutral-300 text-sm">
+      <div className="mb-4 inline-flex w-full rounded-full border border-border-soft bg-surface p-1 text-sm">
         <button
           type="button"
           onClick={() => setMode("login")}
-          className={`flex-1 rounded-l px-3 py-1.5 ${mode === "login" ? "bg-neutral-900 text-white" : "hover:bg-neutral-100"}`}
+          className={`flex-1 rounded-full px-3 py-1.5 transition-all ${
+            mode === "login"
+              ? "bg-gradient-to-r from-primary to-primary-light font-semibold text-white shadow-sm shadow-primary/30"
+              : "text-foreground-muted hover:bg-primary-light/15"
+          }`}
         >
           Log in
         </button>
         <button
           type="button"
           onClick={() => setMode("register")}
-          className={`flex-1 rounded-r px-3 py-1.5 ${mode === "register" ? "bg-neutral-900 text-white" : "hover:bg-neutral-100"}`}
+          className={`flex-1 rounded-full px-3 py-1.5 transition-all ${
+            mode === "register"
+              ? "bg-gradient-to-r from-primary to-primary-light font-semibold text-white shadow-sm shadow-primary/30"
+              : "text-foreground-muted hover:bg-primary-light/15"
+          }`}
         >
           Create account
         </button>
@@ -54,17 +62,17 @@ export function LoginForm({ next }: { next?: string }) {
 
       <form onSubmit={onSubmit} className="space-y-3">
         <div>
-          <label className="mb-1 block text-xs text-neutral-600">Username</label>
+          <label className="mb-1 block text-xs font-medium text-foreground-muted">Username</label>
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             autoComplete="username"
             required
-            className="w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+            className="input-soft w-full px-3 py-1.5 text-sm"
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-neutral-600">Password</label>
+          <label className="mb-1 block text-xs font-medium text-foreground-muted">Password</label>
           <input
             type="password"
             value={password}
@@ -72,20 +80,16 @@ export function LoginForm({ next }: { next?: string }) {
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             required
             minLength={mode === "register" ? 8 : undefined}
-            className="w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+            className="input-soft w-full px-3 py-1.5 text-sm"
           />
           {mode === "register" && (
-            <p className="mt-1 text-xs text-neutral-500">8-128 characters.</p>
+            <p className="mt-1 text-xs text-foreground-muted">8-128 characters.</p>
           )}
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-danger-dark">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700 disabled:opacity-50"
-        >
+        <button type="submit" disabled={submitting} className="btn-primary w-full px-3 py-1.5 text-sm">
           {submitting ? "Please wait…" : mode === "login" ? "Log in" : "Create account"}
         </button>
       </form>

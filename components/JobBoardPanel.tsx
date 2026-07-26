@@ -60,19 +60,22 @@ export function JobBoardPanel({ boards }: { boards: JobBoard[] }) {
   }
 
   return (
-    <section className="mb-6 rounded border border-neutral-200 p-4">
-      <h2 className="mb-2 font-semibold">Job boards &amp; resources</h2>
+    <section className="card-soft mb-6 p-4">
+      <h2 className="mb-2 font-bold text-foreground">Job boards &amp; resources</h2>
 
       {Object.entries(grouped).map(([jurisdiction, list]) => (
         <div key={jurisdiction} className="mb-2">
-          <h3 className="text-xs font-semibold uppercase text-neutral-500">{jurisdiction}</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wide text-primary-dark">{jurisdiction}</h3>
           <ul className="flex flex-wrap gap-2">
             {list.map((board) => (
-              <li key={board.id} className="flex items-center gap-1 rounded border border-neutral-300 px-2 py-1 text-xs">
+              <li
+                key={board.id}
+                className="flex items-center gap-1 rounded-full border border-border-soft bg-surface px-3 py-1 text-xs"
+              >
                 <a href={board.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                   {board.name}
                 </a>
-                <button onClick={() => togglePin(board)} className="text-neutral-400 hover:text-neutral-700" title="Unpin">
+                <button onClick={() => togglePin(board)} className="text-foreground-muted hover:text-danger-dark" title="Unpin">
                   {board.pinned ? "×" : "+"}
                 </button>
               </li>
@@ -86,26 +89,18 @@ export function JobBoardPanel({ boards }: { boards: JobBoard[] }) {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="Find more boards for a state/city…"
-          className="flex-1 rounded border border-neutral-300 px-2 py-1 text-sm"
+          className="input-soft flex-1 px-2.5 py-1 text-sm"
         />
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded border border-neutral-300 px-3 py-1 text-sm hover:bg-neutral-100 disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading} className="btn-secondary px-3 py-1 text-sm">
           {loading ? "Searching…" : "Find more"}
         </button>
-        <button
-          type="button"
-          onClick={() => setShowAddForm((v) => !v)}
-          className="rounded border border-neutral-300 px-3 py-1 text-sm hover:bg-neutral-100"
-        >
+        <button type="button" onClick={() => setShowAddForm((v) => !v)} className="btn-secondary px-3 py-1 text-sm">
           Add a board
         </button>
       </form>
 
       {suggestions.length > 0 && (
-        <div className="mt-3 rounded border border-amber-300 bg-amber-50 p-2">
+        <div className="mt-3 rounded-xl border border-amber-300 bg-amber-50 p-2">
           <p className="mb-1 text-xs text-amber-800">
             AI-suggested — unverified, confirm the link works before relying on it.
           </p>
@@ -113,11 +108,11 @@ export function JobBoardPanel({ boards }: { boards: JobBoard[] }) {
             {suggestions.map((s) => (
               <li key={s.url} className="flex items-center justify-between">
                 <a href={s.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                  {s.name} <span className="text-neutral-500">({s.region})</span>
+                  {s.name} <span className="text-foreground-muted">({s.region})</span>
                 </a>
                 <button
                   onClick={() => addBoard({ name: s.name, url: s.url, jurisdiction: s.jurisdiction, region: s.region }, "ai-discovered")}
-                  className="rounded bg-neutral-900 px-2 py-0.5 text-xs text-white hover:bg-neutral-700"
+                  className="btn-primary px-2 py-0.5 text-xs"
                 >
                   Add
                 </button>
@@ -148,15 +143,20 @@ function AddBoardForm({ onAdd }: { onAdd: (b: { name: string; url: string; juris
       }}
       className="mt-3 flex flex-wrap gap-2"
     >
-      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="rounded border border-neutral-300 px-2 py-1 text-sm" />
-      <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…" className="min-w-[220px] flex-1 rounded border border-neutral-300 px-2 py-1 text-sm" />
-      <select value={jurisdiction} onChange={(e) => setJurisdiction(e.target.value)} className="rounded border border-neutral-300 px-2 py-1 text-sm">
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="input-soft px-2.5 py-1 text-sm" />
+      <input
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder="https://…"
+        className="input-soft min-w-[220px] flex-1 px-2.5 py-1 text-sm"
+      />
+      <select value={jurisdiction} onChange={(e) => setJurisdiction(e.target.value)} className="input-soft px-2.5 py-1 text-sm">
         <option value="state">State</option>
         <option value="municipal">Municipal</option>
         <option value="federal">Federal</option>
         <option value="other">Other</option>
       </select>
-      <button type="submit" className="rounded bg-neutral-900 px-3 py-1 text-sm text-white hover:bg-neutral-700">
+      <button type="submit" className="btn-primary px-3 py-1 text-sm">
         Save
       </button>
     </form>

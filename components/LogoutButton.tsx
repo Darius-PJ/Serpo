@@ -22,7 +22,7 @@ export function LogoutButton() {
     <button
       onClick={onClick}
       disabled={loading}
-      className="text-sm text-neutral-600 hover:text-neutral-900 disabled:opacity-50"
+      className="text-sm font-medium text-foreground-muted transition-colors hover:text-primary-dark disabled:opacity-50"
     >
       Log out
     </button>
