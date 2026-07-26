@@ -18,6 +18,7 @@ model User {
   profileFields   ProfileField[]
   jobBoards       JobBoard[]
   jobBoardPins    JobBoardPin[]
+  editorDrafts    EditorDraft[]
 }
 
 model Application {
@@ -137,6 +138,27 @@ model ProfileField {
 
   @@unique([userId, key])
   @@unique([id, userId])
+}
+
+// "The Editor" — illustrative competitive-benchmark resumes (never the
+// user's own résumé, never submitted anywhere) generated from a job
+// description to show the caliber of candidate they're up against.
+model EditorDraft {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company        String
+  role           String
+  jobDescription String? // capped length, captured at creation time
+  sourceUrl      String?
+  status         String   @default("pending") // pending | generated | failed
+  content        String? // JSON-serialized BenchmarkResume
+  error          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([id, userId])
+  @@index([userId])
 }
 
 model ApplyRun {

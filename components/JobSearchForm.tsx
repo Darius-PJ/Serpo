@@ -35,6 +35,7 @@ export function JobSearchForm() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [tracked, setTracked] = useState<Set<string>>(new Set());
+  const [generatingEditorFor, setGeneratingEditorFor] = useState<string | null>(null);
 
   async function runSearch(kw: string, loc: string, remote: boolean) {
     setLoading(true);
@@ -83,6 +84,28 @@ export function JobSearchForm() {
 
   function setPage(source: string, page: number) {
     setPageBySource((prev) => ({ ...prev, [source]: page }));
+  }
+
+  async function openEditor(listing: Listing) {
+    setGeneratingEditorFor(listing.id);
+    try {
+      const res = await fetch("/api/editor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company: listing.company,
+          role: listing.role,
+          jobDescription: listing.description,
+          sourceUrl: listing.url,
+        }),
+      });
+      const data = await res.json();
+      if (data.draft?.id) {
+        router.push(`/editor/${data.draft.id}`);
+      }
+    } finally {
+      setGeneratingEditorFor(null);
+    }
   }
 
   return (
@@ -165,7 +188,7 @@ export function JobSearchForm() {
                         {listing.company}
                         {listing.location ? ` · ${listing.location}` : ""}
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <a href={listing.url} target="_blank" rel="noopener noreferrer" className="btn-secondary px-2.5 py-1 text-xs">
                           Open
                         </a>
@@ -175,6 +198,14 @@ export function JobSearchForm() {
                           className="btn-primary px-2.5 py-1 text-xs"
                         >
                           {tracked.has(listing.id) ? "Tracked" : "Track"}
+                        </button>
+                        <button
+                          onClick={() => openEditor(listing)}
+                          disabled={generatingEditorFor === listing.id}
+                          className="btn-secondary px-2.5 py-1 text-xs"
+                          title="See an illustrative example of a strong competing candidate for this role"
+                        >
+                          {generatingEditorFor === listing.id ? "Generating…" : "Resume"}
                         </button>
                       </div>
                     </li>

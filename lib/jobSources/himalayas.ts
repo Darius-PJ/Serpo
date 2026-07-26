@@ -26,8 +26,12 @@ export const himalayasConnector: JobSourceConnector = {
   },
 
   async search(criteria: JobSearchCriteria): Promise<NormalizedJobListing[]> {
+    // `country` only accepts an ISO country code, not free text — verified
+    // live that a free-text location (e.g. "Austin, Texas") 400s here while
+    // omitting the param entirely succeeds. Not worth mapping our free-text
+    // location field to a code: this source is remote-only by definition, so
+    // this app's own isUsOrRemoteListing post-filter already covers it.
     const params = new URLSearchParams({ q: criteria.keywords });
-    if (criteria.location) params.set("country", criteria.location);
 
     const res = await fetch(`https://himalayas.app/jobs/api/search?${params.toString()}`);
     if (!res.ok) {

@@ -28,8 +28,13 @@ export const jobicyConnector: JobSourceConnector = {
   },
 
   async search(criteria: JobSearchCriteria): Promise<NormalizedJobListing[]> {
+    // `geo` only accepts a small set of region enum values (e.g. "usa",
+    // "europe"), not free text — verified live that a free-text location
+    // (e.g. "Austin, Texas") 400s here while omitting the param entirely
+    // succeeds. Not worth mapping our free-text location field to an enum:
+    // this source is remote-only by definition, so this app's own
+    // isUsOrRemoteListing post-filter already covers it.
     const params = new URLSearchParams({ count: "25", tag: criteria.keywords });
-    if (criteria.location) params.set("geo", criteria.location);
 
     const res = await fetch(`https://jobicy.com/api/v2/remote-jobs?${params.toString()}`);
     if (!res.ok) {
