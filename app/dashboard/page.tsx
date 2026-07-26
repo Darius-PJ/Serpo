@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
+import { requireUserIdForPage } from "@/lib/auth/session";
 import { runFollowUpCheck } from "@/lib/scheduler/followUpCheck";
 import { listStaleApplications, runStaleCheck } from "@/lib/scheduler/staleCheck";
 import { StatusSelect } from "@/components/StatusSelect";
@@ -11,13 +12,18 @@ export const dynamic = "force-dynamic";
 const COLUMNS = APPLICATION_STATUSES;
 
 export default async function DashboardPage() {
+  const userId = await requireUserIdForPage();
+
   // Runs on every dashboard load — no OS scheduler needed for a local app.
-  await runFollowUpCheck();
-  await runStaleCheck();
+  // Scoped to this account only, otherwise loading the dashboard would
+  // trigger real Claude API calls and stale-flag mutations against every
+  // other account's applications too.
+  await runFollowUpCheck(userId);
+  await runStaleCheck(userId);
 
   const [applications, staleApplications] = await Promise.all([
-    prisma.application.findMany({ orderBy: { createdAt: "desc" } }),
-    listStaleApplications(),
+    prisma.application.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
+    listStaleApplications(userId),
   ]);
 
   return (

@@ -3,13 +3,18 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import type { ApplyRun } from "@/generated/prisma";
+import { ConfirmDialog } from "./ConfirmDialog";
 
 export function ApplyPanel({
   applicationId,
+  company,
+  role,
   hasResumeTemplate,
   runs,
 }: {
   applicationId: string;
+  company: string;
+  role: string;
   hasResumeTemplate: boolean;
   runs: ApplyRun[];
 }) {
@@ -17,6 +22,7 @@ export function ApplyPanel({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [applying, setApplying] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [missingValue, setMissingValue] = useState("");
 
   const latestRun = runs[0];
@@ -41,6 +47,7 @@ export function ApplyPanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ confirm: "APPLY" }),
       });
+      setConfirmOpen(false);
       router.refresh();
     } finally {
       setApplying(false);
@@ -55,6 +62,7 @@ export function ApplyPanel({
       body: JSON.stringify({ key: latestRun.missingFieldKey, label: latestRun.missingFieldLabel, value: missingValue }),
     });
     setMissingValue("");
+    // Continuation of an already-confirmed submission, not a new one — no re-prompt.
     await startApply();
   }
 
@@ -62,9 +70,9 @@ export function ApplyPanel({
     <section className="mb-6 rounded border border-neutral-200 p-4">
       <h2 className="mb-2 font-semibold">Auto-apply</h2>
       <p className="mb-3 text-xs text-neutral-500">
-        Tailors your resume to this posting, then fills and submits the application in a visible
-        browser window. Once every field is known, it submits automatically with no extra click —
-        watch the window if you want a last chance to intervene.
+        Tailors your resume to this posting, then opens a visible browser window and fills the
+        application. It pauses for your review right before the final submit click — nothing is
+        sent until you resume it in that window.
       </p>
 
       {!hasResumeTemplate && (
@@ -90,13 +98,23 @@ export function ApplyPanel({
         </button>
 
         <button
-          onClick={startApply}
+          onClick={() => setConfirmOpen(true)}
           disabled={!hasResumeTemplate || applying}
           className="rounded bg-neutral-900 px-3 py-1.5 text-sm text-white hover:bg-neutral-700 disabled:opacity-50"
         >
           {applying ? "Running…" : "Tailor & Apply"}
         </button>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Start auto-apply?"
+        description={`This opens a real browser, tailors your resume, and fills out the application for ${role} at ${company}. You'll get a chance to review the filled form before it's actually submitted.`}
+        confirmLabel="Start"
+        busy={applying}
+        onConfirm={startApply}
+        onCancel={() => setConfirmOpen(false)}
+      />
 
       {latestRun && (
         <div className="rounded border border-neutral-200 p-3 text-sm">

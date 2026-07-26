@@ -1,10 +1,13 @@
 import { prisma } from "@/lib/db/prisma";
+import { requireUserIdForPage } from "@/lib/auth/session";
 import { ProfileFieldList } from "@/components/ProfileFieldList";
+import { DangerZone } from "@/components/DangerZone";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const fields = await prisma.profileField.findMany({ orderBy: { label: "asc" } });
+  const userId = await requireUserIdForPage();
+  const fields = await prisma.profileField.findMany({ where: { userId }, orderBy: { label: "asc" } });
 
   return (
     <div>
@@ -15,6 +18,7 @@ export default async function SettingsPage() {
         anything here directly.
       </p>
       <ProfileFieldList fields={fields} />
+      <DangerZone />
     </div>
   );
 }

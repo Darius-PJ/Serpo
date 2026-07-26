@@ -7,8 +7,26 @@ generator client {
   output   = "../generated/prisma"
 }
 
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  applications    Application[]
+  resumeTemplates ResumeTemplate[]
+  profileFields   ProfileField[]
+  jobBoards       JobBoard[]
+  jobBoardPins    JobBoardPin[]
+}
+
 model Application {
   id                  String    @id @default(cuid())
+  // Nullable only so pre-multi-user rows aren't orphaned by the migration —
+  // the first account ever registered claims every row still null here.
+  // Never written as null going forward; every new row sets it at creation.
+  userId              String?
+  user                User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   company             String
   role                String
   source              String // "usajobs" | "adzuna" | "remoteok" | "jobspy" | "manual"
@@ -24,6 +42,9 @@ model Application {
   messages            Message[]
   applyRuns           ApplyRun[]
   createdAt           DateTime  @default(now())
+
+  @@unique([id, userId])
+  @@index([userId])
 }
 
 model DecisionMaker {
@@ -52,29 +73,62 @@ model Message {
 
 model JobBoard {
   id           String   @id @default(cuid())
+  // Permanently nullable: null = curated/shared with every account forever;
+  // non-null = privately added by that account ("manual" or "ai-discovered").
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
   url          String
   jurisdiction String // "federal" | "state" | "municipal" | "other"
   region       String? // e.g. "CA", "Cook County IL"
   source       String   @default("curated") // "curated" | "ai-discovered" | "manual"
+  // Only the default for user-owned boards. For curated (userId=null) boards,
+  // pin state is per-account via JobBoardPin — this column is ignored for them.
   pinned       Boolean  @default(true)
+  pins         JobBoardPin[]
   createdAt    DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Per-account pin state for shared curated JobBoard rows — lets Account A
+// unpin CalCareers without affecting Account B, since the JobBoard row itself
+// is shared.
+model JobBoardPin {
+  id         String   @id @default(cuid())
+  userId     String
+  jobBoardId String
+  pinned     Boolean
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobBoard   JobBoard @relation(fields: [jobBoardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobBoardId])
 }
 
 model ResumeTemplate {
   id             String   @id @default(cuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   sourceFilename String
   sourceFormat   String // "md" | "docx"
   contentText    String // extracted plain text — what tailoring actually reads
   createdAt      DateTime @default(now())
+
+  @@unique([id, userId])
+  @@index([userId])
 }
 
 model ProfileField {
   id        String   @id @default(cuid())
-  key       String   @unique // e.g. "email", "phone", "workAuthorization"
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  key       String // e.g. "email", "phone", "workAuthorization"
   label     String // the human-readable question, for display/audit
   value     String
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, key])
+  @@unique([id, userId])
 }
 
 model ApplyRun {

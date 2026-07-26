@@ -4,12 +4,13 @@ import { generateMessage } from "@/lib/ai/generateMessage";
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
-/** Generates a FOLLOW_UP draft for any application 7+ days past submission with no status change and no prior follow-up. */
-export async function runFollowUpCheck() {
+/** Generates a FOLLOW_UP draft for any of this user's applications 7+ days past submission with no status change and no prior follow-up. */
+export async function runFollowUpCheck(userId: string) {
   const cutoff = new Date(Date.now() - SEVEN_DAYS_MS);
 
   const due = await prisma.application.findMany({
     where: {
+      userId,
       status: "Submitted",
       appliedAt: { lte: cutoff },
       followUpGeneratedAt: null,

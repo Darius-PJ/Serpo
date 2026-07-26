@@ -2,13 +2,18 @@ import { NextResponse } from "next/server";
 import path from "node:path";
 import mammoth from "mammoth";
 import { prisma } from "@/lib/db/prisma";
+import { requireApiUserId } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
 export async function GET() {
+  const userId = await requireApiUserId();
+  if (userId instanceof NextResponse) return userId;
+
   const template = await prisma.resumeTemplate.findFirst({
+    where: { userId },
     orderBy: { createdAt: "desc" },
     select: { id: true, sourceFilename: true, sourceFormat: true, createdAt: true },
   });
@@ -17,11 +22,12 @@ export async function GET() {
 
 export async function POST(request: Request) {
   // Multipart upload — deliberately NOT behind requireJsonRequest (that guard
-  // expects application/json). CSRF risk here is limited to overwriting the
-  // template with attacker-supplied content, mitigated the same way: browsers
-  // don't let a cross-origin <form> set an arbitrary Content-Type on a file
-  // input's multipart body without JS, and a same-machine attacker able to
-  // run arbitrary JS already has stronger avenues than this endpoint.
+  // expects application/json). The session-cookie check below now closes the
+  // gap this previously relied on informal reasoning for: this endpoint
+  // requires a valid authenticated session like every other mutating route.
+  const userId = await requireApiUserId();
+  if (userId instanceof NextResponse) return userId;
+
   const contentType = request.headers.get("content-type") ?? "";
   if (!contentType.startsWith("multipart/form-data")) {
     return NextResponse.json({ error: "expected multipart/form-data" }, { status: 415 });
@@ -47,6 +53,7 @@ export async function POST(request: Request) {
 
   const template = await prisma.resumeTemplate.create({
     data: {
+      userId,
       sourceFilename: filename,
       sourceFormat: ext === ".docx" ? "docx" : "md",
       contentText,

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
+import { requireUserIdForPage } from "@/lib/auth/session";
 import { StatusSelect } from "@/components/StatusSelect";
 import { DecisionMakerPanel } from "@/components/DecisionMakerPanel";
 import { MessagePanel } from "@/components/MessagePanel";
@@ -12,13 +13,14 @@ export default async function ApplicationDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const userId = await requireUserIdForPage();
   const { id } = await params;
   const [application, resumeTemplate, applyRuns] = await Promise.all([
     prisma.application.findUnique({
-      where: { id },
+      where: { id_userId: { id, userId } },
       include: { decisionMakers: true, messages: { orderBy: { createdAt: "desc" } } },
     }),
-    prisma.resumeTemplate.findFirst({ orderBy: { createdAt: "desc" } }),
+    prisma.resumeTemplate.findFirst({ where: { userId }, orderBy: { createdAt: "desc" } }),
     prisma.applyRun.findMany({ where: { applicationId: id }, orderBy: { startedAt: "desc" } }),
   ]);
 
@@ -46,8 +48,18 @@ export default async function ApplicationDetailPage({
         )}
       </div>
 
-      <DecisionMakerPanel applicationId={application.id} decisionMakers={application.decisionMakers} />
-      <ApplyPanel applicationId={application.id} hasResumeTemplate={Boolean(resumeTemplate)} runs={applyRuns} />
+      <DecisionMakerPanel
+        applicationId={application.id}
+        company={application.company}
+        decisionMakers={application.decisionMakers}
+      />
+      <ApplyPanel
+        applicationId={application.id}
+        company={application.company}
+        role={application.role}
+        hasResumeTemplate={Boolean(resumeTemplate)}
+        runs={applyRuns}
+      />
       <MessagePanel applicationId={application.id} messages={application.messages} />
     </div>
   );

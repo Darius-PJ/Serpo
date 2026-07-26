@@ -20,9 +20,24 @@ export function requireJsonRequest(request: Request): NextResponse | null {
     return NextResponse.json({ error: "Content-Type must be application/json" }, { status: 415 });
   }
 
+  // Compare Origin against the Host header the client actually connected
+  // to, not new URL(request.url).origin — in Next's dev server that gets
+  // internally reconstructed as "localhost" even when bound to 127.0.0.1
+  // (this app's own dev/start scripts use -H 127.0.0.1), which made every
+  // legitimate same-origin request 403 whenever the app was opened via
+  // http://127.0.0.1:*.
   const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) {
-    return NextResponse.json({ error: "cross-origin request rejected" }, { status: 403 });
+  if (origin) {
+    const host = request.headers.get("host");
+    let originHost: string | null = null;
+    try {
+      originHost = new URL(origin).host;
+    } catch {
+      // fall through — originHost stays null, treated as a mismatch below
+    }
+    if (!host || originHost !== host) {
+      return NextResponse.json({ error: "cross-origin request rejected" }, { status: 403 });
+    }
   }
 
   const contentLength = Number(request.headers.get("content-length") ?? "0");

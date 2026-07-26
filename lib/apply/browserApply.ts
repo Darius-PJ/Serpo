@@ -55,13 +55,21 @@ async function getLabelText(control: Locator): Promise<string> {
  * as a "failed" run for the user to finish by hand rather than a silent
  * blind auto-check of an unknown legal attestation.
  */
-export async function runApplyAutomation(applicationId: string, resumeDocxPath: string): Promise<ApplyResult> {
-  const application = await prisma.application.findUniqueOrThrow({ where: { id: applicationId } });
+export async function runApplyAutomation(
+  applicationId: string,
+  resumeDocxPath: string,
+  userId: string
+): Promise<ApplyResult> {
+  const application = await prisma.application.findUniqueOrThrow({
+    where: { id_userId: { id: applicationId, userId } },
+  });
   if (!application.url) {
     return { status: "failed", error: "This application has no URL to apply through." };
   }
 
-  const profileFields = await prisma.profileField.findMany();
+  // Scoped to this account — otherwise this would autofill User B's real
+  // application with User A's saved address/phone/salary/etc. answers.
+  const profileFields = await prisma.profileField.findMany({ where: { userId } });
   const profileMap = new Map(profileFields.map((f) => [f.key, f.value]));
   const answers: Record<string, string> = {};
 
@@ -113,17 +121,27 @@ export async function runApplyAutomation(applicationId: string, resumeDocxPath: 
       };
     }
 
-    // Last visual chance to intervene before the one step with no review gate.
-    await page.waitForTimeout(3000);
-
     const submitButton = page.getByRole("button", { name: /submit|apply now|send application/i }).first();
     if ((await submitButton.count()) === 0) {
       await browser.close();
       return { status: "failed", error: "Could not find a submit button.", formAnswersSnapshot: answers };
     }
 
-    await submitButton.click();
-    await page.waitForTimeout(2000);
+    // Real human-in-the-loop review gate: opens the Playwright Inspector and
+    // genuinely halts here until the user clicks Resume (or closes the
+    // browser to abort, which throws below and surfaces as a "failed" run).
+    // Replaces a fixed 3s waitForTimeout that was a review window in name
+    // only — this is after locating the submit button so the user sees
+    // exactly what's about to be clicked, and can edit any filled field.
+    await page.pause();
+
+    // The Inspector doesn't lock the page from interaction — the user could
+    // have clicked the site's real submit button themselves while paused.
+    // Guard against clicking it a second time.
+    if (await submitButton.isVisible().catch(() => false)) {
+      await submitButton.click();
+      await page.waitForTimeout(2000);
+    }
 
     return { status: "submitted", formAnswersSnapshot: answers };
   } catch (err) {

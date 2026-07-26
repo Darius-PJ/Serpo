@@ -1,20 +1,30 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { Application } from "@/generated/prisma";
+import { ConfirmDialog } from "./ConfirmDialog";
 
 export function StaleReviewPanel({ applications }: { applications: Application[] }) {
   const router = useRouter();
+  const [pendingRemove, setPendingRemove] = useState<Application | null>(null);
+  const [busy, setBusy] = useState(false);
 
   if (applications.length === 0) return null;
 
   async function act(action: "keep" | "remove", applicationId: string) {
-    await fetch("/api/privacy/purge", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action, applicationId }),
-    });
-    router.refresh();
+    setBusy(true);
+    try {
+      await fetch("/api/privacy/purge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, applicationId }),
+      });
+      setPendingRemove(null);
+      router.refresh();
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -40,11 +50,7 @@ export function StaleReviewPanel({ applications }: { applications: Application[]
                 Keep
               </button>
               <button
-                onClick={() => {
-                  if (window.confirm(`Permanently delete ${app.company} — ${app.role}? This cannot be undone.`)) {
-                    act("remove", app.id);
-                  }
-                }}
+                onClick={() => setPendingRemove(app)}
                 className="rounded border border-red-300 px-2 py-1 text-xs text-red-700 hover:bg-red-50"
               >
                 Remove
@@ -53,6 +59,21 @@ export function StaleReviewPanel({ applications }: { applications: Application[]
           </li>
         ))}
       </ul>
+
+      <ConfirmDialog
+        open={pendingRemove !== null}
+        tone="danger"
+        title="Remove this application?"
+        description={
+          pendingRemove
+            ? `Permanently delete ${pendingRemove.company} — ${pendingRemove.role}? This cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete"
+        busy={busy}
+        onConfirm={() => pendingRemove && act("remove", pendingRemove.id)}
+        onCancel={() => setPendingRemove(null)}
+      />
     </section>
   );
 }

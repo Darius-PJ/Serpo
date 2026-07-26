@@ -1,7 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/db/prisma";
 import { claude, CLAUDE_MODEL } from "@/lib/ai/claudeClient";
-import { TAILORED_RESUME_SCHEMA, type TailoredResume } from "./resumeSchema";
+import { TAILORED_RESUME_SCHEMA, TailoredResumeZ, InvalidTailoredResumeError, type TailoredResume } from "./resumeSchema";
 
 const SYSTEM_PROMPT =
   "You tailor a job seeker's resume to a specific job description. You may ONLY reorder, " +
@@ -13,10 +13,12 @@ const SYSTEM_PROMPT =
   "relevant, simply don't fabricate it — omission is always correct, invention never is. Copy the " +
   "contact header (name/email/phone/location/links) from the source text exactly, unchanged.";
 
-export async function tailorResume(applicationId: string): Promise<TailoredResume> {
+export async function tailorResume(applicationId: string, userId: string): Promise<TailoredResume> {
   const [template, application] = await Promise.all([
-    prisma.resumeTemplate.findFirst({ orderBy: { createdAt: "desc" } }),
-    prisma.application.findUniqueOrThrow({ where: { id: applicationId } }),
+    // Scoped to this account — otherwise a shared "most recent template"
+    // lookup would tailor User B's real application against User A's résumé.
+    prisma.resumeTemplate.findFirst({ where: { userId }, orderBy: { createdAt: "desc" } }),
+    prisma.application.findUniqueOrThrow({ where: { id_userId: { id: applicationId, userId } } }),
   ]);
 
   if (!template) {
@@ -43,5 +45,17 @@ export async function tailorResume(applicationId: string): Promise<TailoredResum
   if (!textBlock || !("text" in textBlock)) {
     throw new Error("Claude did not return structured resume content.");
   }
-  return JSON.parse(textBlock.text) as TailoredResume;
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(textBlock.text);
+  } catch {
+    throw new InvalidTailoredResumeError("response was not valid JSON");
+  }
+
+  const result = TailoredResumeZ.safeParse(parsed);
+  if (!result.success) {
+    throw new InvalidTailoredResumeError(result.error.issues.map((i) => i.message).join("; "));
+  }
+  return result.data;
 }

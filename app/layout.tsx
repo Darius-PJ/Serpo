@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import { getCurrentUserId } from "@/lib/auth/session";
+import { LogoutButton } from "@/components/LogoutButton";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,26 +20,35 @@ export const metadata: Metadata = {
   description: "Local-first job & contract application tracker",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userId = await getCurrentUserId();
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-screen bg-white text-neutral-900 antialiased">
         <header className="border-b border-neutral-200">
           <nav className="mx-auto flex max-w-5xl items-center gap-6 px-4 py-3">
             <span className="font-semibold">Job Tracker</span>
-            <Link href="/dashboard" className="text-sm text-neutral-600 hover:text-neutral-900">
-              Dashboard
-            </Link>
-            <Link href="/sourcing" className="text-sm text-neutral-600 hover:text-neutral-900">
-              Source Jobs
-            </Link>
-            <Link href="/settings" className="text-sm text-neutral-600 hover:text-neutral-900">
-              Settings
-            </Link>
+            {userId && (
+              <>
+                <Link href="/dashboard" className="text-sm text-neutral-600 hover:text-neutral-900">
+                  Dashboard
+                </Link>
+                <Link href="/sourcing" className="text-sm text-neutral-600 hover:text-neutral-900">
+                  Source Jobs
+                </Link>
+                <Link href="/settings" className="text-sm text-neutral-600 hover:text-neutral-900">
+                  Settings
+                </Link>
+                <span className="ml-auto">
+                  <LogoutButton />
+                </span>
+              </>
+            )}
           </nav>
         </header>
         <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>

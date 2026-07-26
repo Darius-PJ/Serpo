@@ -2,14 +2,18 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { generateMessage } from "@/lib/ai/generateMessage";
 import { requireJsonRequest } from "@/lib/security/guard";
+import { requireApiUserId } from "@/lib/auth/session";
 import { isApplicationStatus } from "@/lib/applicationStatus";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const userId = await requireApiUserId();
+  if (userId instanceof NextResponse) return userId;
+
   const { id } = await params;
   const application = await prisma.application.findUnique({
-    where: { id },
+    where: { id_userId: { id, userId } },
     include: { decisionMakers: true, messages: true },
   });
   if (!application) {
@@ -21,6 +25,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const rejected = requireJsonRequest(request);
   if (rejected) return rejected;
+
+  const userId = await requireApiUserId();
+  if (userId instanceof NextResponse) return userId;
 
   const { id } = await params;
   const body = await request.json();
@@ -35,7 +42,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "role cannot be empty" }, { status: 400 });
   }
 
-  const existing = await prisma.application.findUnique({ where: { id } });
+  const existing = await prisma.application.findUnique({ where: { id_userId: { id, userId } } });
   if (!existing) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }

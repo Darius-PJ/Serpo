@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { requireJsonRequest } from "@/lib/security/guard";
+import { requireApiUserId } from "@/lib/auth/session";
 import { claude, CLAUDE_MODEL } from "@/lib/ai/claudeClient";
 
 export const dynamic = "force-dynamic";
@@ -38,13 +39,19 @@ export async function POST(request: Request) {
   const rejected = requireJsonRequest(request);
   if (rejected) return rejected;
 
+  const userId = await requireApiUserId();
+  if (userId instanceof NextResponse) return userId;
+
   const body = await request.json();
   const location = typeof body.location === "string" ? body.location.trim().slice(0, 200) : "";
   if (!location) {
     return NextResponse.json({ error: "location is required" }, { status: 400 });
   }
 
-  const known = await prisma.jobBoard.findMany({ select: { url: true } });
+  const known = await prisma.jobBoard.findMany({
+    where: { OR: [{ userId: null }, { userId }] },
+    select: { url: true },
+  });
   const knownUrls = new Set(known.map((b) => b.url.toLowerCase()));
 
   const response = await claude.messages.create({
