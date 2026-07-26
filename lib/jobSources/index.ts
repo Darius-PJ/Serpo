@@ -1,6 +1,11 @@
 import { adzunaConnector } from "./adzuna";
+import { arbeitnowConnector } from "./arbeitnow";
+import { himalayasConnector } from "./himalayas";
+import { jobicyConnector } from "./jobicy";
 import { jobSpyConnector } from "./jobSpy";
+import { joobleConnector } from "./jooble";
 import { remoteOkConnector } from "./remoteOk";
+import { remotiveConnector } from "./remotive";
 import { usaJobsConnector } from "./usaJobs";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
@@ -9,7 +14,12 @@ import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from
 const CONNECTORS: JobSourceConnector[] = [
   usaJobsConnector,
   adzunaConnector,
+  joobleConnector,
   remoteOkConnector,
+  remotiveConnector,
+  himalayasConnector,
+  jobicyConnector,
+  arbeitnowConnector,
   jobSpyConnector,
 ];
 

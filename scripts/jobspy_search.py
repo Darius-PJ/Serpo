@@ -29,7 +29,10 @@ def main():
     args = parser.parse_args()
 
     jobs = scrape_jobs(
-        site_name=["indeed", "linkedin", "zip_recruiter", "glassdoor"],
+        # "google" is Google for Jobs, which itself aggregates postings from
+        # thousands of other sites/company career pages — the single highest-
+        # leverage addition to search breadth available through this scraper.
+        site_name=["indeed", "linkedin", "zip_recruiter", "glassdoor", "google"],
         search_term=args.keywords,
         location=args.location,
         is_remote=args.remote_only,

@@ -13,7 +13,7 @@ interface Suggestion {
 
 export function JobBoardPanel({ boards }: { boards: JobBoard[] }) {
   const router = useRouter();
-  const [location, setLocation] = useState("");
+  const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -25,13 +25,13 @@ export function JobBoardPanel({ boards }: { boards: JobBoard[] }) {
 
   async function discover(e: React.FormEvent) {
     e.preventDefault();
-    if (!location.trim()) return;
+    if (!query.trim()) return;
     setLoading(true);
     try {
       const res = await fetch("/api/job-boards/discover", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ location }),
+        body: JSON.stringify({ query }),
       });
       const data = await res.json();
       setSuggestions(data.suggestions ?? []);
@@ -86,9 +86,9 @@ export function JobBoardPanel({ boards }: { boards: JobBoard[] }) {
 
       <form onSubmit={discover} className="mt-3 flex gap-2">
         <input
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Find more boards for a state/city…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Find more boards — a state/city, industry, or niche…"
           className="input-soft flex-1 px-2.5 py-1 text-sm"
         />
         <button type="submit" disabled={loading} className="btn-secondary px-3 py-1 text-sm">

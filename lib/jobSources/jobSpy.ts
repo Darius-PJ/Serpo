@@ -36,7 +36,7 @@ function runPythonScript(scriptPath: string, args: string[]): Promise<string> {
 
 export const jobSpyConnector: JobSourceConnector = {
   key: "jobspy",
-  label: "JobSpy (LinkedIn/Indeed/Glassdoor/ZipRecruiter)",
+  label: "JobSpy (LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google)",
 
   isConfigured() {
     // Off by default: JobSpy scrapes sites like LinkedIn/Indeed whose Terms of

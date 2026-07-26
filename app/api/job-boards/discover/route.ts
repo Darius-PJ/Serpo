@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 interface Suggestion {
   name: string;
   url: string;
-  jurisdiction: "state" | "municipal" | "other";
+  jurisdiction: "federal" | "state" | "municipal" | "other";
   region: string;
 }
 
@@ -23,7 +23,7 @@ const SUGGESTION_SCHEMA = {
         properties: {
           name: { type: "string" as const },
           url: { type: "string" as const },
-          jurisdiction: { type: "string" as const, enum: ["state", "municipal", "other"] },
+          jurisdiction: { type: "string" as const, enum: ["federal", "state", "municipal", "other"] },
           region: { type: "string" as const },
         },
         required: ["name", "url", "jurisdiction", "region"],
@@ -43,9 +43,9 @@ export async function POST(request: Request) {
   if (userId instanceof NextResponse) return userId;
 
   const body = await request.json();
-  const location = typeof body.location === "string" ? body.location.trim().slice(0, 200) : "";
-  if (!location) {
-    return NextResponse.json({ error: "location is required" }, { status: 400 });
+  const query = typeof body.query === "string" ? body.query.trim().slice(0, 200) : "";
+  if (!query) {
+    return NextResponse.json({ error: "query is required" }, { status: 400 });
   }
 
   const known = await prisma.jobBoard.findMany({
@@ -61,13 +61,16 @@ export async function POST(request: Request) {
     output_config: { effort: "low", format: { type: "json_schema", schema: SUGGESTION_SCHEMA } },
     tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
     system:
-      "You find official government job boards. Only suggest real, currently-live official " +
-      "state/county/municipal government job listing sites you found via web search — never " +
-      "guess a URL from memory. Skip anything you couldn't verify is live during this search.",
+      "You find job boards and aggregators worth bookmarking for a job seeker — government " +
+      "(federal/state/municipal) job sites, general and niche job aggregators, industry- or " +
+      "profession-specific boards, and community/company-directory boards. Only suggest real, " +
+      "currently-live sites you found via web search — never guess a URL from memory. Skip " +
+      "anything you couldn't verify is live during this search. Use jurisdiction \"other\" for " +
+      "anything that isn't a government job site.",
     messages: [
       {
         role: "user",
-        content: `Find official state and municipal government job boards relevant to: ${location}. Return up to 5.`,
+        content: `Find job boards or aggregators relevant to: ${query}. This could be a location (find government job sites there), an industry or profession, or a niche (e.g. nonprofit, startups, a specific skill). Return up to 5.`,
       },
     ],
   });
