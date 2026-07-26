@@ -1,0 +1,92 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+model Application {
+  id                  String    @id @default(cuid())
+  company             String
+  role                String
+  source              String // "usajobs" | "adzuna" | "remoteok" | "jobspy" | "manual"
+  url                 String?
+  description         String? // job posting text captured at track time — feeds resume tailoring
+  status              String    @default("Sourced") // Sourced | Submitted | Interviewing | Offer | Rejected | Withdrawn
+  appliedAt           DateTime?
+  lastStatusChangeAt  DateTime  @updatedAt
+  followUpGeneratedAt DateTime? // guards the "only one 7-day follow-up" rule
+  staleFlaggedAt      DateTime? // set when the 3-month no-update check first flags this row
+  notes               String?
+  decisionMakers      DecisionMaker[]
+  messages            Message[]
+  applyRuns           ApplyRun[]
+  createdAt           DateTime  @default(now())
+}
+
+model DecisionMaker {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  name          String?
+  title         String?
+  email         String?
+  sourceTool    String // "theharvester" etc.
+  confidence    String? // raw tool signal, not a fabricated score
+  foundAt       DateTime    @default(now())
+}
+
+model Message {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  type          String // "IMMEDIATE" | "FOLLOW_UP"
+  draftText     String
+  status        String      @default("DRAFT") // "DRAFT" | "APPROVED" | "SENT"
+  createdAt     DateTime    @default(now())
+  approvedAt    DateTime?
+  sentAt        DateTime?
+}
+
+model JobBoard {
+  id           String   @id @default(cuid())
+  name         String
+  url          String
+  jurisdiction String // "federal" | "state" | "municipal" | "other"
+  region       String? // e.g. "CA", "Cook County IL"
+  source       String   @default("curated") // "curated" | "ai-discovered" | "manual"
+  pinned       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+model ResumeTemplate {
+  id             String   @id @default(cuid())
+  sourceFilename String
+  sourceFormat   String // "md" | "docx"
+  contentText    String // extracted plain text — what tailoring actually reads
+  createdAt      DateTime @default(now())
+}
+
+model ProfileField {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g. "email", "phone", "workAuthorization"
+  label     String // the human-readable question, for display/audit
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model ApplyRun {
+  id                  String      @id @default(cuid())
+  applicationId       String
+  application         Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  status              String      @default("pending") // pending | needs_input | submitted | failed
+  tailoredResumePath  String? // data/resumes/<id>.docx — git-ignored, local only
+  formAnswersSnapshot String? // JSON: what was actually filled, for after-the-fact audit
+  missingFieldKey     String? // set while status = needs_input — the ProfileField.key to save the answer under
+  missingFieldLabel   String? // set while status = needs_input — human-readable question to show
+  error               String?
+  startedAt           DateTime  @default(now())
+  submittedAt         DateTime?
+}
