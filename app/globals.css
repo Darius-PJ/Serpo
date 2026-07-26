@@ -98,4 +98,18 @@ body {
   .input-soft {
     @apply rounded-xl border border-border-soft bg-surface text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40;
   }
+
+  .chip {
+    @apply rounded-full border border-border-soft bg-surface px-3 py-1 text-xs text-primary-dark transition-all hover:border-primary/40 hover:bg-primary-light/15 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  /* Soft, puffy, cloud-like result cell — big radius + layered glow rather than
+     a literal wobbly blob outline, which would clip/distort the scrollable
+     list and pagination controls it needs to hold. */
+  .cloud-cell {
+    @apply relative flex flex-col overflow-hidden rounded-[2.5rem] border border-border-soft bg-surface/95;
+    box-shadow:
+      0 12px 32px -10px color-mix(in oklab, var(--primary) 30%, transparent),
+      0 3px 10px -3px color-mix(in oklab, var(--primary) 18%, transparent);
+  }
 }

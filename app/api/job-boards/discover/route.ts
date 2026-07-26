@@ -6,34 +6,56 @@ import { claude, CLAUDE_MODEL } from "@/lib/ai/claudeClient";
 
 export const dynamic = "force-dynamic";
 
-interface Suggestion {
+// "The Gatherer" — looks for new "seeds" (job boards/aggregators of any
+// flavor, government training-to-hire programs, and government IT-contract
+// opportunity leads) worth surfacing. Every finding still requires a live
+// web_search verification (never invented from memory), same safety property
+// this endpoint has always had — the only behavior change is what happens
+// after a find, handled by /api/job-boards/gather/integration-guide instead
+// of a silent direct-add.
+interface GathererFind {
   name: string;
   url: string;
-  jurisdiction: "federal" | "state" | "municipal" | "other";
-  region: string;
+  category: "jobBoard" | "trainingProgram" | "govOpportunity";
+  description: string;
 }
 
-const SUGGESTION_SCHEMA = {
+const FIND_SCHEMA = {
   type: "object" as const,
   properties: {
-    suggestions: {
+    finds: {
       type: "array" as const,
       items: {
         type: "object" as const,
         properties: {
           name: { type: "string" as const },
           url: { type: "string" as const },
-          jurisdiction: { type: "string" as const, enum: ["federal", "state", "municipal", "other"] },
-          region: { type: "string" as const },
+          category: { type: "string" as const, enum: ["jobBoard", "trainingProgram", "govOpportunity"] },
+          description: { type: "string" as const, description: "one short sentence on what this is" },
         },
-        required: ["name", "url", "jurisdiction", "region"],
+        required: ["name", "url", "category", "description"],
         additionalProperties: false,
       },
     },
   },
-  required: ["suggestions"],
+  required: ["finds"],
   additionalProperties: false,
 };
+
+const SYSTEM_PROMPT =
+  "You are a gatherer of job-search resources for a job seeker. Search for and verify three " +
+  "kinds of finds, tagging each with the right category:\n" +
+  '- "jobBoard": general or niche job aggregators, industry/profession-specific boards, ' +
+  "government (federal/state/municipal) job listing sites, or community/company-directory boards.\n" +
+  '- "trainingProgram": named, real, currently-active government-run training-to-hire or ' +
+  "workforce-development programs (e.g. digital service fellowships, apprenticeships, IT " +
+  "bootcamp-to-hire pipelines).\n" +
+  '- "govOpportunity": named, real, currently-posted government IT-modernization contract or ' +
+  "opportunity listings (e.g. an agency digital-service team's openings, a published " +
+  "RFP/contract-opportunity board).\n" +
+  "Only report something you found and verified is real and currently live via web search — " +
+  "never invent a URL, a program name, or an opportunity from memory or speculation. Skip " +
+  "anything you couldn't verify live during this search.";
 
 export async function POST(request: Request) {
   const rejected = requireJsonRequest(request);
@@ -58,40 +80,34 @@ export async function POST(request: Request) {
     model: CLAUDE_MODEL,
     max_tokens: 2048,
     thinking: { type: "adaptive" },
-    output_config: { effort: "low", format: { type: "json_schema", schema: SUGGESTION_SCHEMA } },
-    tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 5 }],
-    system:
-      "You find job boards and aggregators worth bookmarking for a job seeker — government " +
-      "(federal/state/municipal) job sites, general and niche job aggregators, industry- or " +
-      "profession-specific boards, and community/company-directory boards. Only suggest real, " +
-      "currently-live sites you found via web search — never guess a URL from memory. Skip " +
-      "anything you couldn't verify is live during this search. Use jurisdiction \"other\" for " +
-      "anything that isn't a government job site.",
+    output_config: { effort: "low", format: { type: "json_schema", schema: FIND_SCHEMA } },
+    tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 6 }],
+    system: SYSTEM_PROMPT,
     messages: [
       {
         role: "user",
-        content: `Find job boards or aggregators relevant to: ${query}. This could be a location (find government job sites there), an industry or profession, or a niche (e.g. nonprofit, startups, a specific skill). Return up to 5.`,
+        content: `Gather resources relevant to: ${query}. This could be a location, an industry/profession, or a niche. Return up to 6 finds across the three categories, whichever are genuinely relevant.`,
       },
     ],
   });
 
   const textBlock = response.content.find((b) => b.type === "text");
-  let suggestions: Suggestion[] = [];
+  let finds: GathererFind[] = [];
   try {
-    const parsed = textBlock && "text" in textBlock ? JSON.parse(textBlock.text) : { suggestions: [] };
-    suggestions = Array.isArray(parsed.suggestions) ? parsed.suggestions : [];
+    const parsed = textBlock && "text" in textBlock ? JSON.parse(textBlock.text) : { finds: [] };
+    finds = Array.isArray(parsed.finds) ? parsed.finds : [];
   } catch {
-    suggestions = [];
+    finds = [];
   }
 
-  // De-dupe against boards already saved so the UI doesn't offer to re-add them.
-  const fresh = suggestions.filter((s) => {
+  // De-dupe against boards already saved so the UI doesn't re-surface them.
+  const fresh = finds.filter((f) => {
     try {
-      return !knownUrls.has(new URL(s.url).toString().toLowerCase());
+      return !knownUrls.has(new URL(f.url).toString().toLowerCase());
     } catch {
       return false;
     }
   });
 
-  return NextResponse.json({ suggestions: fresh });
+  return NextResponse.json({ finds: fresh });
 }

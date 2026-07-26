@@ -39,10 +39,12 @@ export const jobSpyConnector: JobSourceConnector = {
   label: "JobSpy (LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google)",
 
   isConfigured() {
-    // Off by default: JobSpy scrapes sites like LinkedIn/Indeed whose Terms of
-    // Service restrict automated scraping. Require explicit opt-in so this
-    // never runs without the user having made that call themselves.
-    return process.env.JOBSPY_ENABLED === "true";
+    // Always on, per explicit user direction — JobSpy scrapes sites like
+    // LinkedIn/Indeed whose Terms of Service restrict automated scraping,
+    // which is worth knowing, but the person running this app has made that
+    // call themselves. If python-jobspy isn't installed on this machine,
+    // that surfaces as a normal per-source error (below), not a hard crash.
+    return true;
   },
 
   async search(criteria: JobSearchCriteria): Promise<NormalizedJobListing[]> {

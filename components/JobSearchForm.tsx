@@ -21,14 +21,17 @@ interface SearchResult {
   error?: string;
 }
 
+const PAGE_SIZE_OPTIONS = [10, 25, 50];
+
 export function JobSearchForm() {
   const router = useRouter();
   const [keywords, setKeywords] = useState("");
   const [location, setLocation] = useState("");
   const [remoteOnly, setRemoteOnly] = useState(false);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [recommended, setRecommended] = useState<Listing[]>([]);
-  const [relatedSearchTerms, setRelatedSearchTerms] = useState<string[]>([]);
+  const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
+  const [pageBySource, setPageBySource] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [tracked, setTracked] = useState<Set<string>>(new Set());
@@ -43,8 +46,8 @@ export function JobSearchForm() {
       });
       const data = await res.json();
       setResults(data.results ?? []);
-      setRecommended(data.recommended ?? []);
-      setRelatedSearchTerms(data.relatedSearchTerms ?? []);
+      setSuggestedTitles(data.suggestedTitles ?? []);
+      setPageBySource({});
       setSearched(true);
     } finally {
       setLoading(false);
@@ -56,9 +59,9 @@ export function JobSearchForm() {
     await runSearch(keywords, location, remoteOnly);
   }
 
-  async function searchRelatedTerm(term: string) {
-    setKeywords(term);
-    await runSearch(term, location, remoteOnly);
+  async function searchTitle(title: string) {
+    setKeywords(title);
+    await runSearch(title, location, remoteOnly);
   }
 
   async function track(listing: Listing) {
@@ -78,35 +81,17 @@ export function JobSearchForm() {
     router.refresh();
   }
 
-  function ListingRow({ listing }: { listing: Listing }) {
-    return (
-      <li className="card-soft flex items-center justify-between p-3 text-sm">
-        <div>
-          <div className="font-semibold text-foreground">{listing.role}</div>
-          <div className="text-foreground-muted">
-            {listing.company}
-            {listing.location ? ` · ${listing.location}` : ""}
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <a href={listing.url} target="_blank" rel="noopener noreferrer" className="btn-secondary px-3 py-1.5">
-            Open posting
-          </a>
-          <button onClick={() => track(listing)} disabled={tracked.has(listing.id)} className="btn-primary px-3 py-1.5">
-            {tracked.has(listing.id) ? "Tracked" : "Track"}
-          </button>
-        </div>
-      </li>
-    );
+  function setPage(source: string, page: number) {
+    setPageBySource((prev) => ({ ...prev, [source]: page }));
   }
 
   return (
     <div>
-      <form onSubmit={search} className="card-soft mb-6 flex flex-wrap gap-2 p-4">
+      <form onSubmit={search} className="card-soft mb-6 flex flex-wrap items-center gap-2 p-4">
         <input
           value={keywords}
           onChange={(e) => setKeywords(e.target.value)}
-          placeholder="Keywords (e.g. backend engineer)"
+          placeholder="Job title (e.g. backend engineer)"
           required
           className="input-soft min-w-[220px] flex-1 px-3 py-2 text-sm"
         />
@@ -120,53 +105,111 @@ export function JobSearchForm() {
           <input type="checkbox" checked={remoteOnly} onChange={(e) => setRemoteOnly(e.target.checked)} className="accent-primary" />
           Remote only
         </label>
+        <label className="flex items-center gap-1 text-sm text-foreground-muted">
+          Show
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className="input-soft px-2 py-1 text-sm"
+          >
+            {PAGE_SIZE_OPTIONS.map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
+          per page
+        </label>
         <button type="submit" disabled={loading} className="btn-primary px-4 py-2 text-sm">
           {loading ? "Searching…" : "Search"}
         </button>
       </form>
 
-      {relatedSearchTerms.length > 0 && (
+      <p className="mb-4 text-xs text-foreground-muted">
+        Showing exact title matches only (entry/mid-level, US-based or remote). Titles containing
+        &quot;senior&quot; are excluded.
+      </p>
+
+      {suggestedTitles.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-foreground-muted">Widen your search:</span>
-          {relatedSearchTerms.map((term) => (
-            <button
-              key={term}
-              onClick={() => searchRelatedTerm(term)}
-              disabled={loading}
-              className="rounded-full border border-border-soft bg-surface px-3 py-1 text-xs text-primary-dark transition-all hover:border-primary/40 hover:bg-primary-light/15 disabled:opacity-50"
-            >
-              {term}
+          <span className="text-xs font-medium text-foreground-muted">Suggested titles to try:</span>
+          {suggestedTitles.map((title) => (
+            <button key={title} onClick={() => searchTitle(title)} disabled={loading} className="chip">
+              {title}
             </button>
           ))}
         </div>
       )}
 
-      {recommended.length > 0 && (
-        <div className="mb-6">
-          <h2 className="mb-2 text-sm font-bold text-primary-dark">Recommended for you</h2>
-          <ul className="space-y-2">
-            {recommended.map((listing) => (
-              <ListingRow key={listing.id} listing={listing} />
-            ))}
-          </ul>
+      {results.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {results.map((group) => {
+            const page = pageBySource[group.source] ?? 1;
+            const totalPages = Math.max(1, Math.ceil(group.listings.length / pageSize));
+            const pageItems = group.listings.slice((page - 1) * pageSize, page * pageSize);
+
+            return (
+              <div key={group.source} className="cloud-cell p-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <h2 className="text-sm font-bold text-primary-dark">
+                    {group.label} <span className="font-normal text-foreground-muted">({group.listings.length})</span>
+                  </h2>
+                </div>
+                {group.error && <p className="mb-2 text-xs text-danger-dark">{group.error}</p>}
+
+                <ul className="max-h-96 space-y-2 overflow-y-auto pr-1">
+                  {pageItems.map((listing) => (
+                    <li key={listing.id} className="rounded-2xl border border-border-soft bg-surface p-3 text-sm">
+                      <div className="font-semibold text-foreground">{listing.role}</div>
+                      <div className="mb-2 text-foreground-muted">
+                        {listing.company}
+                        {listing.location ? ` · ${listing.location}` : ""}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <a href={listing.url} target="_blank" rel="noopener noreferrer" className="btn-secondary px-2.5 py-1 text-xs">
+                          Open
+                        </a>
+                        <button
+                          onClick={() => track(listing)}
+                          disabled={tracked.has(listing.id)}
+                          className="btn-primary px-2.5 py-1 text-xs"
+                        >
+                          {tracked.has(listing.id) ? "Tracked" : "Track"}
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                  {group.listings.length === 0 && !group.error && (
+                    <li className="text-xs text-foreground-muted">No exact-title matches</li>
+                  )}
+                </ul>
+
+                {totalPages > 1 && (
+                  <div className="mt-3 flex items-center justify-between text-xs text-foreground-muted">
+                    <button
+                      onClick={() => setPage(group.source, page - 1)}
+                      disabled={page <= 1}
+                      className="btn-secondary px-2.5 py-1 text-xs"
+                    >
+                      Prev
+                    </button>
+                    <span>
+                      Page {page} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setPage(group.source, page + 1)}
+                      disabled={page >= totalPages}
+                      className="btn-secondary px-2.5 py-1 text-xs"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
-
-      {results.map((group) => (
-        <div key={group.source} className="mb-6">
-          <h2 className="mb-2 text-sm font-bold text-foreground-muted">
-            {group.label} {group.error && <span className="text-danger-dark">— {group.error}</span>}
-          </h2>
-          <ul className="space-y-2">
-            {group.listings.map((listing) => (
-              <ListingRow key={listing.id} listing={listing} />
-            ))}
-            {group.listings.length === 0 && !group.error && (
-              <li className="text-xs text-foreground-muted">No results</li>
-            )}
-          </ul>
-        </div>
-      ))}
 
       {searched && results.length === 0 && (
         <p className="text-sm text-foreground-muted">

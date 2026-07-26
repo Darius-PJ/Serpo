@@ -10,10 +10,21 @@ async function registerViaUi(page: import("@playwright/test").Page, username: st
   await page.waitForURL("**/dashboard");
 }
 
+function listing(n: number) {
+  return {
+    id: `remotive:${n}`,
+    source: "remotive",
+    company: "Acme",
+    role: `Backend Engineer ${n}`,
+    location: "Remote",
+    url: `https://example.com/job/${n}`,
+  };
+}
+
 // Mocks the entire /api/jobs/search response so this test never makes a real
 // network call to any external job API or the Claude API — same pattern as
 // tests/e2e/confirm-dialogs.spec.ts's mocked apply/decision-maker routes.
-test("job search renders a Recommended section, per-source groups, and clickable related-search chips", async ({ page }) => {
+test("job search renders a per-source cloud cell and clickable suggested-title chips", async ({ page }) => {
   await registerViaUi(page, randomUsername("jobsearch"));
 
   let searchCalls = 0;
@@ -28,43 +39,20 @@ test("job search renders a Recommended section, per-source groups, and clickable
           {
             source: "remotive",
             label: "Remotive",
-            listings: [
-              {
-                id: "remotive:1",
-                source: "remotive",
-                company: "Acme",
-                role: "Backend Engineer",
-                location: "Remote",
-                url: "https://example.com/job/1",
-              },
-            ],
+            listings: [listing(1), listing(2), listing(3)],
           },
         ],
-        recommended: [
-          {
-            id: "remotive:1",
-            source: "remotive",
-            company: "Acme",
-            role: "Backend Engineer",
-            location: "Remote",
-            url: "https://example.com/job/1",
-          },
-        ],
-        relatedSearchTerms: ["platform engineer", "software engineer backend"],
+        suggestedTitles: ["platform engineer", "software engineer backend"],
       },
     });
   });
 
   await page.goto("/sourcing");
-  await page.locator('input[placeholder^="Keywords"]').fill("backend engineer");
+  await page.locator('input[placeholder^="Job title"]').fill("backend engineer");
   await page.getByRole("button", { name: "Search" }).click();
 
-  await expect(page.getByText("Recommended for you")).toBeVisible();
   await expect(page.getByText("Remotive")).toBeVisible();
-  // "Acme" legitimately appears twice — once in Recommended, once in the
-  // per-source Remotive group — since the mock returns the same listing in both.
-  await expect(page.getByText("Acme").first()).toBeVisible();
-  await expect(page.getByText("Acme")).toHaveCount(2);
+  await expect(page.getByText("Backend Engineer 1")).toBeVisible();
   expect(searchCalls).toBe(1);
   expect(lastKeywords).toBe("backend engineer");
 
@@ -74,4 +62,32 @@ test("job search renders a Recommended section, per-source groups, and clickable
 
   await expect.poll(() => searchCalls).toBe(2);
   expect(lastKeywords).toBe("platform engineer");
+});
+
+test("results-per-page selector and pagination controls work", async ({ page }) => {
+  await registerViaUi(page, randomUsername("jobsearchpg"));
+
+  const listings = Array.from({ length: 12 }, (_, i) => listing(i + 1));
+  await page.route("**/api/jobs/search", async (route) => {
+    await route.fulfill({
+      json: {
+        results: [{ source: "remotive", label: "Remotive", listings }],
+        suggestedTitles: [],
+      },
+    });
+  });
+
+  await page.goto("/sourcing");
+  await page.locator('input[placeholder^="Job title"]').fill("backend engineer");
+  // Default page size is 10 — 12 listings should paginate into 2 pages.
+  await page.getByRole("button", { name: "Search" }).click();
+
+  await expect(page.getByText("Backend Engineer 1", { exact: true })).toBeVisible();
+  await expect(page.getByText("Backend Engineer 10", { exact: true })).toBeVisible();
+  await expect(page.getByText("Backend Engineer 11", { exact: true })).not.toBeVisible();
+  await expect(page.getByText("Page 1 of 2")).toBeVisible();
+
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByText("Backend Engineer 11", { exact: true })).toBeVisible();
+  await expect(page.getByText("Page 2 of 2")).toBeVisible();
 });
