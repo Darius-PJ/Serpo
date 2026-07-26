@@ -19,6 +19,7 @@ model User {
   jobBoards       JobBoard[]
   jobBoardPins    JobBoardPin[]
   editorDrafts    EditorDraft[]
+  raekwonReports  RaekwonReport[]
 }
 
 model Application {
@@ -159,6 +160,44 @@ model EditorDraft {
 
   @@unique([id, userId])
   @@index([userId])
+}
+
+// Raekwon — searches this app's own job-source connectors plus the live
+// internet (Claude web_search) to "cook up" a curated batch of verified
+// leads, more exploratory than the exact-match precision search in
+// app/api/jobs/search/route.ts.
+model RaekwonReport {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  batchSize          Int
+  keyword            String
+  location           String?
+  jobType            String? // "full-time" | "contract" | null (either)
+  compensationTarget String? // free text, e.g. "$120k+" or "$50/hr+" — advisory, not a hard filter
+  sourcesHubMarkdown String?
+  status             String   @default("pending") // pending | generated | failed
+  error              String?
+  createdAt          DateTime @default(now())
+  leads              RaekwonLead[]
+
+  @@unique([id, userId])
+  @@index([userId])
+}
+
+model RaekwonLead {
+  id           String        @id @default(cuid())
+  reportId     String
+  report       RaekwonReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  company      String
+  role         String
+  location     String?
+  url          String
+  sourceLabel  String // which aggregator/site this came from — one of this app's connector labels, or a site Claude's own web_search found
+  jobType      String // "full-time" | "contract" | "unknown"
+  compensation String? // free text, only when actually stated somewhere
+  rationale    String // short note on why this is a strong prospect
+  createdAt    DateTime @default(now())
 }
 
 model ApplyRun {

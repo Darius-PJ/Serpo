@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db/prisma";
-import { searchAllSources, type JobSearchResult } from "@/lib/jobSources";
+import { searchAllSources } from "@/lib/jobSources";
+import { searchPoolBoards } from "@/lib/jobSources/searchPoolBoards";
 import { dedupeListings } from "@/lib/jobSources/dedupe";
 import { matchesExactTitle, isSeniorTitle } from "@/lib/jobSources/titleMatch";
 import { isUsOrRemoteListing, isRemoteListing } from "@/lib/jobSources/locationFilter";
-import { fetchGreenhouseBoard } from "@/lib/jobSources/greenhouseBoard";
-import { fetchLeverBoard } from "@/lib/jobSources/leverBoard";
 import { suggestJobTitles } from "@/lib/ai/suggestJobTitles";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
@@ -13,26 +11,6 @@ import { requireApiUserId } from "@/lib/auth/session";
 export const dynamic = "force-dynamic";
 
 const MAX_FIELD_LENGTH = 200;
-
-async function searchPoolBoards(userId: string, criteria: { keywords: string }): Promise<JobSearchResult[]> {
-  const pins = await prisma.jobBoardPin.findMany({
-    where: { userId, poolStatus: "live", integrationType: { not: null } },
-    include: { jobBoard: true },
-  });
-
-  return Promise.all(
-    pins.map(async (pin): Promise<JobSearchResult> => {
-      const source = `${pin.integrationType}:${pin.integrationToken}`;
-      try {
-        const fetcher = pin.integrationType === "greenhouse" ? fetchGreenhouseBoard : fetchLeverBoard;
-        const listings = await fetcher(pin.integrationToken!, criteria);
-        return { source, label: pin.jobBoard.name, listings };
-      } catch (err) {
-        return { source, label: pin.jobBoard.name, listings: [], error: err instanceof Error ? err.message : String(err) };
-      }
-    })
-  );
-}
 
 export async function POST(request: Request) {
   const rejected = requireJsonRequest(request);

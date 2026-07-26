@@ -39,6 +39,9 @@ export default async function RootLayout({
                 <Link href="/sourcing" className="text-sm font-medium text-foreground-muted transition-colors hover:text-primary-dark">
                   Source Jobs
                 </Link>
+                <Link href="/raekwon" className="text-sm font-medium text-foreground-muted transition-colors hover:text-primary-dark">
+                  Raekwon
+                </Link>
                 <Link href="/settings" className="text-sm font-medium text-foreground-muted transition-colors hover:text-primary-dark">
                   Settings
                 </Link>
