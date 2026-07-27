@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { prisma } from "@/lib/db/prisma";
 import { requireUserIdForPage } from "@/lib/auth/session";
 import { JobBoardPanel } from "@/components/JobBoardPanel";
@@ -34,7 +35,9 @@ export default async function SourcingPage() {
       <h1 className="mb-4 text-xl font-extrabold text-foreground">Source Jobs</h1>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
         <div className="min-w-0">
-          <JobSearchForm />
+          <Suspense fallback={null}>
+            <JobSearchForm />
+          </Suspense>
         </div>
         <div className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:self-start lg:overflow-y-auto">
           <JobBoardPanel boards={boardsWithPoolInfo} />

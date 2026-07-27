@@ -1,12 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import type { BenchmarkResume } from "@/lib/editor/benchmarkResumeSchema";
 
-type ExperienceRow = BenchmarkResume["experience"][number];
-type EducationRow = BenchmarkResume["education"][number];
+export interface ResumeContent {
+  contactHeader: string;
+  summary: string;
+  experience: { employer: string; title: string; dates: string; bullets: string[] }[];
+  skills: string[];
+  education: { institution: string; credential: string; dates: string }[];
+}
 
-const EMPTY_RESUME: BenchmarkResume = {
+type ExperienceRow = ResumeContent["experience"][number];
+type EducationRow = ResumeContent["education"][number];
+type Artifact = "benchmark" | "improved" | "melded";
+
+const EMPTY_RESUME: ResumeContent = {
   contactHeader: "",
   summary: "",
   experience: [],
@@ -14,41 +22,81 @@ const EMPTY_RESUME: BenchmarkResume = {
   education: [],
 };
 
-export function EditorView({
-  draftId,
-  status,
-  error,
+const CONTENT_FIELD: Record<Artifact, string> = {
+  benchmark: "benchmarkContent",
+  improved: "improvedContent",
+  melded: "meldedContent",
+};
+const STATUS_FIELD: Record<Artifact, string> = {
+  benchmark: "benchmarkStatus",
+  improved: "improvedStatus",
+  melded: "meldedStatus",
+};
+const ERROR_FIELD: Record<Artifact, string> = {
+  benchmark: "benchmarkError",
+  improved: "improvedError",
+  melded: "meldedError",
+};
+
+/**
+ * One self-contained, editable/savable resume "bubble" — reused for all
+ * three artifacts on the Resume tab (benchmark/improved/melded), since they
+ * share the exact same contactHeader/summary/experience/skills/education
+ * shape. Each instance owns its own save/regenerate calls, scoped to its
+ * `artifact` slice of the workspace.
+ */
+export function ResumeBubble({
+  workspaceId,
+  artifact,
+  label,
+  disclaimer,
   initialContent,
+  initialStatus,
+  initialError,
+  generateLabel = "Generate",
+  onChanged,
 }: {
-  draftId: string;
-  status: string;
-  error: string | null;
-  initialContent: BenchmarkResume | null;
+  workspaceId: string;
+  artifact: Artifact;
+  label: string;
+  disclaimer: string;
+  initialContent: ResumeContent | null;
+  initialStatus: string;
+  initialError: string | null;
+  generateLabel?: string;
+  onChanged?: (status: string) => void;
 }) {
-  const [resume, setResume] = useState<BenchmarkResume>(initialContent ?? EMPTY_RESUME);
+  const [resume, setResume] = useState<ResumeContent>(initialContent ?? EMPTY_RESUME);
   const [skillsText, setSkillsText] = useState((initialContent?.skills ?? []).join("\n"));
-  const [currentStatus, setCurrentStatus] = useState(status);
-  const [currentError, setCurrentError] = useState(error);
+  const [status, setStatus] = useState(initialStatus);
+  const [error, setError] = useState(initialError);
   const [busy, setBusy] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
 
-  function applyContent(content: BenchmarkResume) {
+  function applyContent(content: ResumeContent) {
     setResume(content);
     setSkillsText(content.skills.join("\n"));
   }
 
   async function regenerate() {
     setBusy(true);
-    setCurrentError(null);
+    setError(null);
     try {
-      const res = await fetch(`/api/editor/${draftId}/regenerate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      const res = await fetch(`/api/resume/${workspaceId}/regenerate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ artifact }),
+      });
       const data = await res.json();
-      if (res.ok && data.draft?.content) {
-        applyContent(data.draft.content);
-        setCurrentStatus("generated");
+      const workspace = data.workspace;
+      if (res.ok && workspace?.[STATUS_FIELD[artifact]] === "generated") {
+        applyContent(workspace[CONTENT_FIELD[artifact]]);
+        setStatus("generated");
+        onChanged?.("generated");
       } else {
-        setCurrentStatus("failed");
-        setCurrentError(data.draft?.error ?? "Generation failed.");
+        setStatus("failed");
+        setError(workspace?.[ERROR_FIELD[artifact]] ?? data.error ?? "Generation failed.");
+        onChanged?.("failed");
       }
     } finally {
       setBusy(false);
@@ -58,14 +106,15 @@ export function EditorView({
   async function save() {
     setBusy(true);
     try {
-      const content: BenchmarkResume = { ...resume, skills: skillsText.split("\n").map((s) => s.trim()).filter(Boolean) };
-      const res = await fetch(`/api/editor/${draftId}`, {
+      const content: ResumeContent = { ...resume, skills: skillsText.split("\n").map((s) => s.trim()).filter(Boolean) };
+      const res = await fetch(`/api/resume/${workspaceId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ artifact, content }),
       });
       if (res.ok) {
         setSavedAt(new Date());
+        onChanged?.("generated");
       }
     } finally {
       setBusy(false);
@@ -105,10 +154,24 @@ export function EditorView({
     setResume((prev) => ({ ...prev, education: prev.education.filter((_, i) => i !== index) }));
   }
 
-  if (currentStatus === "failed" && !initialContent) {
+  if (status === "not_started") {
     return (
       <div className="card-soft p-4">
-        <p className="mb-3 text-sm text-danger-dark">{currentError ?? "Generation failed."}</p>
+        <h2 className="mb-2 font-bold text-foreground">{label}</h2>
+        <p className="mb-3 text-xs text-foreground-muted">{disclaimer}</p>
+        <button onClick={regenerate} disabled={busy} className="btn-primary px-3 py-1.5 text-sm">
+          {busy ? "Working… (up to a minute)" : generateLabel}
+        </button>
+        {error && <p className="mt-2 text-sm text-danger-dark">{error}</p>}
+      </div>
+    );
+  }
+
+  if (status === "failed" && !initialContent) {
+    return (
+      <div className="card-soft p-4">
+        <h2 className="mb-2 font-bold text-foreground">{label}</h2>
+        <p className="mb-3 text-sm text-danger-dark">{error ?? "Generation failed."}</p>
         <button onClick={regenerate} disabled={busy} className="btn-primary px-3 py-1.5 text-sm">
           {busy ? "Trying again…" : "Try again"}
         </button>
@@ -118,7 +181,12 @@ export function EditorView({
 
   return (
     <div className="space-y-4">
-      <div className="card-soft flex items-center justify-between p-4">
+      <div className="card-soft p-4">
+        <div className="mb-2 flex items-center justify-between">
+          <h2 className="font-bold text-foreground">{label}</h2>
+          {savedAt && <span className="text-xs text-foreground-muted">Saved {savedAt.toLocaleTimeString()}</span>}
+        </div>
+        <p className="mb-3 rounded-xl border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900">{disclaimer}</p>
         <div className="flex gap-2">
           <button onClick={save} disabled={busy} className="btn-primary px-3 py-1.5 text-sm">
             {busy ? "Working…" : "Save"}
@@ -127,12 +195,9 @@ export function EditorView({
             {busy ? "Working…" : "Regenerate"}
           </button>
         </div>
-        {savedAt && <span className="text-xs text-foreground-muted">Saved {savedAt.toLocaleTimeString()}</span>}
       </div>
 
-      {currentError && currentStatus === "failed" && (
-        <p className="text-sm text-danger-dark">Last regeneration failed: {currentError}</p>
-      )}
+      {error && status === "failed" && <p className="text-sm text-danger-dark">Last attempt failed: {error}</p>}
 
       <div className="card-soft p-4">
         <label className="mb-1 block text-xs font-medium text-foreground-muted">Contact header</label>

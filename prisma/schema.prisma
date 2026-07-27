@@ -18,7 +18,7 @@ model User {
   profileFields   ProfileField[]
   jobBoards       JobBoard[]
   jobBoardPins    JobBoardPin[]
-  editorDrafts    EditorDraft[]
+  resumeWorkspaces ResumeWorkspace[]
   raekwonReports  RaekwonReport[]
 }
 
@@ -141,10 +141,13 @@ model ProfileField {
   @@unique([id, userId])
 }
 
-// "The Editor" — illustrative competitive-benchmark resumes (never the
-// user's own résumé, never submitted anywhere) generated from a job
-// description to show the caliber of candidate they're up against.
-model EditorDraft {
+// The Resume tab — three illustrative resumes per job target, never the
+// user's own résumé used for a real application:
+//   benchmark = a fully-fictional "competitive benchmark" candidate
+//   improved  = the user's own uploaded resume (ResumeTemplate), expanded
+//               toward the target job
+//   melded    = a hybrid of the two, an aspirational "growth target" resume
+model ResumeWorkspace {
   id             String   @id @default(cuid())
   userId         String
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -152,11 +155,24 @@ model EditorDraft {
   role           String
   jobDescription String? // capped length, captured at creation time
   sourceUrl      String?
-  status         String   @default("pending") // pending | generated | failed
-  content        String? // JSON-serialized BenchmarkResume
-  error          String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  // URL-encoded querystring (keywords/location/remoteOnly) snapshotting the
+  // search that led here, so the tab's Back button can return to it.
+  originSearchQuery String?
+
+  benchmarkContent String? // JSON-serialized BenchmarkResume
+  benchmarkStatus  String  @default("pending") // pending | generated | failed
+  benchmarkError   String?
+
+  improvedContent String? // JSON-serialized ImprovedResume
+  improvedStatus  String  @default("not_started") // not_started | pending | generated | failed
+  improvedError   String?
+
+  meldedContent String? // JSON-serialized MeldedResume
+  meldedStatus  String  @default("not_started") // not_started | pending | generated | failed
+  meldedError   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([id, userId])
   @@index([userId])

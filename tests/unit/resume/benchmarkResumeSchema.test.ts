@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { BenchmarkResumeZ } from "@/lib/editor/benchmarkResumeSchema";
+import { BenchmarkResumeZ } from "@/lib/resume/benchmarkResumeSchema";
 
 const valid = {
   contactHeader: "Alex Morgan · alex.morgan@example.com",

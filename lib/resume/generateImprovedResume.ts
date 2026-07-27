@@ -1,0 +1,73 @@
+import "server-only";
+import { claude, CLAUDE_MODEL } from "@/lib/ai/claudeClient";
+import { IMPROVED_RESUME_SCHEMA, ImprovedResumeZ, InvalidImprovedResumeError, type ImprovedResume } from "./improvedResumeSchema";
+
+const SYSTEM_PROMPT =
+  "You help a job seeker see how their own real resume could be expanded and better articulated " +
+  "for a specific target job. You are given their actual uploaded resume text. This output is for " +
+  "the job seeker's own practice/comparison only — it is never submitted anywhere automatically. " +
+  "Follow these rules strictly:\n" +
+  "- You may reorder, re-emphasize, and rephrase content freely, exactly like a normal resume " +
+  "tailoring pass.\n" +
+  "- You may ELABORATE: flesh out bullets that are thin or vague with plausible additional detail " +
+  "(scope, tools, outcomes) that is a reasonable, defensible reading of what's already stated — " +
+  "not a new claim.\n" +
+  "- You may ADD highly-plausible implied skills — a skill or tool that is near-certainly implied " +
+  "by something already stated (e.g. someone who \"built REST APIs in Node.js\" plausibly knows " +
+  "JSON and HTTP) — but only when the inference is obvious and low-risk.\n" +
+  "- You must NEVER invent, add, or imply an employer, job title, date range, credential, " +
+  "certification, or achievement that has no reasonable basis in the source resume text, even if " +
+  "the job description asks for it. If the source resume genuinely lacks something relevant, say " +
+  "so by omission — omission is always correct, invention never is.\n" +
+  "- Copy the contact header (name/email/phone/location/links) from the source text exactly, " +
+  "unchanged.";
+
+function buildUserPrompt(sourceResumeText: string, company: string, role: string, jobDescription?: string): string {
+  return (
+    `SOURCE RESUME TEXT:\n${sourceResumeText}\n\n` +
+    `TARGET JOB — ROLE: ${role}\nCOMPANY: ${company}\n\n` +
+    (jobDescription ? `JOB DESCRIPTION:\n${jobDescription}` : "JOB DESCRIPTION: (none captured)")
+  );
+}
+
+/**
+ * Generates an "improved" version of the user's own uploaded resume, aimed
+ * at a specific target job. Distinct from lib/apply/tailorResume.ts (which
+ * strictly only reorders/rephrases for a REAL application) — this may
+ * elaborate and add highly-plausible implied skills, but never fabricates a
+ * new employer/title/date/credential. Illustrative only, like
+ * generateBenchmarkResume.ts, never used to apply anywhere.
+ */
+export async function generateImprovedResume(
+  sourceResumeText: string,
+  company: string,
+  role: string,
+  jobDescription?: string
+): Promise<ImprovedResume> {
+  const response = await claude.messages.create({
+    model: CLAUDE_MODEL,
+    max_tokens: 4096,
+    thinking: { type: "adaptive" },
+    output_config: { effort: "medium", format: { type: "json_schema", schema: IMPROVED_RESUME_SCHEMA } },
+    system: SYSTEM_PROMPT,
+    messages: [{ role: "user", content: buildUserPrompt(sourceResumeText, company, role, jobDescription) }],
+  });
+
+  const textBlock = response.content.find((b) => b.type === "text");
+  if (!textBlock || !("text" in textBlock)) {
+    throw new Error("Claude did not return structured resume content.");
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(textBlock.text);
+  } catch {
+    throw new InvalidImprovedResumeError("response was not valid JSON");
+  }
+
+  const result = ImprovedResumeZ.safeParse(parsed);
+  if (!result.success) {
+    throw new InvalidImprovedResumeError(result.error.issues.map((i) => i.message).join("; "));
+  }
+  return result.data;
+}

@@ -31,7 +31,7 @@ function buildUserPrompt(company: string, role: string, jobDescription?: string)
  * Generates a synthetic, illustrative "competitive benchmark" resume for a
  * job posting. Unlike lib/apply/tailorResume.ts, fabrication is expected and
  * intentional here — the output is clearly fictional and only ever shown
- * on-screen in the Editor module, never used to apply anywhere.
+ * on-screen in the Resume tab, never used to apply anywhere.
  */
 export async function generateBenchmarkResume(
   company: string,

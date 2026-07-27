@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Listing {
   id: string;
@@ -25,9 +25,10 @@ const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
 export function JobSearchForm() {
   const router = useRouter();
-  const [keywords, setKeywords] = useState("");
-  const [location, setLocation] = useState("");
-  const [remoteOnly, setRemoteOnly] = useState(false);
+  const searchParams = useSearchParams();
+  const [keywords, setKeywords] = useState(searchParams.get("keywords") ?? "");
+  const [location, setLocation] = useState(searchParams.get("location") ?? "");
+  const [remoteOnly, setRemoteOnly] = useState(searchParams.get("remoteOnly") === "true");
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
@@ -35,7 +36,18 @@ export function JobSearchForm() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [tracked, setTracked] = useState<Set<string>>(new Set());
-  const [generatingEditorFor, setGeneratingEditorFor] = useState<string | null>(null);
+  const [generatingResumeFor, setGeneratingResumeFor] = useState<string | null>(null);
+
+  // Restores the search that led here when arriving via the Resume tab's
+  // Back button (?keywords=...&location=...&remoteOnly=...), instead of
+  // landing on a blank form.
+  useEffect(() => {
+    const initialKeywords = searchParams.get("keywords");
+    if (initialKeywords) {
+      void runSearch(initialKeywords, searchParams.get("location") ?? "", searchParams.get("remoteOnly") === "true");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function runSearch(kw: string, loc: string, remote: boolean) {
     setLoading(true);
@@ -86,10 +98,11 @@ export function JobSearchForm() {
     setPageBySource((prev) => ({ ...prev, [source]: page }));
   }
 
-  async function openEditor(listing: Listing) {
-    setGeneratingEditorFor(listing.id);
+  async function openResume(listing: Listing) {
+    setGeneratingResumeFor(listing.id);
     try {
-      const res = await fetch("/api/editor", {
+      const originSearchQuery = new URLSearchParams({ keywords, location, remoteOnly: String(remoteOnly) }).toString();
+      const res = await fetch("/api/resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -97,14 +110,15 @@ export function JobSearchForm() {
           role: listing.role,
           jobDescription: listing.description,
           sourceUrl: listing.url,
+          originSearchQuery,
         }),
       });
       const data = await res.json();
-      if (data.draft?.id) {
-        router.push(`/editor/${data.draft.id}`);
+      if (data.workspace?.id) {
+        router.push(`/resume/${data.workspace.id}`);
       }
     } finally {
-      setGeneratingEditorFor(null);
+      setGeneratingResumeFor(null);
     }
   }
 
@@ -200,12 +214,12 @@ export function JobSearchForm() {
                           {tracked.has(listing.id) ? "Tracked" : "Track"}
                         </button>
                         <button
-                          onClick={() => openEditor(listing)}
-                          disabled={generatingEditorFor === listing.id}
+                          onClick={() => openResume(listing)}
+                          disabled={generatingResumeFor === listing.id}
                           className="btn-secondary px-2.5 py-1 text-xs"
-                          title="See an illustrative example of a strong competing candidate for this role"
+                          title="See a competitive benchmark and an improved version of your own resume for this role"
                         >
-                          {generatingEditorFor === listing.id ? "Generating…" : "Resume"}
+                          {generatingResumeFor === listing.id ? "Generating…" : "Resume"}
                         </button>
                       </div>
                     </li>
