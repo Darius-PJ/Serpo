@@ -1,5 +1,11 @@
+import path from "node:path";
 import { test, expect } from "@playwright/test";
 import { randomUsername, E2E_PASSWORD } from "./helpers";
+
+// better-sqlite3 has no bundled types; require() avoids adding a
+// devDependency just for this one test-only seed helper.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const Database = require("better-sqlite3");
 
 async function registerViaUi(page: import("@playwright/test").Page, username: string) {
   await page.goto("/login");
@@ -8,6 +14,30 @@ async function registerViaUi(page: import("@playwright/test").Page, username: st
   await page.locator('input[autocomplete="new-password"]').fill(E2E_PASSWORD);
   await page.locator('button[type="submit"]').click();
   await page.waitForURL("**/dashboard");
+}
+
+const FAKE_RESUME_JSON = JSON.stringify({
+  contactHeader: "Test Person · test@example.com",
+  summary: "A summary.",
+  experience: [{ employer: "Acme", title: "Engineer", dates: "2020-2024", bullets: ["Did things"] }],
+  skills: ["TypeScript"],
+  education: [{ institution: "State University", credential: "B.S.", dates: "2016-2020" }],
+});
+
+// Seeds a job-targeted workspace directly into the E2E SQLite database —
+// no Claude call involved, just plain rows, mirroring the throwaway
+// verification scripts used elsewhere in this project (better-sqlite3
+// against the same file the webServer's Prisma client points at) — lets
+// this test exercise the real server-rendered /resume/[id] page (which a
+// mocked /api/resume response can never reach) while staying AI-free.
+function seedJobTargetedWorkspace(userId: string, id: string) {
+  const db = new Database(path.resolve(process.cwd(), "data", "e2e.db"));
+  db.prepare(
+    `INSERT INTO ResumeWorkspace
+       (id, userId, company, role, benchmarkStatus, benchmarkContent, improvedStatus, improvedContent, meldedStatus, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, 'generated', ?, 'generated', ?, 'not_started', datetime('now'), datetime('now'))`
+  ).run(id, userId, "Acme", "Backend Engineer", FAKE_RESUME_JSON, FAKE_RESUME_JSON);
+  db.close();
 }
 
 // Mocks /api/jobs/search and /api/resume so this test never makes a real
@@ -131,12 +161,82 @@ test("visiting the Resume tab with no job posting loaded shows only the Improved
   await expect(page.getByText("General resume improvement — not tied to a specific job posting.")).toBeVisible();
   await expect(page.getByText("Your resume, improved")).toBeVisible();
   await expect(page.getByRole("button", { name: "Upload resume" })).toBeVisible();
+  await expect(page.getByText("Reference resume")).toHaveCount(0);
   await expect(page.getByText("Your competition")).toHaveCount(0);
-  await expect(page.getByText("Meld: where you could grow")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Meld" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Start fresh" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Back to search" })).toHaveCount(0);
 
   // Revisiting finds the same general workspace rather than creating another.
   await page.reload();
   await expect(page.getByText("General resume improvement — not tied to a specific job posting.")).toBeVisible();
+});
+
+// A job-targeted workspace is seeded directly into the database (see
+// seedJobTargetedWorkspace) so this exercises the real server-rendered
+// /resume/[id] page — including the section order and the Meld dropdowns'
+// mutual-exclusion logic — without any Claude call. Only the final "Meld"
+// button click is mocked, since clicking it would otherwise hit the real
+// regenerate endpoint.
+test("job-targeted workspace shows Reference, Improved, Benchmark, then Meld with mutually exclusive dropdowns", async ({ page }) => {
+  const username = randomUsername("resumemeld");
+  const apiCtx = page.context().request;
+
+  const registerRes = await apiCtx.post("/api/auth/register", {
+    headers: { "Content-Type": "application/json" },
+    data: { username, password: E2E_PASSWORD },
+  });
+  expect(registerRes.ok()).toBe(true);
+  const { user } = await registerRes.json();
+
+  const uploaded = await apiCtx.post("/api/resume-template", {
+    multipart: { file: { name: "resume.md", mimeType: "text/markdown", buffer: Buffer.from("# Test Person\nReference resume text.") } },
+  });
+  expect(uploaded.ok()).toBe(true);
+
+  const workspaceId = "e2e-meld-workspace-1";
+  seedJobTargetedWorkspace(user.id, workspaceId);
+
+  await page.goto(`/resume/${workspaceId}`);
+
+  const sections = page.locator("section");
+  await expect(sections).toHaveCount(4);
+  await expect(sections.nth(0).locator("h2").first()).toHaveText("Reference resume");
+  await expect(sections.nth(1).locator("h2").first()).toHaveText("Your resume, improved");
+  await expect(sections.nth(2).locator("h2").first()).toHaveText("Your competition");
+  await expect(sections.nth(3).locator("h2").first()).toHaveText("Meld");
+
+  await expect(page.getByText("Reference resume text.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Replace resume" })).toBeVisible();
+
+  // Scoped to the Meld section specifically — it also contains the melded
+  // ResumeBubble's own (closed, hidden) download-format <select>, which is
+  // still present in the DOM and would otherwise be matched first.
+  const meldSection = sections.nth(3);
+  const meldA = meldSection.locator("select").nth(0);
+  const meldB = meldSection.locator("select").nth(1);
+  // Each dropdown always excludes whichever source the OTHER dropdown
+  // currently holds, so with both pre-populated by default (reference/
+  // improved) each starts with the placeholder + the 2 remaining sources.
+  await expect(meldA.locator("option")).toHaveCount(3);
+  await expect(meldB.locator("option")).toHaveCount(3);
+
+  await meldA.selectOption("benchmark");
+  // Once A picks "benchmark", B must no longer offer it.
+  await expect(meldB.locator('option[value="benchmark"]')).toHaveCount(0);
+  await meldB.selectOption("reference");
+  // And now A must no longer offer "reference".
+  await expect(meldA.locator('option[value="reference"]')).toHaveCount(0);
+
+  let regenerateBody: Record<string, unknown> | undefined;
+  await page.route(`**/api/resume/${workspaceId}/regenerate`, async (route) => {
+    regenerateBody = route.request().postDataJSON();
+    await route.fulfill({
+      json: { workspace: { meldedStatus: "generated", meldedContent: JSON.parse(FAKE_RESUME_JSON), meldedError: null } },
+    });
+  });
+
+  await page.getByRole("button", { name: "Meld" }).click();
+
+  await expect.poll(() => regenerateBody).toMatchObject({ artifact: "melded", meldSourceA: "benchmark", meldSourceB: "reference" });
 });

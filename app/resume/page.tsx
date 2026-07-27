@@ -27,5 +27,5 @@ export default async function ResumePage() {
 
   const template = await prisma.resumeTemplate.findFirst({ where: { userId }, orderBy: { createdAt: "desc" } });
 
-  return <ResumeWorkspaceView workspace={serializeWorkspace(workspace)} hasResumeTemplate={Boolean(template)} />;
+  return <ResumeWorkspaceView workspace={serializeWorkspace(workspace)} initialTemplateText={template?.contentText ?? null} />;
 }

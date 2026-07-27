@@ -53,9 +53,12 @@ export function ResumeBubble({
   initialStatus,
   initialError,
   generateLabel = "Generate",
+  regenerateLabel = "Regenerate",
   onChanged,
   allowExport = false,
   fileNameBase,
+  extraRegenerateBody,
+  regenerateDisabled = false,
 }: {
   workspaceId: string;
   artifact: Artifact;
@@ -65,9 +68,17 @@ export function ResumeBubble({
   initialStatus: string;
   initialError: string | null;
   generateLabel?: string;
+  regenerateLabel?: string;
   onChanged?: (status: string) => void;
   allowExport?: boolean;
   fileNameBase?: string;
+  // Merged into the regenerate POST body — e.g. { meldSourceA, meldSourceB }
+  // for the melded artifact, whose generation depends on which two of the
+  // workspace's three resumes were picked, not just the artifact name.
+  extraRegenerateBody?: Record<string, unknown>;
+  // Disables the generate/regenerate button beyond the usual busy state —
+  // e.g. the melded bubble while its two meld-source dropdowns are invalid.
+  regenerateDisabled?: boolean;
 }) {
   const [resume, setResume] = useState<ResumeContent>(initialContent ?? EMPTY_RESUME);
   const [skillsText, setSkillsText] = useState((initialContent?.skills ?? []).join("\n"));
@@ -91,7 +102,7 @@ export function ResumeBubble({
       const res = await fetch(`/api/resume/${workspaceId}/regenerate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ artifact }),
+        body: JSON.stringify({ artifact, ...extraRegenerateBody }),
       });
       const data = await res.json();
       const workspace = data.workspace;
@@ -176,7 +187,7 @@ export function ResumeBubble({
       <div className="card-soft p-4">
         <h2 className="mb-2 font-bold text-foreground">{label}</h2>
         <p className="mb-3 text-xs text-foreground-muted">{disclaimer}</p>
-        <button onClick={regenerate} disabled={busy} className="btn-primary px-3 py-1.5 text-sm">
+        <button onClick={regenerate} disabled={busy || regenerateDisabled} className="btn-primary px-3 py-1.5 text-sm">
           {busy ? "Working… (up to a minute)" : generateLabel}
         </button>
         {error && <p className="mt-2 text-sm text-danger-dark">{error}</p>}
@@ -208,8 +219,8 @@ export function ResumeBubble({
           <button onClick={save} disabled={busy} className="btn-primary px-3 py-1.5 text-sm">
             {busy ? "Working…" : "Save"}
           </button>
-          <button onClick={regenerate} disabled={busy} className="btn-secondary px-3 py-1.5 text-sm">
-            {busy ? "Working…" : "Regenerate"}
+          <button onClick={regenerate} disabled={busy || regenerateDisabled} className="btn-secondary px-3 py-1.5 text-sm">
+            {busy ? "Working…" : regenerateLabel}
           </button>
           {allowExport && (
             <button onClick={() => setExportOpen(true)} disabled={busy} className="btn-secondary px-3 py-1.5 text-sm">

@@ -60,5 +60,8 @@ export async function POST(request: Request) {
     },
   });
 
-  return NextResponse.json({ template: { id: template.id, sourceFilename: template.sourceFilename } }, { status: 201 });
+  return NextResponse.json(
+    { template: { id: template.id, sourceFilename: template.sourceFilename, contentText: template.contentText } },
+    { status: 201 }
+  );
 }

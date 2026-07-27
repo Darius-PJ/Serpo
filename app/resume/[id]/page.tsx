@@ -16,5 +16,5 @@ export default async function ResumeWorkspacePage({ params }: { params: Promise<
   ]);
   if (!workspace) notFound();
 
-  return <ResumeWorkspaceView workspace={serializeWorkspace(workspace)} hasResumeTemplate={Boolean(template)} />;
+  return <ResumeWorkspaceView workspace={serializeWorkspace(workspace)} initialTemplateText={template?.contentText ?? null} />;
 }

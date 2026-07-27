@@ -172,6 +172,10 @@ model ResumeWorkspace {
   meldedContent String? // JSON-serialized MeldedResume
   meldedStatus  String  @default("not_started") // not_started | pending | generated | failed
   meldedError   String?
+  // Which two of "reference" | "improved" | "benchmark" produced meldedContent
+  // — persisted so revisiting the workspace remembers the last combination.
+  meldSourceA String?
+  meldSourceB String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
