@@ -37,13 +37,15 @@ test("Generate submits the form payload, renders the leads table + sources hub, 
           {
             id: "fake-lead-1",
             company: "Nova Systems",
-            role: "Backend Engineer",
+            roleTitle: "Backend Engineer",
             location: "Remote",
-            url: "https://example.com/jobs/123",
-            sourceLabel: "Greenhouse",
-            jobType: "full-time",
-            compensation: "$120k+",
-            rationale: "Strong match for backend keyword and remote preference.",
+            sourceUrl: "https://example.com/jobs/123",
+            jobType: "Full-time",
+            keyword: "backend engineer",
+            salaryOrRate: "$120k+",
+            rank: 1,
+            explanation: "Strong match for backend keyword and remote preference.",
+            duplicateVariantsSuppressed: JSON.stringify([{ role_title: "Backend Software Engineer", source_url: "https://example.com/jobs/999" }]),
           },
         ],
       },
@@ -74,6 +76,7 @@ test("Generate submits the form payload, renders the leads table + sources hub, 
   });
 
   await expect(page.getByText("Nova Systems")).toBeVisible();
+  await expect(page.getByText("+1 similar posting(s) suppressed", { exact: false })).toBeVisible();
   await expect(page.getByText("Best-performing sources")).toBeVisible();
   await expect(page.getByText("found the strongest matches this run", { exact: false })).toBeVisible();
 
@@ -82,7 +85,7 @@ test("Generate submits the form payload, renders the leads table + sources hub, 
   expect(trackBody).toMatchObject({
     company: "Nova Systems",
     role: "Backend Engineer",
-    source: "Greenhouse",
+    source: "example.com",
     url: "https://example.com/jobs/123",
     status: "Sourced",
   });

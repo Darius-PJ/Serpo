@@ -5,16 +5,20 @@ const valid = {
   leads: [
     {
       company: "Nova Systems",
-      role: "Backend Engineer",
+      role_title: "Backend Engineer",
+      job_type: "Full-time",
       location: "Remote",
-      url: "https://example.com/jobs/123",
-      sourceLabel: "Greenhouse",
-      jobType: "full-time",
-      compensation: "$120k+",
-      rationale: "Strong match for backend keyword and remote preference.",
+      keyword: "backend engineer",
+      salary_or_rate: "$120k+",
+      rank: 1,
+      explanation: "Strong match for backend keyword and remote preference.",
+      source_url: "https://example.com/jobs/123",
+      duplicate_variants_suppressed: [
+        { role_title: "Backend Software Engineer", location: "Remote", source_url: "https://example.com/jobs/999" },
+      ],
     },
   ],
-  sourcesHubMarkdown: "# Sources\n- **Greenhouse** performed best",
+  sourcesHubMarkdown: "# Sources\n- **example.com** performed best",
 };
 
 describe("RaekwonReportZ", () => {
@@ -23,23 +27,35 @@ describe("RaekwonReportZ", () => {
     expect(result.success).toBe(true);
   });
 
-  it("accepts leads without optional location/compensation", () => {
-    const { location, compensation, ...rest } = valid.leads[0];
+  it("accepts a null salary_or_rate, an empty duplicate_variants_suppressed array, and an omitted location", () => {
+    const { location, ...withoutLocation } = valid.leads[0];
     void location;
-    void compensation;
-    const result = RaekwonReportZ.safeParse({ ...valid, leads: [rest] });
+    const lead = { ...withoutLocation, salary_or_rate: null, duplicate_variants_suppressed: [] };
+    const result = RaekwonReportZ.safeParse({ ...valid, leads: [lead] });
     expect(result.success).toBe(true);
   });
 
   it("rejects a missing required field", () => {
-    const { role, ...missingRole } = valid.leads[0];
-    void role;
+    const { role_title, ...missingRole } = valid.leads[0];
+    void role_title;
     const result = RaekwonReportZ.safeParse({ ...valid, leads: [missingRole] });
     expect(result.success).toBe(false);
   });
 
-  it("rejects an invalid jobType enum value", () => {
-    const bad = { ...valid, leads: [{ ...valid.leads[0], jobType: "part-time" }] };
+  it("rejects salary_or_rate being omitted entirely (must be string or explicit null)", () => {
+    const { salary_or_rate, ...missingSalary } = valid.leads[0];
+    void salary_or_rate;
+    const result = RaekwonReportZ.safeParse({ ...valid, leads: [missingSalary] });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a non-integer or non-positive rank", () => {
+    expect(RaekwonReportZ.safeParse({ ...valid, leads: [{ ...valid.leads[0], rank: 0 }] }).success).toBe(false);
+    expect(RaekwonReportZ.safeParse({ ...valid, leads: [{ ...valid.leads[0], rank: 1.5 }] }).success).toBe(false);
+  });
+
+  it("rejects a malformed duplicate_variants_suppressed entry", () => {
+    const bad = { ...valid, leads: [{ ...valid.leads[0], duplicate_variants_suppressed: [{ role_title: "X" }] }] };
     const result = RaekwonReportZ.safeParse(bad);
     expect(result.success).toBe(false);
   });

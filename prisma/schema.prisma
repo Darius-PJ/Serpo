@@ -186,18 +186,22 @@ model RaekwonReport {
 }
 
 model RaekwonLead {
-  id           String        @id @default(cuid())
-  reportId     String
-  report       RaekwonReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  company      String
-  role         String
-  location     String?
-  url          String
-  sourceLabel  String // which aggregator/site this came from — one of this app's connector labels, or a site Claude's own web_search found
-  jobType      String // "full-time" | "contract" | "unknown"
-  compensation String? // free text, only when actually stated somewhere
-  rationale    String // short note on why this is a strong prospect
-  createdAt    DateTime @default(now())
+  id                           String        @id @default(cuid())
+  reportId                     String
+  report                       RaekwonReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  company                      String
+  roleTitle                    String
+  jobType                      String // free text as stated/inferred (e.g. "Full-time", "Contract", "Unknown") — not a fixed enum
+  location                     String?
+  keyword                      String // the exact keyword or a close synonym/variation that surfaced this lead
+  salaryOrRate                 String? // free text, only when actually stated somewhere — never estimate
+  rank                         Int // 1-based rank within this batch, 1 = strongest fit
+  explanation                  String // short note on why this is a strong prospect
+  sourceUrl                    String
+  duplicateVariantsSuppressed  String? // JSON-serialized array of { role_title, location, source_url } — near-duplicate postings of the same role, suppressed from separate listing
+  createdAt                    DateTime      @default(now())
+
+  @@index([reportId, rank])
 }
 
 model ApplyRun {

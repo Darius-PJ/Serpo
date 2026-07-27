@@ -6,6 +6,7 @@ import { dedupeListings } from "@/lib/jobSources/dedupe";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 import { generateRaekwonReport } from "@/lib/raekwon/generateReport";
+import { appendToArchive } from "@/lib/raekwon/archive";
 
 export const dynamic = "force-dynamic";
 
@@ -52,9 +53,29 @@ export async function POST(request: Request) {
         data: { status: "generated", sourcesHubMarkdown: result.sourcesHubMarkdown },
       }),
       prisma.raekwonLead.createManyAndReturn({
-        data: result.leads.map((lead) => ({ ...lead, reportId: report.id })),
+        data: result.leads.map((lead) => ({
+          reportId: report.id,
+          company: lead.company,
+          roleTitle: lead.role_title,
+          jobType: lead.job_type,
+          location: lead.location,
+          keyword: lead.keyword,
+          salaryOrRate: lead.salary_or_rate,
+          rank: lead.rank,
+          explanation: lead.explanation,
+          sourceUrl: lead.source_url,
+          duplicateVariantsSuppressed: lead.duplicate_variants_suppressed.length ? JSON.stringify(lead.duplicate_variants_suppressed) : null,
+        })),
       }),
     ]);
+    leads.sort((a, b) => a.rank - b.rank);
+
+    try {
+      await appendToArchive({ id: report.id, keyword }, result);
+    } catch {
+      // Best-effort local export — the database rows above are what the UI
+      // actually relies on, so a file-write failure shouldn't fail the request.
+    }
 
     return NextResponse.json({ report: updated, leads }, { status: 201 });
   } catch (err) {

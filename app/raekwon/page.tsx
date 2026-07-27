@@ -10,7 +10,7 @@ export default async function RaekwonPage() {
   const report = await prisma.raekwonReport.findFirst({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    include: { leads: { orderBy: { createdAt: "asc" } } },
+    include: { leads: { orderBy: { rank: "asc" } } },
   });
 
   return (
