@@ -3,10 +3,11 @@ import { claude, CLAUDE_MODEL } from "@/lib/ai/claudeClient";
 import { IMPROVED_RESUME_SCHEMA, ImprovedResumeZ, InvalidImprovedResumeError, type ImprovedResume } from "./improvedResumeSchema";
 
 const SYSTEM_PROMPT =
-  "You help a job seeker see how their own real resume could be expanded and better articulated " +
-  "for a specific target job. You are given their actual uploaded resume text. This output is for " +
-  "the job seeker's own practice/comparison only — it is never submitted anywhere automatically. " +
-  "Follow these rules strictly:\n" +
+  "You help a job seeker see how their own real resume could be expanded and better articulated — " +
+  "either for a specific target job, or generally for job searching if no specific job is given. " +
+  "You are given their actual uploaded resume text. This output is for the job seeker's own " +
+  "practice/comparison only — it is never submitted anywhere automatically. Follow these rules " +
+  "strictly:\n" +
   "- You may reorder, re-emphasize, and rephrase content freely, exactly like a normal resume " +
   "tailoring pass.\n" +
   "- You may ELABORATE: flesh out bullets that are thin or vague with plausible additional detail " +
@@ -22,26 +23,29 @@ const SYSTEM_PROMPT =
   "- Copy the contact header (name/email/phone/location/links) from the source text exactly, " +
   "unchanged.";
 
-function buildUserPrompt(sourceResumeText: string, company: string, role: string, jobDescription?: string): string {
-  return (
-    `SOURCE RESUME TEXT:\n${sourceResumeText}\n\n` +
-    `TARGET JOB — ROLE: ${role}\nCOMPANY: ${company}\n\n` +
-    (jobDescription ? `JOB DESCRIPTION:\n${jobDescription}` : "JOB DESCRIPTION: (none captured)")
-  );
+function buildUserPrompt(sourceResumeText: string, company?: string, role?: string, jobDescription?: string): string {
+  const targetSection =
+    company && role
+      ? `TARGET JOB — ROLE: ${role}\nCOMPANY: ${company}\n\n` +
+        (jobDescription ? `JOB DESCRIPTION:\n${jobDescription}` : "JOB DESCRIPTION: (none captured)")
+      : "TARGET JOB: none specified — improve and expand this resume generally for job searching, without targeting one specific posting.";
+  return `SOURCE RESUME TEXT:\n${sourceResumeText}\n\n${targetSection}`;
 }
 
 /**
- * Generates an "improved" version of the user's own uploaded resume, aimed
- * at a specific target job. Distinct from lib/apply/tailorResume.ts (which
- * strictly only reorders/rephrases for a REAL application) — this may
- * elaborate and add highly-plausible implied skills, but never fabricates a
- * new employer/title/date/credential. Illustrative only, like
- * generateBenchmarkResume.ts, never used to apply anywhere.
+ * Generates an "improved" version of the user's own uploaded resume, either
+ * aimed at a specific target job (company/role given) or generally for job
+ * searching (both omitted — the Resume tab's "general workspace" mode).
+ * Distinct from lib/apply/tailorResume.ts (which strictly only reorders/
+ * rephrases for a REAL application) — this may elaborate and add
+ * highly-plausible implied skills, but never fabricates a new employer/
+ * title/date/credential. Illustrative only, like generateBenchmarkResume.ts,
+ * never used to apply anywhere.
  */
 export async function generateImprovedResume(
   sourceResumeText: string,
-  company: string,
-  role: string,
+  company?: string,
+  role?: string,
   jobDescription?: string
 ): Promise<ImprovedResume> {
   const response = await claude.messages.create({

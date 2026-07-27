@@ -148,11 +148,13 @@ model ProfileField {
 //               toward the target job
 //   melded    = a hybrid of the two, an aspirational "growth target" resume
 model ResumeWorkspace {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  company        String
-  role           String
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Both null = a "general" workspace, not tied to any job posting — the
+  // Resume tab's default/landing state, showing only the Improved section.
+  company        String?
+  role           String?
   jobDescription String? // capped length, captured at creation time
   sourceUrl      String?
   // URL-encoded querystring (keywords/location/remoteOnly) snapshotting the

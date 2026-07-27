@@ -118,3 +118,25 @@ test("landing on /sourcing with a search querystring restores results automatica
   await expect(page.getByText("Backend Engineer")).toBeVisible();
   await expect(page.locator('input[placeholder^="Job title"]')).toHaveValue("backend engineer");
 });
+
+// Visiting /resume with no job posting loaded creates (or finds) a
+// "general" workspace (company/role both null) entirely via a plain
+// database write — no Claude call involved — so this is tested for real
+// against the live rendered page rather than mocked.
+test("visiting the Resume tab with no job posting loaded shows only the Improved workflow", async ({ page }) => {
+  await registerViaUi(page, randomUsername("resumefresh"));
+
+  await page.goto("/resume");
+
+  await expect(page.getByText("General resume improvement — not tied to a specific job posting.")).toBeVisible();
+  await expect(page.getByText("Your resume, improved")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Upload resume" })).toBeVisible();
+  await expect(page.getByText("Your competition")).toHaveCount(0);
+  await expect(page.getByText("Meld: where you could grow")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Start fresh" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Back to search" })).toHaveCount(0);
+
+  // Revisiting finds the same general workspace rather than creating another.
+  await page.reload();
+  await expect(page.getByText("General resume improvement — not tied to a specific job posting.")).toBeVisible();
+});

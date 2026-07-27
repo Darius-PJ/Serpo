@@ -32,6 +32,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   if (artifact === "benchmark") {
+    if (!workspace.company || !workspace.role) {
+      return NextResponse.json({ error: "This workspace has no job posting to benchmark against." }, { status: 400 });
+    }
     try {
       const content = await generateBenchmarkResume(workspace.company, workspace.role, workspace.jobDescription ?? undefined);
       const updated = await prisma.resumeWorkspace.update({
@@ -57,8 +60,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     try {
       const content = await generateImprovedResume(
         template.contentText,
-        workspace.company,
-        workspace.role,
+        workspace.company ?? undefined,
+        workspace.role ?? undefined,
         workspace.jobDescription ?? undefined
       );
       const updated = await prisma.resumeWorkspace.update({
@@ -79,6 +82,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   // artifact === "melded"
   if (workspace.benchmarkStatus !== "generated" || workspace.improvedStatus !== "generated") {
     return NextResponse.json({ error: "Generate both the benchmark and improved resumes first." }, { status: 400 });
+  }
+  if (!workspace.company || !workspace.role) {
+    // Unreachable in practice — benchmarkStatus can only be "generated" when
+    // company/role were present — but narrows the types below.
+    return NextResponse.json({ error: "This workspace has no job posting to meld against." }, { status: 400 });
   }
   try {
     const benchmark = JSON.parse(workspace.benchmarkContent!) as BenchmarkResume;
