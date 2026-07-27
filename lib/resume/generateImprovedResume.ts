@@ -46,7 +46,10 @@ export async function generateImprovedResume(
 ): Promise<ImprovedResume> {
   const response = await claude.messages.create({
     model: CLAUDE_MODEL,
-    max_tokens: 4096,
+    // 8192 (not 4096) — a long source resume plus adaptive thinking can
+    // leave too little budget for the full JSON output at 4096, truncating
+    // it mid-stream ("response was not valid JSON").
+    max_tokens: 8192,
     thinking: { type: "adaptive" },
     output_config: { effort: "medium", format: { type: "json_schema", schema: IMPROVED_RESUME_SCHEMA } },
     system: SYSTEM_PROMPT,
@@ -55,14 +58,14 @@ export async function generateImprovedResume(
 
   const textBlock = response.content.find((b) => b.type === "text");
   if (!textBlock || !("text" in textBlock)) {
-    throw new Error("Claude did not return structured resume content.");
+    throw new Error(`Claude did not return structured resume content (stop_reason: ${response.stop_reason}).`);
   }
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(textBlock.text);
   } catch {
-    throw new InvalidImprovedResumeError("response was not valid JSON");
+    throw new InvalidImprovedResumeError(`response was not valid JSON (stop_reason: ${response.stop_reason})`);
   }
 
   const result = ImprovedResumeZ.safeParse(parsed);

@@ -42,7 +42,10 @@ export async function generateMeldedResume(
 ): Promise<MeldedResume> {
   const response = await claude.messages.create({
     model: CLAUDE_MODEL,
-    max_tokens: 4096,
+    // 8192 (not 4096) — this call reasons over two full serialized resumes
+    // plus adaptive thinking before producing a third; 4096 occasionally
+    // truncated the JSON output mid-stream ("response was not valid JSON").
+    max_tokens: 8192,
     thinking: { type: "adaptive" },
     output_config: { effort: "medium", format: { type: "json_schema", schema: MELDED_RESUME_SCHEMA } },
     system: SYSTEM_PROMPT,
@@ -51,14 +54,14 @@ export async function generateMeldedResume(
 
   const textBlock = response.content.find((b) => b.type === "text");
   if (!textBlock || !("text" in textBlock)) {
-    throw new Error("Claude did not return structured resume content.");
+    throw new Error(`Claude did not return structured resume content (stop_reason: ${response.stop_reason}).`);
   }
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(textBlock.text);
   } catch {
-    throw new InvalidMeldedResumeError("response was not valid JSON");
+    throw new InvalidMeldedResumeError(`response was not valid JSON (stop_reason: ${response.stop_reason})`);
   }
 
   const result = MeldedResumeZ.safeParse(parsed);

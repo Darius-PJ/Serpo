@@ -3,6 +3,16 @@
 import { useRef, useState } from "react";
 import { ResumeBubble, type ResumeContent } from "./ResumeBubble";
 
+function sanitizeFilename(text: string): string {
+  return (
+    text
+      .trim()
+      .replace(/[^a-z0-9]+/gi, "-")
+      .replace(/^-+|-+$/g, "")
+      .toLowerCase() || "resume"
+  );
+}
+
 interface WorkspaceProps {
   id: string;
   company: string;
@@ -46,6 +56,7 @@ export function ResumeWorkspaceView({
   }
 
   const meldedUnlocked = benchmarkStatus === "generated" && improvedStatus === "generated";
+  const fileNameStem = `${sanitizeFilename(workspace.company)}-${sanitizeFilename(workspace.role)}`;
 
   return (
     <div className="space-y-8">
@@ -116,6 +127,8 @@ export function ResumeWorkspaceView({
             initialError={workspace.improvedError}
             generateLabel="Generate improved resume"
             onChanged={setImprovedStatus}
+            allowExport
+            fileNameBase={`${fileNameStem}-improved`}
           />
         ) : (
           <div className="card-soft p-4">
@@ -136,6 +149,8 @@ export function ResumeWorkspaceView({
             initialStatus={workspace.meldedStatus}
             initialError={workspace.meldedError}
             generateLabel="Meld"
+            allowExport
+            fileNameBase={`${fileNameStem}-melded`}
           />
         ) : (
           <div className="card-soft p-4">

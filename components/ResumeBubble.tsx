@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import type { ResumeContent } from "@/lib/resume/resumeContent";
+import { downloadResume, EXPORT_FORMAT_LABELS, type ExportFormat } from "@/lib/resume/exportResume";
+import { ConfirmDialog } from "./ConfirmDialog";
 
-export interface ResumeContent {
-  contactHeader: string;
-  summary: string;
-  experience: { employer: string; title: string; dates: string; bullets: string[] }[];
-  skills: string[];
-  education: { institution: string; credential: string; dates: string }[];
-}
+export type { ResumeContent } from "@/lib/resume/resumeContent";
+
+const EXPORT_FORMATS: ExportFormat[] = ["md", "txt", "docx"];
 
 type ExperienceRow = ResumeContent["experience"][number];
 type EducationRow = ResumeContent["education"][number];
@@ -55,6 +54,8 @@ export function ResumeBubble({
   initialError,
   generateLabel = "Generate",
   onChanged,
+  allowExport = false,
+  fileNameBase,
 }: {
   workspaceId: string;
   artifact: Artifact;
@@ -65,6 +66,8 @@ export function ResumeBubble({
   initialError: string | null;
   generateLabel?: string;
   onChanged?: (status: string) => void;
+  allowExport?: boolean;
+  fileNameBase?: string;
 }) {
   const [resume, setResume] = useState<ResumeContent>(initialContent ?? EMPTY_RESUME);
   const [skillsText, setSkillsText] = useState((initialContent?.skills ?? []).join("\n"));
@@ -72,6 +75,9 @@ export function ResumeBubble({
   const [error, setError] = useState(initialError);
   const [busy, setBusy] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>("md");
+  const [exporting, setExporting] = useState(false);
 
   function applyContent(content: ResumeContent) {
     setResume(content);
@@ -118,6 +124,17 @@ export function ResumeBubble({
       }
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function confirmExport() {
+    setExporting(true);
+    try {
+      const content: ResumeContent = { ...resume, skills: skillsText.split("\n").map((s) => s.trim()).filter(Boolean) };
+      await downloadResume(content, exportFormat, fileNameBase ?? "resume");
+      setExportOpen(false);
+    } finally {
+      setExporting(false);
     }
   }
 
@@ -194,8 +211,38 @@ export function ResumeBubble({
           <button onClick={regenerate} disabled={busy} className="btn-secondary px-3 py-1.5 text-sm">
             {busy ? "Working…" : "Regenerate"}
           </button>
+          {allowExport && (
+            <button onClick={() => setExportOpen(true)} disabled={busy} className="btn-secondary px-3 py-1.5 text-sm">
+              Download
+            </button>
+          )}
         </div>
       </div>
+
+      {allowExport && (
+        <ConfirmDialog
+          open={exportOpen}
+          title="Download this resume"
+          description="Choose a format, then pick where to save the file in your browser's download prompt."
+          confirmLabel="Download"
+          busy={exporting}
+          onConfirm={confirmExport}
+          onCancel={() => setExportOpen(false)}
+        >
+          <label className="mb-1 block text-xs text-foreground-muted">Format</label>
+          <select
+            value={exportFormat}
+            onChange={(e) => setExportFormat(e.target.value as ExportFormat)}
+            className="input-soft w-full px-2.5 py-1.5 text-sm"
+          >
+            {EXPORT_FORMATS.map((format) => (
+              <option key={format} value={format}>
+                {EXPORT_FORMAT_LABELS[format]}
+              </option>
+            ))}
+          </select>
+        </ConfirmDialog>
+      )}
 
       {error && status === "failed" && <p className="text-sm text-danger-dark">Last attempt failed: {error}</p>}
 
