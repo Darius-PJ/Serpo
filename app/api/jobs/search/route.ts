@@ -53,7 +53,8 @@ export async function POST(request: Request) {
   // Dedupe across sources, then drop cross-posted duplicates from whichever
   // group they'd otherwise still appear in — keeps per-source display counts
   // honest post-dedupe rather than double-counting a listing in two cells.
-  const survivingIds = new Set(dedupeListings(filteredGroups.flatMap((g) => g.listings)).map((l) => l.id));
+  const deduped = await dedupeListings(filteredGroups.flatMap((g) => g.listings));
+  const survivingIds = new Set(deduped.map((l) => l.id));
   const results = filteredGroups.map((group) => ({
     ...group,
     listings: group.listings.filter((listing) => survivingIds.has(listing.id)),

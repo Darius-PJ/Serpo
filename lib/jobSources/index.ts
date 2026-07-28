@@ -7,6 +7,7 @@ import { joobleConnector } from "./jooble";
 import { remoteOkConnector } from "./remoteOk";
 import { remotiveConnector } from "./remotive";
 import { usaJobsConnector } from "./usaJobs";
+import { getCachedListings, setCachedListings } from "./cache";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // Add a new source by implementing JobSourceConnector and registering it here —
@@ -36,7 +37,12 @@ export async function searchAllSources(criteria: JobSearchCriteria): Promise<Job
   return Promise.all(
     configured.map(async (connector): Promise<JobSearchResult> => {
       try {
+        const cached = await getCachedListings(connector.key, criteria);
+        if (cached) {
+          return { source: connector.key, label: connector.label, listings: cached };
+        }
         const listings = await connector.search(criteria);
+        await setCachedListings(connector.key, criteria, listings);
         return { source: connector.key, label: connector.label, listings };
       } catch (err) {
         return {

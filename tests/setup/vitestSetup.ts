@@ -7,6 +7,9 @@ process.env.COOKIE_SECURE = "false";
 
 afterEach(async () => {
   const { prisma } = await import("@/lib/db/prisma");
+  // Global, no FK to User — order-independent.
+  await prisma.jobListingFingerprint.deleteMany();
+  await prisma.jobSourceCache.deleteMany();
   // FK-safe order: children before parents.
   await prisma.message.deleteMany();
   await prisma.decisionMaker.deleteMany();

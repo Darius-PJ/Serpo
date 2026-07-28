@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { fetchGreenhouseBoard } from "./greenhouseBoard";
 import { fetchLeverBoard } from "./leverBoard";
+import { getCachedListings, setCachedListings } from "./cache";
 import type { JobSearchResult } from "./index";
 
 /**
@@ -18,8 +19,13 @@ export async function searchPoolBoards(userId: string, criteria: { keywords: str
     pins.map(async (pin): Promise<JobSearchResult> => {
       const source = `${pin.integrationType}:${pin.integrationToken}`;
       try {
+        const cached = await getCachedListings(source, criteria);
+        if (cached) {
+          return { source, label: pin.jobBoard.name, listings: cached };
+        }
         const fetcher = pin.integrationType === "greenhouse" ? fetchGreenhouseBoard : fetchLeverBoard;
         const listings = await fetcher(pin.integrationToken!, criteria);
+        await setCachedListings(source, criteria, listings);
         return { source, label: pin.jobBoard.name, listings };
       } catch (err) {
         return { source, label: pin.jobBoard.name, listings: [], error: err instanceof Error ? err.message : String(err) };

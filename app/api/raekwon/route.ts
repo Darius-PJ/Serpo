@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     searchAllSources(searchCriteria),
     searchPoolBoards(userId, searchCriteria),
   ]);
-  const candidatePool = dedupeListings([...staticResults, ...poolResults].flatMap((g) => g.listings));
+  const candidatePool = await dedupeListings([...staticResults, ...poolResults].flatMap((g) => g.listings));
 
   try {
     const result = await generateRaekwonReport({ keyword, batchSize, location, jobType, compensationTarget }, candidatePool);

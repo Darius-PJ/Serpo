@@ -239,3 +239,38 @@ model ApplyRun {
   startedAt           DateTime  @default(now())
   submittedAt         DateTime?
 }
+
+// Per-(source, search criteria) cache of raw normalized results, so a repeat
+// search within the TTL skips the network call entirely. Global — the same
+// external API call for the same criteria returns the same data for every
+// account, so cache hits benefit the whole app, not just one user. Excluded
+// from the per-account privacy wipe (lib/privacy/purge.ts) on purpose — this
+// is shared infrastructure, not personal data, same as curated JobBoard rows.
+model JobSourceCache {
+  id           String   @id @default(cuid())
+  source       String // connector key, or "greenhouse:<token>" / "lever:<token>" for pool boards
+  criteriaHash String // sha256 of normalized {keywords, location, remoteOnly}
+  listingsJson String // JSON-serialized NormalizedJobListing[]
+  fetchedAt    DateTime @default(now())
+
+  @@unique([source, criteriaHash])
+}
+
+// One row per listing ever seen, across all accounts. familyId +
+// isRepresentative implement the dedup cluster: every listing in a family
+// shares familyId, exactly one row per family has isRepresentative = true.
+// Global, like JobSourceCache, for the same reason.
+model JobListingFingerprint {
+  id               String   @id @default(cuid())
+  listingId        String   @unique // NormalizedJobListing.id, e.g. "adzuna:12345"
+  familyId         String
+  simhash          String // 64-bit fingerprint, hex
+  contentHash      String // sha256 of role+description — detects a changed posting reusing the same listingId
+  isAgency         Boolean // staffing-agency heuristic result, used for representative selection
+  isRepresentative Boolean  @default(false)
+  listingJson      String // full NormalizedJobListing snapshot, so the representative's data never needs re-fetching
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([familyId])
+}
