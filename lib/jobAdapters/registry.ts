@@ -20,6 +20,7 @@ import { himalayasAdapter } from "./adapters/himalayas";
 import { jobicyAdapter } from "./adapters/jobicy";
 import { usaJobsAdapter } from "./adapters/usajobs";
 import { joobleAdapter } from "./adapters/jooble";
+import { greenhouseAdapter } from "./adapters/greenhouse";
 
 const ADAPTERS: Adapter[] = [
   arbeitnowAdapter,
@@ -31,6 +32,7 @@ const ADAPTERS: Adapter[] = [
   jobicyAdapter,
   usaJobsAdapter,
   joobleAdapter,
+  greenhouseAdapter,
 ];
 
 export function listAdapters(): Adapter[] {

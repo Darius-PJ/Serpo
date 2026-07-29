@@ -37,7 +37,7 @@ async function collectListings(adapter: Adapter, query: NormalizedQuery, ctx: Re
   const listings: NormalizedJobListing[] = [];
   for await (const page of adapter.search(query, ctx)) {
     for (const rawItem of page.items) {
-      listings.push(adapter.normalize(rawItem, { fetchedAt }));
+      listings.push(adapter.normalize(rawItem, { fetchedAt, query }));
     }
   }
   await ctx.cache.set(query, listings);

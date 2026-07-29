@@ -89,7 +89,7 @@ export function runAdapterContractSuite<TRaw>(adapter: Adapter<TRaw>, fixtureOve
       const fetchedAt = new Date().toISOString();
       for (const page of pages) {
         for (const rawItem of page.items) {
-          const normalized = adapter.normalize(rawItem, { fetchedAt });
+          const normalized = adapter.normalize(rawItem, { fetchedAt, query: fixtures.happyQuery });
           expect(() => normalizedJobListingSchema.parse(normalized)).not.toThrow();
         }
       }
@@ -99,7 +99,7 @@ export function runAdapterContractSuite<TRaw>(adapter: Adapter<TRaw>, fixtureOve
       const pages = await collectPages(adapter, fixtures.happyQuery, createTestContext());
       const rawItem = pages[0]?.items[0];
       if (rawItem === undefined) return;
-      const ctx = { fetchedAt: "2026-01-01T00:00:00.000Z" };
+      const ctx = { fetchedAt: "2026-01-01T00:00:00.000Z", query: fixtures.happyQuery };
       expect(adapter.normalize(rawItem, ctx)).toEqual(adapter.normalize(rawItem, ctx));
     });
 
@@ -121,7 +121,7 @@ export function runAdapterContractSuite<TRaw>(adapter: Adapter<TRaw>, fixtureOve
       const before = new Set(Object.keys(globalThis));
       const pages = await collectPages(adapter, fixtures.happyQuery, createTestContext());
       const rawItem = pages[0]?.items[0];
-      if (rawItem !== undefined) adapter.normalize(rawItem, { fetchedAt: new Date().toISOString() });
+      if (rawItem !== undefined) adapter.normalize(rawItem, { fetchedAt: new Date().toISOString(), query: fixtures.happyQuery });
       const after = new Set(Object.keys(globalThis));
       expect([...after].filter((key) => !before.has(key))).toEqual([]);
     });

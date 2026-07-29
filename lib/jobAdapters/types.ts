@@ -102,6 +102,16 @@ export interface AdapterContext {
 
 export interface NormalizeContext {
   fetchedAt: string;
+  // Added while migrating the Greenhouse adapter (Phase 4's "new source" validation
+  // exercise): normalize() had no way to know which board/target produced a listing,
+  // which an enumerate-target adapter (Greenhouse/Lever/a URL-crawl adapter) needs to
+  // stamp a correct sourceId/company — e.g. Greenhouse's per-board sourceId is
+  // "greenhouse:<token>", and only the query that drove search() knows the token.
+  // Generic, not Greenhouse-specific: every adapter receives this, keyword-search
+  // adapters simply don't need it. Flagged here per the task's own instruction to
+  // report loudly rather than silently patch core when a new source needs an
+  // interface change.
+  query: NormalizedQuery;
 }
 
 export interface AdapterMetadata {
