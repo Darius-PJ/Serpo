@@ -11,8 +11,9 @@
 // lib/jobSources/index.ts's CONNECTORS array (see docs/architecture-audit.md §3).
 import type { Adapter } from "./types";
 import { isAdapterConfigured } from "./config";
+import { arbeitnowAdapter } from "./adapters/arbeitnow";
 
-const ADAPTERS: Adapter[] = [];
+const ADAPTERS: Adapter[] = [arbeitnowAdapter];
 
 export function listAdapters(): Adapter[] {
   return ADAPTERS;

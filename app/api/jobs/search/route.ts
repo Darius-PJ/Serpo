@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { searchAllSources } from "@/lib/jobSources";
+import { searchAllSourcesHybrid } from "@/lib/jobAdapters/hybridSearch";
 import { searchPoolBoards } from "@/lib/jobSources/searchPoolBoards";
 import { dedupeListings } from "@/lib/jobSources/dedupe";
 import { matchesExactTitle, isSeniorTitle } from "@/lib/jobSources/titleMatch";
@@ -31,8 +31,9 @@ export async function POST(request: Request) {
     remoteOnly: Boolean(body.remoteOnly),
   };
 
+  const correlationId = crypto.randomUUID();
   const [staticResults, poolResults] = await Promise.all([
-    searchAllSources(criteria),
+    searchAllSourcesHybrid(criteria, correlationId),
     searchPoolBoards(userId, criteria),
   ]);
 
