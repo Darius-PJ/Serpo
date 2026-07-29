@@ -17,10 +17,9 @@ export interface NormalizedJobListing {
   description?: string;
 }
 
-export interface JobSourceConnector {
-  key: string;
+export interface JobSearchResult {
+  source: string;
   label: string;
-  /** Whether required env vars/tools are present. Unconfigured connectors are skipped, not errored. */
-  isConfigured(): boolean;
-  search(criteria: JobSearchCriteria): Promise<NormalizedJobListing[]>;
+  listings: NormalizedJobListing[];
+  error?: string;
 }

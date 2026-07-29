@@ -2,19 +2,18 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
-import { detectBoardIntegration } from "@/lib/jobSources/detectIntegration";
-import { fetchGreenhouseBoard } from "@/lib/jobSources/greenhouseBoard";
-import { fetchLeverBoard } from "@/lib/jobSources/leverBoard";
+import { listEnumerateTargetAdapters } from "@/lib/jobAdapters/registry";
+import { runAdapterSearch } from "@/lib/jobAdapters/runSearch";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Adds a saved board to this account's live search pool. Honest about what
- * that means: boards on a recognized ATS platform (Greenhouse/Lever) get
- * verified with a real query and become genuinely live-searchable
- * ("live"). Everything else only gets a reachability check — saved for
- * reference, clearly "browse-only", never a false checkmark implying live
- * search that isn't actually happening.
+ * that means: boards on a recognized ATS platform (an enumerate-target adapter
+ * that recognizes the URL, e.g. Greenhouse/Lever) get verified with a real
+ * query and become genuinely live-searchable ("live"). Everything else only
+ * gets a reachability check — saved for reference, clearly "browse-only",
+ * never a false checkmark implying live search that isn't actually happening.
  */
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const rejected = requireJsonRequest(request);
@@ -32,18 +31,30 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
 
-  const integration = detectBoardIntegration(board.url);
+  // Every enumerate-target adapter declares its own detectTarget() — no shared,
+  // closed-union detector to keep in sync as new ATS platforms are added.
+  let matched: { adapterId: string; token: string } | null = null;
+  for (const adapter of listEnumerateTargetAdapters()) {
+    const token = adapter.detectTarget?.(board.url);
+    if (token) {
+      matched = { adapterId: adapter.metadata.id, token };
+      break;
+    }
+  }
+
   let poolStatus: "live" | "browse-only" | "failed";
   let integrationType: string | null = null;
   let integrationToken: string | null = null;
 
-  if (integration) {
+  if (matched) {
     try {
-      const fetcher = integration.type === "greenhouse" ? fetchGreenhouseBoard : fetchLeverBoard;
-      await fetcher(integration.token, { keywords: "" });
+      const correlationId = crypto.randomUUID();
+      const adapter = listEnumerateTargetAdapters().find((a) => a.metadata.id === matched!.adapterId)!;
+      const envelope = await runAdapterSearch({ kind: "target", target: matched.token }, [adapter], correlationId);
+      if (envelope.errors.length > 0) throw new Error(envelope.errors[0].message);
       poolStatus = "live";
-      integrationType = integration.type;
-      integrationToken = integration.token;
+      integrationType = matched.adapterId;
+      integrationToken = matched.token;
     } catch {
       poolStatus = "failed";
     }

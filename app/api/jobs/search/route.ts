@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { searchAllSourcesHybrid } from "@/lib/jobAdapters/hybridSearch";
-import { searchPoolBoardsHybrid } from "@/lib/jobAdapters/hybridPoolBoards";
+import { searchAllAdapters, searchPoolBoardAdapters } from "@/lib/jobAdapters/search";
 import { dedupeListings } from "@/lib/jobSources/dedupe";
 import { matchesExactTitle, isSeniorTitle } from "@/lib/jobSources/titleMatch";
 import { isUsOrRemoteListing, isRemoteListing } from "@/lib/jobSources/locationFilter";
@@ -33,8 +32,8 @@ export async function POST(request: Request) {
 
   const correlationId = crypto.randomUUID();
   const [staticResults, poolResults] = await Promise.all([
-    searchAllSourcesHybrid(criteria, correlationId),
-    searchPoolBoardsHybrid(userId, criteria, correlationId),
+    searchAllAdapters(criteria, correlationId),
+    searchPoolBoardAdapters(userId, criteria, correlationId),
   ]);
 
   // Uniform post-fetch filtering regardless of how fuzzy each upstream API's

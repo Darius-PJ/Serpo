@@ -1,3 +1,0 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`fetchGreenhouseBoard (characterization) > matches today's normalized shape for a real board (Stripe's public Greenhouse board) 1`] = `[]`;

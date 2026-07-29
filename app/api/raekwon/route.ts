@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { searchAllSourcesHybrid } from "@/lib/jobAdapters/hybridSearch";
-import { searchPoolBoardsHybrid } from "@/lib/jobAdapters/hybridPoolBoards";
+import { searchAllAdapters, searchPoolBoardAdapters } from "@/lib/jobAdapters/search";
 import { dedupeListings } from "@/lib/jobSources/dedupe";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
@@ -40,8 +39,8 @@ export async function POST(request: Request) {
   const searchCriteria = { keywords: keyword, location, remoteOnly: false };
   const correlationId = crypto.randomUUID();
   const [staticResults, poolResults] = await Promise.all([
-    searchAllSourcesHybrid(searchCriteria, correlationId),
-    searchPoolBoardsHybrid(userId, searchCriteria, correlationId),
+    searchAllAdapters(searchCriteria, correlationId),
+    searchPoolBoardAdapters(userId, searchCriteria, correlationId),
   ]);
   const candidatePool = await dedupeListings([...staticResults, ...poolResults].flatMap((g) => g.listings));
 

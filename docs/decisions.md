@@ -2,6 +2,65 @@
 
 Non-obvious choices made during the job-source adapter refactor, and why. Newest first.
 
+## 2026-07-29 — Phase 5: legacy path removed, verified live before deleting anything
+
+Per the task's own gate ("only after all sources run clean in dual mode"), and with
+broader tooling permission granted for this turn specifically, real verification ran
+before any deletion — the first verification of any kind on the Phase 4 migration,
+which had been built entirely without tests per that phase's own explicit instruction:
+
+- `npm run lint` and `npx tsc --noEmit`: both clean.
+- `npm run test:unit`: 183/184 passed on the first run. The one failure was
+  `tests/unit/jobAdapters/registry.test.ts`'s "starts empty" assertion — a Phase 3
+  test whose premise (empty registry) Phase 4 correctly invalidated. Fixed by
+  rewriting it to assert the real, populated state (all 11 adapters present,
+  findable, correctly classified) instead of deleting or ignoring it.
+- **Live dual-mode check against the real running app** (`ADAPTER_MODE=dual`, a real
+  account, a real `/api/jobs/search` call, and a real pinned Stripe Greenhouse board):
+  every one of the 9 directly-exercised sources (all but Lever, which has no
+  live-verified real board token per Phase 1) completed without error. The only
+  dual-mode count-mismatch warnings logged were Arbeitnow, RemoteOK, and Greenhouse —
+  exactly the three sources whose local keyword filter was deliberately dropped
+  during migration (documented at the time), confirming the divergence was the
+  intended one, not a bug.
+
+Only after that did legacy removal happen:
+
+- **Deleted**: every `lib/jobSources/` per-connector file (`adzuna.ts`, `remoteOk.ts`,
+  `remotive.ts`, `himalayas.ts`, `jobicy.ts`, `arbeitnow.ts`, `jooble.ts`, `usaJobs.ts`,
+  `jobSpy.ts`, `greenhouseBoard.ts`, `leverBoard.ts`), `index.ts` (the old
+  `CONNECTORS` registry), `searchPoolBoards.ts`, and `detectIntegration.ts`. Also the
+  strangler-fig scaffolding itself, now dead weight: `adapterMode.ts`, `bridge.ts`,
+  `hybridSearch.ts`, `hybridPoolBoards.ts`. Also the Phase 1 characterization test
+  suite (`tests/unit/jobSources/characterization/**`) — it existed purely to
+  characterize the legacy connectors' behavior before migration; with those deleted,
+  there's nothing left for it to characterize. The real captured fixtures
+  (`tests/fixtures/**`) were kept — still valuable raw material for real per-adapter
+  contract tests later.
+- **Kept, deliberately untouched**: `lib/jobSources/types.ts` (the flat
+  `NormalizedJobListing`/`JobSearchCriteria` shape — now also home to the relocated
+  `JobSearchResult` interface), `titleMatch.ts`, `locationFilter.ts`, `dedupe.ts`,
+  `dedupeConfig.ts`, `simhash.ts`, `staffingAgencies.ts`, `cache.ts`,
+  `timeoutConfig.ts`. Per this task's own standing rule not to touch
+  filtering/ranking/dedup logic, the new `lib/jobAdapters/search.ts` converts the
+  richer adapter schema back to this same flat shape at the boundary, so this whole
+  pipeline keeps working completely unchanged.
+- **New**: `lib/jobAdapters/search.ts` replaces the deleted hybrid/bridge modules with
+  a single, non-branching path (no more `ADAPTER_MODE` — there's only one path now).
+  `app/api/job-boards/[id]/pool/route.ts` was rewritten to detect a pinned board's
+  platform via each registered `enumerate-target` adapter's own `detectTarget()`
+  instead of the deleted `detectIntegration.ts`'s shared closed union.
+- **Found and fixed in passing**: `app/api/job-boards/gather/integration-guide/route.ts`
+  (the AI-assisted "how could this site be integrated" guidance feature) had a Claude
+  system prompt describing the old `JobSourceConnector` shape verbatim, including in
+  example code snippets it could suggest to a user. Left unfixed, it would have kept
+  confidently suggesting code against an interface that no longer exists. Updated to
+  describe the current `Adapter` shape instead.
+
+`docs/adding-a-source.md` is the deliverable this whole migration was for — the
+checklist proving a new source really is one directory, one registry entry, one
+fixture set, zero shared-code edits.
+
 ## 2026-07-29 — Phase 4: all 11 sources migrated, no tests/checks (explicit instruction)
 
 Per explicit user instruction ("Proceed to Phase 4 with no tests or checks"), this

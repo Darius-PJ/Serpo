@@ -1,5 +1,13 @@
 # Job-Source Architecture Audit (Phase 0)
 
+> **Status (2026-07-29): superseded by the finished migration.** Everything below
+> describes the pre-refactor state this audit found — kept as-is, historical, not
+> rewritten in place. All 11 sources this audit inventoried are now
+> `lib/jobAdapters/adapters/` entries; the legacy `lib/jobSources/` connector registry,
+> `searchAllSources`/`searchPoolBoards`, and `detectIntegration.ts` this document
+> describes have been deleted. See `docs/decisions.md`'s Phase 4/5 entries for what
+> changed and why, and `docs/adding-a-source.md` for how the codebase works now.
+
 Scope: this document is a read-only inventory of how `job-tracker` fetches, filters,
 dedups, and returns job/contract listings today. No application code was changed to
 produce it. Every claim is either a direct citation of code/comments in this repo, or
