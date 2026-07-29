@@ -1,0 +1,6 @@
+{
+  "attempted": true,
+  "reproduced": false,
+  "capturedAt": "2026-07-29T15:22:04.000Z",
+  "note": "lib/jobSources/remoteOk.ts's comment claims RemoteOK 'blocks requests without a descriptive User-Agent.' Live-tested by requesting with User-Agent: 'curl/7.0' instead of the connector's real UA — the request still returned 200 with the identical full dump (367961 bytes, same as typical.json), not a block. Either the block requires something more specific to trigger (an entirely absent UA header rather than a generic one, which undici's fetch may not allow omitting), the behavior has changed since that comment was written, or it's inconsistent. Not fabricating an error fixture — recording this as an honest non-reproduction instead. Flagged in docs/architecture-audit.md."
+}

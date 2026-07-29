@@ -1,0 +1,687 @@
+{
+  "status": 200,
+  "capturedAt": "2026-07-29T15:22:21.286Z",
+  "note": "",
+  "body": {
+    "count": 785380,
+    "__CLASS__": "Adzuna::API::Response::JobSearchResults",
+    "results": [
+      {
+        "created": "2026-07-13T12:51:59Z",
+        "salary_min": 74264.21,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1Nzk4OTQ2NzE5In0.MPXiRRkalnOdwWqw5SB3BYc9-4SaGM2uAebY5agOJ3c",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "salary_max": 74264.21,
+        "latitude": 20.918109,
+        "description": "Additional Information Job Number 26084229 Job Category Engineering & Facilities Location 2365 Kaanapali Pkwy, Lahaina, Hawaii, United States, 96761 VIEW ON MAP Schedule Full Time Located Remotely? N Position Type Non-Management Pay Range: $33.11-$33.11 per hour POSITION SUMMARY Respond and attend to guest repair requests. Communicate with guests/customers to resolve maintenance issues with little to no supervision. Perform preventive maintenance on tools and equipment, including cleaning and l…",
+        "redirect_url": "https://www.adzuna.com/land/ad/5798946719?se=eBRhS2GL8RGchd7aIVvyDQ&utm_medium=api&utm_source=04573b2d&v=636DD1A11E2E769CCF211499E2A6C989A6B9359F",
+        "contract_time": "full_time",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "maintenance-jobs",
+          "label": "Maintenance Jobs"
+        },
+        "salary_is_predicted": "1",
+        "id": "5798946719",
+        "longitude": -156.677988,
+        "company": {
+          "display_name": "Marriott International, Inc",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "location": {
+          "area": [
+            "US",
+            "Hawaii",
+            "Maui",
+            "Lahaina"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "display_name": "Lahaina, Maui"
+        },
+        "title": "Engineer III"
+      },
+      {
+        "description": "Qualifications NOTE: THE 2-PAGE RESUME REQUIREMENT DOES NOT APPLY TO THIS OCCUPATIONAL SERIES. FOR MORE INFORMATION, REFER TO REQUIRED DOCUMENTS BELOW. To qualify for this position, applicants must meet all requirements within 30 days of the closing date of this announcement. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or …",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "label": "Engineering Jobs",
+          "tag": "engineering-jobs"
+        },
+        "redirect_url": "https://www.adzuna.com/details/5817620476?utm_medium=api&utm_source=04573b2d",
+        "contract_time": "full_time",
+        "salary_is_predicted": "1",
+        "created": "2026-07-27T17:21:27Z",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTgxNzYyMDQ3NiIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.dzy1PpXd7NkHT_WoBes0qMHYSItkK0bpamgeICHaNpg",
+        "salary_min": 121697.34,
+        "latitude": 47.608492,
+        "salary_max": 121697.34,
+        "location": {
+          "display_name": "Seattle, King County",
+          "area": [
+            "US",
+            "Washington",
+            "King County",
+            "Seattle"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "title": "Healthcare Engineer-Project Engineer",
+        "id": "5817620476",
+        "longitude": -122.336407
+      },
+      {
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTgxNzYyMTUzNyIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.i1oJcg_pRoCRBWYvJ7S7eEl8wYVI5q20vykLSAL9dlY",
+        "salary_min": 123257.81,
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "salary_max": 123257.81,
+        "latitude": 36.842017,
+        "created": "2026-07-27T17:21:37Z",
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817621537?utm_medium=api&utm_source=04573b2d",
+        "category": {
+          "label": "Engineering Jobs",
+          "tag": "engineering-jobs",
+          "__CLASS__": "Adzuna::API::Response::Category"
+        },
+        "salary_is_predicted": "1",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy English Language Proficiency: Healthcare Engineer candidates must be proficient in spoken and written English in accordance with 38 U.S.…",
+        "longitude": -119.80195,
+        "id": "5817621537",
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "location": {
+          "area": [
+            "US",
+            "California",
+            "Fresno County",
+            "Fresno"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "display_name": "Fresno, Fresno County"
+        },
+        "title": "Healthcare Engineer (Energy Engineer)"
+      },
+      {
+        "category": {
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs",
+          "__CLASS__": "Adzuna::API::Response::Category"
+        },
+        "redirect_url": "https://www.adzuna.com/details/5817622415?utm_medium=api&utm_source=04573b2d",
+        "contract_time": "full_time",
+        "salary_is_predicted": "1",
+        "description": "Qualifications Basic Requirements: US Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: (1) Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at least one curriculum accredited by the Accreditation Board for Engineering and Technology, Engineering Accreditation Commission (excludes engineering technology) or National Council of Architec…",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjIyNDE1In0.0V35MFuWdqyWCbh6ez8UKeiSgBb-Z9UTHWL4cNN7JUk",
+        "salary_min": 78333.09,
+        "latitude": 38.255693,
+        "salary_max": 78333.09,
+        "created": "2026-07-27T17:21:41Z",
+        "location": {
+          "display_name": "Louisville, Jefferson County",
+          "area": [
+            "US",
+            "Kentucky",
+            "Jefferson County",
+            "Louisville"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "contract_type": "contract",
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "title": "Healthcare Engineer (Network Engineer)",
+        "longitude": -85.751283,
+        "id": "5817622415"
+      },
+      {
+        "created": "2026-07-27T17:21:09Z",
+        "latitude": 34.749966,
+        "salary_max": 110874.34,
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTgxNzYxODYzOCIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.cvHNWh1aFpH9yP3wUPqi7nh7QgWSQJL8_NiAqR3EiUw",
+        "salary_min": 110874.34,
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: 1 United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy 2 English Language Proficiency: Healthcare Engineer candidates must be proficient in spoken and written English in accordance with 38 …",
+        "salary_is_predicted": "1",
+        "category": {
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs",
+          "__CLASS__": "Adzuna::API::Response::Category"
+        },
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817618638?utm_medium=api&utm_source=04573b2d",
+        "id": "5817618638",
+        "longitude": -92.285201,
+        "title": "Healthcare Engineer",
+        "location": {
+          "display_name": "Little Rock, Pulaski County",
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "area": [
+            "US",
+            "Arkansas",
+            "Pulaski County",
+            "Little Rock"
+          ]
+        },
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        }
+      },
+      {
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: Citizenship Be a citizen of the United States (U.S.) Non-citizens may be appointed when it is not possible to recruit qualified citizens in accordance with 38 U.S.C. § 7407(a) English Language Proficiency Healthcare Engineer candidates must be proficient in spoken and written Engl…",
+        "salary_is_predicted": "1",
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817621487?utm_medium=api&utm_source=04573b2d",
+        "category": {
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs",
+          "__CLASS__": "Adzuna::API::Response::Category"
+        },
+        "created": "2026-07-27T17:21:36Z",
+        "salary_max": 118482.2,
+        "latitude": 42.433333,
+        "salary_min": 118482.2,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjIxNDg3In0.bKomY9OEh8b24ypS15OerRQRPU7ya9BdUHKKieVbBWg",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "title": "Healthcare Engineer",
+        "company": {
+          "__CLASS__": "Adzuna::API::Response::Company",
+          "display_name": "Veterans Health Administration"
+        },
+        "location": {
+          "display_name": "White City, Jackson County",
+          "area": [
+            "US",
+            "Oregon",
+            "Jackson County",
+            "White City"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "id": "5817621487",
+        "longitude": -122.833889
+      },
+      {
+        "title": "Healthcare Engineer",
+        "company": {
+          "__CLASS__": "Adzuna::API::Response::Company",
+          "display_name": "Veterans Health Administration"
+        },
+        "location": {
+          "display_name": "Des Moines, Polk County",
+          "area": [
+            "US",
+            "Iowa",
+            "Polk County",
+            "Des Moines"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "id": "5817622066",
+        "longitude": -93.6151,
+        "description": "Qualifications All requirements must be met by the close date of this announcement, 07/27/2026. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at least one curriculum accredited by the Accreditation Board for Engineering and Technology, Engineering Ac…",
+        "salary_is_predicted": "1",
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817622066?utm_medium=api&utm_source=04573b2d",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        },
+        "created": "2026-07-27T17:21:40Z",
+        "salary_max": 113880.64,
+        "latitude": 41.589,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTgxNzYyMjA2NiIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.5RIVHxJC9P6rwgs_ve6qvFcv7bRNtxX2zs442vN0Brk",
+        "salary_min": 113880.64,
+        "__CLASS__": "Adzuna::API::Response::Job"
+      },
+      {
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "location": {
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "area": [
+            "US",
+            "Tennessee",
+            "Shelby County",
+            "Memphis"
+          ],
+          "display_name": "Memphis, Shelby County"
+        },
+        "title": "Healthcare Engineer",
+        "id": "5817618362",
+        "longitude": -90.060664,
+        "description": "Qualifications Basic Requirements: United States Citizenship: You must be a citizen of the United States English Language Proficiency: Candidates will not be appointed under authority of 38 U.S.C. chapters 73 or 74, to serve in a direct patient-care capacity in VHA who is not proficient in written and spoken English See Chapter 2, section D, paragraph 5a, this part Education/Experience: Bachelor's degree or higher in Engineering or Architecture: Must be from a school with at least one curriculu…",
+        "redirect_url": "https://www.adzuna.com/details/5817618362?utm_medium=api&utm_source=04573b2d",
+        "contract_time": "full_time",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        },
+        "salary_is_predicted": "1",
+        "created": "2026-07-27T17:21:04Z",
+        "salary_min": 116249.18,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjE4MzYyIn0.h0uMnMaa6Wni5FjD8eDezSIwdYqw33DPZHhBEbd4y98",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "salary_max": 116249.18,
+        "latitude": 35.154363
+      },
+      {
+        "created": "2026-07-27T17:21:39Z",
+        "id": "5817621922",
+        "salary_max": 99633.77,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjIxOTIyIn0.6yI4oiC6NlP0Kj_-K4wQqNG4bvZCsbNJwNNOZ-WEYos",
+        "salary_min": 99633.77,
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "title": "Healthcare Engineer",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy English Language Proficiency: Healthcare Engineer candidates must be proficient in spoken and written English in accordance with 38 U.S.…",
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "location": {
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "area": [
+            "US"
+          ],
+          "display_name": "US"
+        },
+        "salary_is_predicted": "1",
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817621922?utm_medium=api&utm_source=04573b2d",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        }
+      },
+      {
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjIwODc1In0.4AWlUn7D0TKGfOZt4kTKinXN-X1oAH0It8-YAl6O7QE",
+        "salary_min": 104159.69,
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "salary_max": 104159.69,
+        "latitude": 39.77745,
+        "created": "2026-07-27T17:21:30Z",
+        "redirect_url": "https://www.adzuna.com/details/5817620875?utm_medium=api&utm_source=04573b2d",
+        "contract_time": "full_time",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        },
+        "salary_is_predicted": "1",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at lea…",
+        "longitude": -86.109012,
+        "id": "5817620875",
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "location": {
+          "display_name": "Indianapolis, Marion County",
+          "area": [
+            "US",
+            "Indiana",
+            "Marion County",
+            "Indianapolis"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "title": "Healthcare Engineer"
+      },
+      {
+        "salary_max": 94120,
+        "latitude": 43.043978,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjIxMTkwIn0.XiZLzmerIk446e4GGUJiFSxs3MIMsjEfznMMm447fvY",
+        "salary_min": 94120,
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "created": "2026-07-27T17:21:33Z",
+        "salary_is_predicted": "1",
+        "redirect_url": "https://www.adzuna.com/details/5817621190?utm_medium=api&utm_source=04573b2d",
+        "contract_time": "full_time",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        },
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Proficient in spoken and written English as required by 38 U.S.C. 7403(f) Education: a Bachelor's degree or higher in Engineering or Arc…",
+        "longitude": -87.899151,
+        "id": "5817621190",
+        "title": "Healthcare Engineer",
+        "company": {
+          "__CLASS__": "Adzuna::API::Response::Company",
+          "display_name": "Veterans Health Administration"
+        },
+        "location": {
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "area": [
+            "US",
+            "Wisconsin",
+            "Milwaukee County",
+            "Milwaukee"
+          ],
+          "display_name": "Milwaukee, Milwaukee County"
+        }
+      },
+      {
+        "company": {
+          "__CLASS__": "Adzuna::API::Response::Company",
+          "display_name": "Veterans Health Administration"
+        },
+        "location": {
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "area": [
+            "US",
+            "Kentucky",
+            "Fayette County",
+            "Lexington"
+          ],
+          "display_name": "Lexington, Fayette County"
+        },
+        "title": "Healthcare Engineer - Network",
+        "id": "5817619304",
+        "longitude": -84.485507,
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at lea…",
+        "redirect_url": "https://www.adzuna.com/details/5817619304?utm_medium=api&utm_source=04573b2d",
+        "contract_time": "full_time",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        },
+        "salary_is_predicted": "1",
+        "created": "2026-07-27T17:21:17Z",
+        "salary_min": 114922.78,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTgxNzYxOTMwNCIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.pu0YxM1t6HG4SGG53oNfgVatv4MU7f9kwpQPxMkg06U",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "salary_max": 114922.78,
+        "latitude": 38.013412
+      },
+      {
+        "longitude": -119.80195,
+        "id": "5817621817",
+        "title": "Supervisory Healthcare Engineer",
+        "company": {
+          "__CLASS__": "Adzuna::API::Response::Company",
+          "display_name": "Veterans Health Administration"
+        },
+        "location": {
+          "area": [
+            "US",
+            "California",
+            "Fresno County",
+            "Fresno"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "display_name": "Fresno, Fresno County"
+        },
+        "salary_max": 103874.88,
+        "latitude": 36.842017,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjIxODE3In0.n38W1YnY4NozgFxEbeL5JvtIaN_KwqCSZVBsmhiPXNo",
+        "salary_min": 103874.88,
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "created": "2026-07-27T17:21:38Z",
+        "salary_is_predicted": "1",
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817621817?utm_medium=api&utm_source=04573b2d",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "label": "Engineering Jobs",
+          "tag": "engineering-jobs"
+        },
+        "description": "Qualifications To qualify for this position, applicants must meet all requirements by the closing date of this announcement, 07/28/2026. You may qualify based on your experience and/or education as described below: Specialized Experience: You must have one year of specialized experience equivalent to at least the next lower grade GS-12 in the normal line of progression for the occupation in the organization. Examples of specialized experience would typically include, but are not limited to: . O…"
+      },
+      {
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at lea…",
+        "salary_is_predicted": "1",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        },
+        "redirect_url": "https://www.adzuna.com/details/5817621626?utm_medium=api&utm_source=04573b2d",
+        "contract_time": "full_time",
+        "created": "2026-07-27T17:21:38Z",
+        "latitude": 32.509913,
+        "salary_max": 80016.91,
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "salary_min": 80016.91,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTgxNzYyMTYyNiIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.h0UXgrZmMkqBjaU6q2og2kRhk1BflFi3QJS4WVdTFCU",
+        "title": "Supervisory Healthcare Engineer",
+        "location": {
+          "display_name": "Shreveport, Caddo Parish",
+          "area": [
+            "US",
+            "Louisiana",
+            "Caddo Parish",
+            "Shreveport"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "company": {
+          "__CLASS__": "Adzuna::API::Response::Company",
+          "display_name": "Veterans Health Administration"
+        },
+        "id": "5817621626",
+        "longitude": -93.748587
+      },
+      {
+        "location": {
+          "display_name": "West Roxbury, Suffolk County",
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "area": [
+            "US",
+            "Massachusetts",
+            "Suffolk County",
+            "West Roxbury"
+          ]
+        },
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "title": "Engineering Equipment Operator",
+        "id": "5817620913",
+        "longitude": -71.165852,
+        "description": "Qualifications To qualify for this position, applicants must meet all requirements by the closing date of this announcement. EXPERIENCE: A specific length of training and experience is not required, but you must show evidence of training or experience of sufficient scope and quality of your ability to do the work of this position. Evidence which demonstrates you possess the knowledge, skills, and ability to perform the duties of this position must be supported by detailed descriptions of such o…",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        },
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817620913?utm_medium=api&utm_source=04573b2d",
+        "salary_is_predicted": "1",
+        "created": "2026-07-27T17:21:31Z",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "salary_min": 54440.07,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjIwOTEzIn0.ojanCu-vpsz_TmgMG4NauzZ23fveqXBZtmMomDJ3-DQ",
+        "latitude": 42.279314,
+        "salary_max": 54440.07
+      },
+      {
+        "longitude": -71.037891,
+        "id": "5817620927",
+        "location": {
+          "display_name": "Brockton, Plymouth County",
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "area": [
+            "US",
+            "Massachusetts",
+            "Plymouth County",
+            "Brockton"
+          ]
+        },
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "title": "Engineering Equipment Operator",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTgxNzYyMDkyNyIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.58lRFUpLQUujb88asif0Yep8UGO_3dKlGkGKZJCg9w0",
+        "salary_min": 53269.16,
+        "latitude": 42.072552,
+        "salary_max": 53269.16,
+        "created": "2026-07-27T17:21:31Z",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "label": "Engineering Jobs",
+          "tag": "engineering-jobs"
+        },
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817620927?utm_medium=api&utm_source=04573b2d",
+        "salary_is_predicted": "1",
+        "description": "Qualifications To qualify for this position, applicants must meet all requirements by the closing date of this announcement. EXPERIENCE: A specific length of training and experience is not required, but you must show evidence of training or experience of sufficient scope and quality of your ability to do the work of this position. Evidence which demonstrates you possess the knowledge, skills, and ability to perform the duties of this position must be supported by detailed descriptions of such o…"
+      },
+      {
+        "location": {
+          "display_name": "Carlsbad, Eddy County",
+          "area": [
+            "US",
+            "New Mexico",
+            "Eddy County",
+            "Carlsbad"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "company": {
+          "display_name": "Sodexo",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "title": "Facilities / Engineering Operations Manager 2",
+        "id": "5780182774",
+        "longitude": -104.275373,
+        "description": "Role Overview: Sodexo Energy and Resource is seeking a Facilities/Engineering Operations Manager 2 for an Oil & Gas client in Carlsbad, NM . The ideal candidate will maximize the value of the client’s assets, and achieve the operational and financial goals and objectives by developing, implementing, and executing an overall strategic plan for each property and the portfolio. Incentives: Eligible for sign on bonus What You'll Do: Lead coordination, delivery, and quality assurance of maintenance …",
+        "category": {
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs",
+          "__CLASS__": "Adzuna::API::Response::Category"
+        },
+        "redirect_url": "https://www.adzuna.com/land/ad/5780182774?se=eBRhS2GL8RGchd7aIVvyDQ&utm_medium=api&utm_source=04573b2d&v=B2240D6F23C407708B0B067EF4C7FB57181FFB8A",
+        "contract_time": "full_time",
+        "salary_is_predicted": "1",
+        "created": "2026-06-28T07:08:15Z",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1NzgwMTgyNzc0In0.QE2tJjOGlOg2SnbBIFJJ1-vAzopkhQoebxhnLtNQaBA",
+        "salary_min": 80179.84,
+        "latitude": 32.422554,
+        "salary_max": 80179.84
+      },
+      {
+        "salary_is_predicted": "1",
+        "redirect_url": "https://www.adzuna.com/land/ad/5793859670?se=eBRhS2GL8RGchd7aIVvyDQ&utm_medium=api&utm_source=04573b2d&v=4FAF613A6F3B1409BC147C583893D14972E8859D",
+        "category": {
+          "label": "IT Jobs",
+          "tag": "it-jobs",
+          "__CLASS__": "Adzuna::API::Response::Category"
+        },
+        "title": "Lead Software Engineer (Merchandising Systems)",
+        "description": "Work Where You Matter At Dollar General, our mission is Serving Others! We value each and every one of our employees. Whether you are looking to launch a new career in one of our many convenient Store locations, Distribution Centers, Store Support Center or with our Private Fleet Team, we are proud to provide a wide range of career opportunities. We are not just a retail company; we are a company that values the unique strengths and perspectives that each individual brings. Your difference trul…",
+        "company": {
+          "display_name": "Dollar General",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "location": {
+          "display_name": "Goodlettsville, Davidson County",
+          "area": [
+            "US",
+            "Tennessee",
+            "Davidson County",
+            "Goodlettsville"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "salary_max": 112591.79,
+        "longitude": -86.721229,
+        "latitude": 36.344587,
+        "salary_min": 112591.79,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTc5Mzg1OTY3MCIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.iEcAVXXsJYSfrGRSkvHRDXzOsZSwKu-Per0gBjuzvsw",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "created": "2026-07-09T03:25:59Z",
+        "id": "5793859670"
+      },
+      {
+        "longitude": -94.599852,
+        "id": "5817623184",
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "location": {
+          "display_name": "Kansas City, Jackson County",
+          "area": [
+            "US",
+            "Missouri",
+            "Jackson County",
+            "Kansas City"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location"
+        },
+        "title": "Healthcare Engineer (Project Manager)",
+        "salary_min": 116041.05,
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiZUJSaFMyR0w4UkdjaGQ3YUlWdnlEUSIsImkiOiI1ODE3NjIzMTg0In0.vE33DHaLaoXbpQf05ykTfgQWV4aa_ijfCFqyZxPWxaU",
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "salary_max": 116041.05,
+        "latitude": 39.104173,
+        "created": "2026-07-27T17:21:45Z",
+        "contract_time": "full_time",
+        "redirect_url": "https://www.adzuna.com/details/5817623184?utm_medium=api&utm_source=04573b2d",
+        "category": {
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs",
+          "__CLASS__": "Adzuna::API::Response::Category"
+        },
+        "salary_is_predicted": "1",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy English Language Proficiency Healthcare Engineer candidates must be proficient in spoken and written English in accordance with 38 U.S.C…"
+      },
+      {
+        "longitude": -86.322464,
+        "id": "5817620697",
+        "title": "Supervisory Biomedical Engineer (Clinical)",
+        "location": {
+          "area": [
+            "US",
+            "Alabama",
+            "Montgomery County",
+            "Montgomery"
+          ],
+          "__CLASS__": "Adzuna::API::Response::Location",
+          "display_name": "Montgomery, Montgomery County"
+        },
+        "company": {
+          "display_name": "Veterans Health Administration",
+          "__CLASS__": "Adzuna::API::Response::Company"
+        },
+        "latitude": 32.398932,
+        "salary_max": 64871.58,
+        "__CLASS__": "Adzuna::API::Response::Job",
+        "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTgxNzYyMDY5NyIsInMiOiJlQlJoUzJHTDhSR2NoZDdhSVZ2eURRIn0.E2Z-Q-piVfSp2oenUuNTH1vp-8Vh3ACkthIT2dMsVhk",
+        "salary_min": 64871.58,
+        "created": "2026-07-27T17:21:28Z",
+        "salary_is_predicted": "1",
+        "category": {
+          "__CLASS__": "Adzuna::API::Response::Category",
+          "tag": "engineering-jobs",
+          "label": "Engineering Jobs"
+        },
+        "redirect_url": "https://www.adzuna.com/details/5817620697?utm_medium=api&utm_source=04573b2d",
+        "contract_time": "full_time",
+        "description": "Qualifications Basic Requirements: Citizenship Be a citizen of the United States (Non-citizens may be appointed when it is not possible to recruit qualified citizens in accordance with VA Handbook 5005, Part II,] chapter 3, section A, paragraph 3.g.) English Language Proficiency Biomedical Engineers must be proficient in spoken and written English in accordance with chapter 2, section D, paragraph 5a, this part Education and/or Experience The individual must meet either item (1) or (2) below to…"
+      }
+    ],
+    "mean": 130573.35
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "status": 404,
+  "capturedAt": "2026-07-29T15:22:22.158Z",
+  "note": "",
+  "body": {
+    "status": 404,
+    "error": "Job not found"
+  }
+}

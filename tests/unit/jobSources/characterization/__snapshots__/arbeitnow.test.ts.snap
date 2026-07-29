@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`arbeitnowConnector (characterization) > matches today's normalized shape for a typical result page 1`] = `[]`;

@@ -1,0 +1,9 @@
+{
+  "status": 400,
+  "capturedAt": "2026-07-29T15:22:16.972Z",
+  "note": "",
+  "body": {
+    "ok": false,
+    "errors": "Invalid country"
+  }
+}

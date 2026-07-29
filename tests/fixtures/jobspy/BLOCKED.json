@@ -1,0 +1,5 @@
+{
+  "configured": true,
+  "reachable": false,
+  "note": "lib/jobSources/jobSpy.ts's isConfigured() always returns true, but scripts/jobspy_search.py requires the python-jobspy package, which is not installed in this environment. `pip install python-jobspy` was attempted (with explicit user approval) and failed: python-jobspy hard-pins numpy==1.26.3, which has no prebuilt wheel for this machine's Python 3.13 and needs a C/C++ compiler (MSVC/gcc/clang) to build from source — none of which is installed here. Installing a full build toolchain was judged out of scope for a fixture-capture pass and was not done without separately asking. Per the task's own rule ('if a source cannot be reached, record that and move on — do not fabricate a fixture'), no live fixtures were captured for JobSpy. Unblocking this needs either a different Python installation (e.g. 3.11/3.12, which may have prebuilt numpy 1.26.3 wheels) or a C/C++ build toolchain."
+}

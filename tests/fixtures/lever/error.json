@@ -1,0 +1,9 @@
+{
+  "status": 404,
+  "capturedAt": "2026-07-29T15:22:23.941Z",
+  "note": "",
+  "body": {
+    "ok": false,
+    "error": "Document not found"
+  }
+}

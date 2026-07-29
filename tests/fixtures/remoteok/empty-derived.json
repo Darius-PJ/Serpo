@@ -1,0 +1,4 @@
+{
+  "derivedFrom": "typical.json",
+  "note": "RemoteOK has no server-side query param (lib/jobSources/remoteOk.ts filters locally after fetching the full dump) — there's no separate HTTP request that produces an 'empty' response; the exact same full dump in typical.json is what every query receives. 'Empty results' happens after this app's own local keyword filter runs against that real data. Verified: filtering typical.json's real 'position'/'company'/'tags' fields (lowercased, joined) by the nonsense keyword 'zzzznonexistentjobtitle999999' yields zero matches, using the exact same substring-match logic as lib/jobSources/remoteOk.ts:44-49."
+}

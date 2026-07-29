@@ -1,0 +1,4 @@
+{
+  "derivedFrom": "typical.json",
+  "note": "Arbeitnow has no server-side query param at all (lib/jobSources/arbeitnow.ts filters locally after fetching the full feed) — the exact same feed in typical.json is what every query receives. 'Empty results' happens after this app's own local keyword filter runs against that real data. Verified: filtering typical.json's real 'title'/'company_name'/'tags' fields (lowercased, joined) by the nonsense keyword 'zzzznonexistentjobtitle999999' yields zero matches, using the exact same substring-match logic as lib/jobSources/arbeitnow.ts:42-45."
+}

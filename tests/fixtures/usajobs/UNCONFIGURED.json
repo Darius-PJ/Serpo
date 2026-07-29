@@ -1,0 +1,4 @@
+{
+  "configured": false,
+  "note": "USAJOBS_API_KEY is set in this environment's .env.local, but USAJOBS_USER_AGENT is empty — lib/jobSources/usaJobs.ts's isConfigured() requires both, so this connector is actually unconfigured here today (a real, environment-specific fact, not a hypothetical). USAJobs requires the User-Agent header to be the email address registered against the API key, which isn't something to guess — asking the user for it was judged lower priority than the JobSpy/MSW decisions already raised this session. No live fixtures captured; per the task's own rule, recording this rather than fabricating one. Whoever migrates this adapter in Phase 4 should either set USAJOBS_USER_AGENT locally or capture fixtures with someone who has it configured."
+}

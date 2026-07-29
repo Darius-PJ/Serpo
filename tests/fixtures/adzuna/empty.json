@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "capturedAt": "2026-07-29T15:22:21.557Z",
+  "note": "",
+  "body": {
+    "__CLASS__": "Adzuna::API::Response::JobSearchResults",
+    "results": [],
+    "count": 0
+  }
+}

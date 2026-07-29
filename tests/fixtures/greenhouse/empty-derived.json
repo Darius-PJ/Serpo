@@ -1,0 +1,4 @@
+{
+  "derivedFrom": "typical.json",
+  "note": "Greenhouse's board-jobs endpoint has no server-side keyword filter (lib/jobSources/greenhouseBoard.ts filters locally after fetching the whole board) — the exact same board data in typical.json (real Stripe job listings, 533 jobs) is what every query receives. 'Empty results' happens after this app's own local keyword filter runs against that real data. Verified: filtering typical.json's real 'title' fields (lowercased) by the nonsense keyword 'zzzznonexistentjobtitle999999' yields zero matches, using the exact same substring-match logic as lib/jobSources/greenhouseBoard.ts:29-32."
+}

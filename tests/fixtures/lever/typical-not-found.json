@@ -1,0 +1,16 @@
+{
+  "attempted": true,
+  "reproduced": false,
+  "capturedAt": "2026-07-29T15:30:00.000Z",
+  "note": "Live-checked ~40 real companies commonly associated with Lever (netflix, figma, notion, brex, ramp, box, palantir, plaid, webflow, linear, vercel, sourcegraph, replit, canva, instacart, and more) against https://api.lever.co/v0/postings/<token>?mode=json. Every single one either 404'd or returned an empty array as of 2026-07-29 in this session. The Lever API itself is reachable and working correctly (see error.json's genuine 404 for a nonexistent token) — this isn't a 'source cannot be reached' situation, just an inability to find a currently-live real board token from this session's knowledge. Plausible explanations: ATS platform migrations since training data, or a token-format change. Not fabricating a typical/empty fixture — recording this honestly instead. Whoever migrates the Lever adapter in Phase 4 should supply a real, currently-verified board token (e.g. from a company they know still uses Lever) to complete this fixture set.",
+  "candidatesTried": [
+    "netflix", "figma", "notion", "brex", "ramp", "attentive", "reddit",
+    "eventbrite", "postmates", "box", "palantir", "affirm", "plaid", "carta",
+    "scaleai", "webflow", "linear", "vercel", "retool", "rippling", "gusto",
+    "checkr", "lattice", "gem", "mixpanel", "amplitude", "segment", "calendly",
+    "zapier", "flexport", "opendoor", "thumbtack", "nerdwallet", "close", "clari",
+    "sourcegraph", "replit", "framer", "superhuman", "loom", "front", "intercom",
+    "pilot", "brightwheel", "medallia", "yelp", "patreon", "canva", "grammarly",
+    "toast", "instacart", "tripactions", "navan", "betterup"
+  ]
+}

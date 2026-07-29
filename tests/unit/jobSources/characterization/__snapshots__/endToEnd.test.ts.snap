@@ -1,0 +1,991 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`searchAllSources (golden end-to-end characterization) > snapshots today's real, per-source-grouped output for a representative query 1`] = `
+[
+  {
+    "label": "Adzuna",
+    "listings": [
+      {
+        "company": "Marriott International, Inc",
+        "description": "Additional Information Job Number 26084229 Job Category Engineering & Facilities Location 2365 Kaanapali Pkwy, Lahaina, Hawaii, United States, 96761 VIEW ON MAP Schedule Full Time Located Remotely? N Position Type Non-Management Pay Range: $33.11-$33.11 per hour POSITION SUMMARY Respond and attend to guest repair requests. Communicate with guests/customers to resolve maintenance issues with little to no supervision. Perform preventive maintenance on tools and equipment, including cleaning and l…",
+        "id": "adzuna:5798946719",
+        "location": "Lahaina, Maui",
+        "postedAt": "2026-07-13T12:51:59Z",
+        "role": "Engineer III",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/land/ad/5798946719?se=eBRhS2GL8RGchd7aIVvyDQ&utm_medium=api&utm_source=04573b2d&v=636DD1A11E2E769CCF211499E2A6C989A6B9359F",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications NOTE: THE 2-PAGE RESUME REQUIREMENT DOES NOT APPLY TO THIS OCCUPATIONAL SERIES. FOR MORE INFORMATION, REFER TO REQUIRED DOCUMENTS BELOW. To qualify for this position, applicants must meet all requirements within 30 days of the closing date of this announcement. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or …",
+        "id": "adzuna:5817620476",
+        "location": "Seattle, King County",
+        "postedAt": "2026-07-27T17:21:27Z",
+        "role": "Healthcare Engineer-Project Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817620476?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy English Language Proficiency: Healthcare Engineer candidates must be proficient in spoken and written English in accordance with 38 U.S.…",
+        "id": "adzuna:5817621537",
+        "location": "Fresno, Fresno County",
+        "postedAt": "2026-07-27T17:21:37Z",
+        "role": "Healthcare Engineer (Energy Engineer)",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817621537?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Basic Requirements: US Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: (1) Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at least one curriculum accredited by the Accreditation Board for Engineering and Technology, Engineering Accreditation Commission (excludes engineering technology) or National Council of Architec…",
+        "id": "adzuna:5817622415",
+        "location": "Louisville, Jefferson County",
+        "postedAt": "2026-07-27T17:21:41Z",
+        "role": "Healthcare Engineer (Network Engineer)",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817622415?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: 1 United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy 2 English Language Proficiency: Healthcare Engineer candidates must be proficient in spoken and written English in accordance with 38 …",
+        "id": "adzuna:5817618638",
+        "location": "Little Rock, Pulaski County",
+        "postedAt": "2026-07-27T17:21:09Z",
+        "role": "Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817618638?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: Citizenship Be a citizen of the United States (U.S.) Non-citizens may be appointed when it is not possible to recruit qualified citizens in accordance with 38 U.S.C. § 7407(a) English Language Proficiency Healthcare Engineer candidates must be proficient in spoken and written Engl…",
+        "id": "adzuna:5817621487",
+        "location": "White City, Jackson County",
+        "postedAt": "2026-07-27T17:21:36Z",
+        "role": "Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817621487?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications All requirements must be met by the close date of this announcement, 07/27/2026. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at least one curriculum accredited by the Accreditation Board for Engineering and Technology, Engineering Ac…",
+        "id": "adzuna:5817622066",
+        "location": "Des Moines, Polk County",
+        "postedAt": "2026-07-27T17:21:40Z",
+        "role": "Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817622066?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Basic Requirements: United States Citizenship: You must be a citizen of the United States English Language Proficiency: Candidates will not be appointed under authority of 38 U.S.C. chapters 73 or 74, to serve in a direct patient-care capacity in VHA who is not proficient in written and spoken English See Chapter 2, section D, paragraph 5a, this part Education/Experience: Bachelor's degree or higher in Engineering or Architecture: Must be from a school with at least one curriculu…",
+        "id": "adzuna:5817618362",
+        "location": "Memphis, Shelby County",
+        "postedAt": "2026-07-27T17:21:04Z",
+        "role": "Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817618362?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy English Language Proficiency: Healthcare Engineer candidates must be proficient in spoken and written English in accordance with 38 U.S.…",
+        "id": "adzuna:5817621922",
+        "location": "US",
+        "postedAt": "2026-07-27T17:21:39Z",
+        "role": "Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817621922?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at lea…",
+        "id": "adzuna:5817620875",
+        "location": "Indianapolis, Marion County",
+        "postedAt": "2026-07-27T17:21:30Z",
+        "role": "Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817620875?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Proficient in spoken and written English as required by 38 U.S.C. 7403(f) Education: a Bachelor's degree or higher in Engineering or Arc…",
+        "id": "adzuna:5817621190",
+        "location": "Milwaukee, Milwaukee County",
+        "postedAt": "2026-07-27T17:21:33Z",
+        "role": "Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817621190?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at lea…",
+        "id": "adzuna:5817619304",
+        "location": "Lexington, Fayette County",
+        "postedAt": "2026-07-27T17:21:17Z",
+        "role": "Healthcare Engineer - Network",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817619304?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications To qualify for this position, applicants must meet all requirements by the closing date of this announcement, 07/28/2026. You may qualify based on your experience and/or education as described below: Specialized Experience: You must have one year of specialized experience equivalent to at least the next lower grade GS-12 in the normal line of progression for the occupation in the organization. Examples of specialized experience would typically include, but are not limited to: . O…",
+        "id": "adzuna:5817621817",
+        "location": "Fresno, Fresno County",
+        "postedAt": "2026-07-27T17:21:38Z",
+        "role": "Supervisory Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817621817?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy Education: Bachelor's degree or higher in Engineering or Architecture To be acceptable, the curriculum must be from a school with at lea…",
+        "id": "adzuna:5817621626",
+        "location": "Shreveport, Caddo Parish",
+        "postedAt": "2026-07-27T17:21:38Z",
+        "role": "Supervisory Healthcare Engineer",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817621626?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications To qualify for this position, applicants must meet all requirements by the closing date of this announcement. EXPERIENCE: A specific length of training and experience is not required, but you must show evidence of training or experience of sufficient scope and quality of your ability to do the work of this position. Evidence which demonstrates you possess the knowledge, skills, and ability to perform the duties of this position must be supported by detailed descriptions of such o…",
+        "id": "adzuna:5817620913",
+        "location": "West Roxbury, Suffolk County",
+        "postedAt": "2026-07-27T17:21:31Z",
+        "role": "Engineering Equipment Operator",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817620913?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications To qualify for this position, applicants must meet all requirements by the closing date of this announcement. EXPERIENCE: A specific length of training and experience is not required, but you must show evidence of training or experience of sufficient scope and quality of your ability to do the work of this position. Evidence which demonstrates you possess the knowledge, skills, and ability to perform the duties of this position must be supported by detailed descriptions of such o…",
+        "id": "adzuna:5817620927",
+        "location": "Brockton, Plymouth County",
+        "postedAt": "2026-07-27T17:21:31Z",
+        "role": "Engineering Equipment Operator",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817620927?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Sodexo",
+        "description": "Role Overview: Sodexo Energy and Resource is seeking a Facilities/Engineering Operations Manager 2 for an Oil & Gas client in Carlsbad, NM . The ideal candidate will maximize the value of the client’s assets, and achieve the operational and financial goals and objectives by developing, implementing, and executing an overall strategic plan for each property and the portfolio. Incentives: Eligible for sign on bonus What You'll Do: Lead coordination, delivery, and quality assurance of maintenance …",
+        "id": "adzuna:5780182774",
+        "location": "Carlsbad, Eddy County",
+        "postedAt": "2026-06-28T07:08:15Z",
+        "role": "Facilities / Engineering Operations Manager 2",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/land/ad/5780182774?se=eBRhS2GL8RGchd7aIVvyDQ&utm_medium=api&utm_source=04573b2d&v=B2240D6F23C407708B0B067EF4C7FB57181FFB8A",
+      },
+      {
+        "company": "Dollar General",
+        "description": "Work Where You Matter At Dollar General, our mission is Serving Others! We value each and every one of our employees. Whether you are looking to launch a new career in one of our many convenient Store locations, Distribution Centers, Store Support Center or with our Private Fleet Team, we are proud to provide a wide range of career opportunities. We are not just a retail company; we are a company that values the unique strengths and perspectives that each individual brings. Your difference trul…",
+        "id": "adzuna:5793859670",
+        "location": "Goodlettsville, Davidson County",
+        "postedAt": "2026-07-09T03:25:59Z",
+        "role": "Lead Software Engineer (Merchandising Systems)",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/land/ad/5793859670?se=eBRhS2GL8RGchd7aIVvyDQ&utm_medium=api&utm_source=04573b2d&v=4FAF613A6F3B1409BC147C583893D14972E8859D",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Applicants pending the completion of educational or certification/licensure requirements may be referred and tentatively selected but may not be hired until all requirements are met. Basic Requirements: United States Citizenship: Non-citizens may only be appointed when it is not possible to recruit qualified citizens in accordance with VA Policy English Language Proficiency Healthcare Engineer candidates must be proficient in spoken and written English in accordance with 38 U.S.C…",
+        "id": "adzuna:5817623184",
+        "location": "Kansas City, Jackson County",
+        "postedAt": "2026-07-27T17:21:45Z",
+        "role": "Healthcare Engineer (Project Manager)",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817623184?utm_medium=api&utm_source=04573b2d",
+      },
+      {
+        "company": "Veterans Health Administration",
+        "description": "Qualifications Basic Requirements: Citizenship Be a citizen of the United States (Non-citizens may be appointed when it is not possible to recruit qualified citizens in accordance with VA Handbook 5005, Part II,] chapter 3, section A, paragraph 3.g.) English Language Proficiency Biomedical Engineers must be proficient in spoken and written English in accordance with chapter 2, section D, paragraph 5a, this part Education and/or Experience The individual must meet either item (1) or (2) below to…",
+        "id": "adzuna:5817620697",
+        "location": "Montgomery, Montgomery County",
+        "postedAt": "2026-07-27T17:21:28Z",
+        "role": "Supervisory Biomedical Engineer (Clinical)",
+        "source": "adzuna",
+        "url": "https://www.adzuna.com/details/5817620697?utm_medium=api&utm_source=04573b2d",
+      },
+    ],
+    "source": "adzuna",
+  },
+  {
+    "label": "Arbeitnow",
+    "listings": [],
+    "source": "arbeitnow",
+  },
+  {
+    "label": "Himalayas",
+    "listings": [
+      {
+        "company": "Nagarro",
+        "description": "You have begun to prove your worth in our industry! How has the experience been so far? We hope it has been rewarding. At <a href="https://himalayas.app/companies/nagarro">Nagarro</a>, we want to take the word “hope” out of that sentence. At <a href="https://himalayas.app/companies/nagarro">Nagarro</a>, if you are ready to take the next step, we are ready to take you to the next level. Want to work with the coolest tech, the brightest minds, and be able to solve the most challenging problems, then look no further.  <p>Click here to access the application privacy notice</p>👋🏼 We're <a href="https://himalayas.app/companies/nagarro">Nagarro</a>. We are a digital product engineering company that is scaling in a big way! We build products, services, and experiences that inspire, excite, and delight. We work at scale — across all devices and digital mediums, and our people exist everywhere in the world (18,000+ experts across 33 countries, to be exact). Our work culture is dynamic and non-hierarchical. We're looking for great new colleagues. That's where you come in!<p>Originally posted on <a href="https://himalayas.app">Himalayas</a></p>",
+        "id": "himalayas:https://himalayas.app/companies/nagarro/jobs/engineer",
+        "location": "",
+        "postedAt": 1782756963,
+        "role": "Engineer",
+        "source": "himalayas",
+        "url": "https://himalayas.app/companies/nagarro/jobs/engineer",
+      },
+      {
+        "company": "Keystone Experts and Engineers",
+        "description": "<p>When answers matter most, <b><strong>Keystone Experts &amp; Engineers</strong></b> deliver. Keystone specializes in forensic engineering and investigative services for commercial and residential structures, vehicles, and products. Our multi-disciplinary team includes highly experienced engineers, architects, fire investigators, contractors, and industry experts strategically located across the country to serve a national client base. </p><p>Keystone provides streamlined, fact-based forensic consulting services designed to meet our clients’ needs with clarity, accuracy, and timeliness. Our reports are tailored to client specifications and backed by expert analysis, ensuring clear, defensible conclusions and industry-leading turnaround times.</p><p><b><strong>The Keystone Way</strong></b> is more than a process: it’s our commitment to excellence, innovation, integrity, honesty, accuracy, timeliness, and accountability. These values guide every project we undertake. By combining top-tier expertise, open communication, and dependable service, we go beyond industry standards to deliver results our clients can trust.</p><p><b><strong>About the role</strong></b></p><p>We are seeking licensed (PE) Mechanical/Electrical Engineers with experience completing forensic investigations to determine the cause and origin of various site issues; electrical/mechanical fire support, root cause analysis, commissioning and condition assessments correlate and weather-related damage to residential, commercial and industrial properties.</p><p><b><strong>This is a fully remote, part-time, 1099 contracted position.</strong></b></p><p><b><strong>The ideal candidate will have experience...</strong></b></p><ul>
+<li>With power surges, lightning strikes, and evaluating of electrical components after a fire or water intrusion event (wiring, control systems, panels, outlets, and appliances/equipment)</li>
+<li>HVAC units – repair vs. replace after storm/hail damage, cause of damage – wind/hail, improper maintenance, improper installation or product defect of boilers, chillers, pumps, plumbing and heating systems.</li>
+</ul><p><b><strong>What you will do:</strong></b></p><ul>
+<li>Performs engineering failure analysis; specifically, determining cause and of damage, causes and origin of fire, electrocutions and equipment failures.</li>
+<li>Capable of performing site evaluations, field analysis, and assessments that include mechanical, electrical and/or plumbing systems.</li>
+<li>Provide evaluations for failures as a result of hail/wind damage, lightning strike damage, cause of damage – wind/hail, improper maintenance, improper installation or product defect of boilers, chillers, pumps, plumbing and heating systems., freeze events, machinery breakdown, wear and tear, general construction failures, and/or providing general recommendations for remediation and repair.</li>
+<li>Safely access roofs, attics &amp; crawl spaces to photo document areas of interest.</li>
+<li>Identify and interview witnesses and/or other key parties involved.</li>
+<li>Prepare &amp; submit findings and recommendations that can be used to resolve insurance claims or litigation matters.</li>
+</ul><p>.<b><strong>What you will bring:</strong></b></p><ul>
+<li><b><strong>Active Professional Engineering license(s) required</strong></b></li>
+<li>Degree in Mechanical/Electrical engineering or similar field</li>
+<li>Well-versed in building materials, codes, construction methods &amp; common modes of failure</li>
+<li>Ability to adhere to tight deadlines</li>
+<li>Availability to readily accept assignments and perform site inspection within 5-7 days</li>
+<li>Tech-savvy across multiple software platforms, tools / equipment &amp; investigative techniques</li>
+<li>Outstanding written &amp; verbal communications skills</li>
+<li>An analytical mind and strong problem-solving ability</li>
+</ul><p><b><strong>Qualifications</strong></b></p><ul>
+<li><b><strong>Active Professional Engineering license(s) required</strong></b></li>
+<li>Degree in Mechanical/Electrical engineering or similar field</li>
+<li>Well-versed in building materials, codes, construction methods &amp; common modes of failure</li>
+<li>Ability to adhere to tight deadlines</li>
+<li>Availability to readily accept assignments and perform site inspection within 5-7 days</li>
+<li>Tech-savvy across multiple software platforms, tools / equipment &amp; investigative techniques</li>
+<li>Outstanding written &amp; verbal communications skills</li>
+<li>An analytical mind and strong problem-solving ability</li>
+</ul><p>Originally posted on <a href="https://himalayas.app">Himalayas</a></p>",
+        "id": "himalayas:https://himalayas.app/companies/keystone-experts-and-engineers/jobs/mechanical-electrical-engineer-6736651377",
+        "location": "",
+        "postedAt": 1782650774,
+        "role": "Mechanical/Electrical Engineer",
+        "source": "himalayas",
+        "url": "https://himalayas.app/companies/keystone-experts-and-engineers/jobs/mechanical-electrical-engineer-6736651377",
+      },
+      {
+        "company": "TheHiveCareers",
+        "description": "<h3>Location: Caribbean (Remote) </h3><h3>Job Type: Executive | Remote </h3><h3>About the Role: </h3><p>We are seeking a Chief Engineer to direct engineering operations for infrastructure, systems, or product-based projects across the Caribbean. </p><h3>Responsibilities: </h3><p>Oversee technical design, implementation, and performance standards </p><p>Manage multidisciplinary teams and contractors </p><p>Ensure quality assurance, regulatory compliance, and safety </p><p>Lead engineering planning, budgeting, and innovation </p><h3>Requirements: </h3><p>Bachelors or Masters in Engineering (Civil, Electrical, Mechanical, etc.) </p><h3>10+ years in engineering leadership </h3><h3>Caribbean/regional experience preferred </h3><h3>Licensure or PE designation is a plus </h3><p>Originally posted on <a href="https://himalayas.app">Himalayas</a></p>",
+        "id": "himalayas:https://himalayas.app/companies/thehivecareers/jobs/remote-chief-engineer",
+        "location": "",
+        "postedAt": 1783746296,
+        "role": "Remote Chief Engineer",
+        "source": "himalayas",
+        "url": "https://himalayas.app/companies/thehivecareers/jobs/remote-chief-engineer",
+      },
+      {
+        "company": "SAPSOL Technologies Inc.",
+        "description": "<h3>Must have:</h3><ul>
+<li><strong>Hydraulic Systems</strong></li>
+<li><strong>Fuel Systems</strong></li>
+<li><strong>Hydromechanical Systems</strong></li>
+<li><strong>System Integration</strong></li>
+<li><strong>Mechanical Design</strong></li>
+</ul><p><strong>Job Responsibilities:</strong><br> •Support design and development of hydromechanical systems<br> •Perform analysis of hydraulic and fuel systems</p><h3> •Support system integration activities</h3><p> •Participate in design reviews and validation activities<br> •Support testing and validation of hydromechanical systems<br> •Perform troubleshooting and root cause analysis</p><p><strong>Qualifications:</strong><br> •Bachelor’s or Master’s degree in Engineering<br> •Experience in hydromechanical systems or related domain<br> •Knowledge of hydraulic and fuel systems<br> •Knowledge of system engineering principles<br> •Experience in mechanical system design and integration</p><p>Originally posted on <a href="https://himalayas.app">Himalayas</a></p>",
+        "id": "himalayas:https://himalayas.app/companies/sapsol-technologies-inc/jobs/hydromechanical-engineer",
+        "location": "",
+        "postedAt": 1784070479,
+        "role": "Hydromechanical Engineer",
+        "source": "himalayas",
+        "url": "https://himalayas.app/companies/sapsol-technologies-inc/jobs/hydromechanical-engineer",
+      },
+      {
+        "company": "parcelLab",
+        "description": "<h3>The Role &amp; The Product</h3><p>At <a href="https://himalayas.app/companies/parcellab">parcelLab</a>, we help brands improve what happens after checkout: delivery updates, tracking, returns, customer communication, and the operational work behind all of it. We’re looking for an Engineering Manager to lead our Returns (v2) Platform team.</p><p>This is not a legacy maintenance role. Our Returns Portal is a recently rebuilt product area with deep Shopify integration, a native Shopify app, advanced exchange logic, customer profiles, fraud-prevention capabilities, and highly configurable workflows for enterprise customers. It is an AI-native product with AI embedded directly into the returns and back-office experience, including agent-driven customisation and automation logic.</p><p>Returns sound simple from the outside, but the technical reality is highly complex. The platform must handle intricate eligibility rules, routing logic, carrier integrations, and endless edge cases while remaining incredibly reliable in production.</p><p>As the Engineering Manager, you will lead the engineering team responsible for this platform, working across backend services, APIs, workflows, and AI-assisted capabilities. You do not need to be on the critical path for daily implementation, but you must stay close enough to the system to review designs, spot risks early, and maintain technical credibility with a team of experienced engineers. You’ll bring clarity to complex architectural decisions, collaborate closely with cross-functional peers (Product, Design, Infrastructure, and Commercial teams), and create the space for senior engineers to do their best work.</p><h3>What you’ll do</h3><ul>
+<li><p><strong>Lead, coach, and develop</strong> a high-performing team of experienced engineers, fostering a culture of ownership and continuous improvement.</p></li>
+<li><p><strong>Partner with Product and Go-To-Market</strong> teams to shape the Returns Platform roadmap and turn ambiguity into clear execution plans.</p></li>
+<li><p><strong>Guide technical decisions</strong> across backend services, APIs, distributed systems, and complex product capabilities like rules engines and Shopify integrations.</p></li>
+<li><p><strong>Help the team make practical trade-offs</strong> around delivery speed, reliability, technical debt, extensibility, and long-term platform health.</p></li>
+<li><p><strong>Own the talent lifecycle</strong> for your team, including hiring, onboarding, performance management, and career growth paths.</p></li>
+<li><p><strong>Champion modern engineering tools</strong>, helping the team integrate AI into their development workflows thoughtfully without lowering the bar for quality.</p></li>
+</ul><h3>What we’re looking for (Non-Negotiables)</h3><ul>
+<li><p><strong>Proven leadership track record:</strong> Experience leading and coaching senior engineers through complex product and architecture decisions in a SaaS, platform, or B2B environment.</p></li>
+<li><p><strong>Core Technical Credibility (Python):</strong> A strong technical background in backend engineering, distributed systems, and scalable APIs. Because our V2 platform relies heavily on Python, you must have hands-on experience with Python and its ecosystem (e.g., Django) to effectively review designs, challenge technical assumptions, and guide the team.</p></li>
+<li><p><strong>Enterprise Product Judgment:</strong> Comfort building highly configurable enterprise products without turning the platform into bespoke, customer-by-customer software.</p></li>
+<li><p><strong>Cross-functional Collaboration:</strong> Ability to build strong relationships and communicate clearly with both deeply technical engineers and non-technical commercial stakeholders.</p></li>
+<li><p><strong>Pragmatic Delivery Focus:</strong> Strong judgment around sequencing, technical debt, and maintainability—you aren't satisfied just because "the tickets are done."</p></li>
+</ul><h3>Bonus points (Nice-to-Haves)</h3><ul>
+<li><p><strong>Domain Expertise:</strong> Experience in e-commerce, logistics, returns, fulfilment, post-purchase, or supply chain platforms.</p></li>
+<li><p><strong>Ecosystem Experience:</strong> Deep familiarity with Shopify, commerce platforms, carrier integrations, or merchant tooling.</p></li>
+<li><p><strong>Advanced Workflows:</strong> Experience with complex exchange flows, customer profiles, fraud prevention, rules engines, or event-driven architecture.</p></li>
+<li><p><strong>Tech Stack Extras:</strong> Experience with PostgreSQL, AWS, Terraform, or modern observability tooling.</p></li>
+<li><p><strong>AI &amp; Automation:</strong> Experience building AI-assisted product capabilities, internal tools, or agent-driven workflows.</p></li>
+<li><p><strong>Distributed Teams:</strong> Experience leading remote or internationally distributed teams.</p></li>
+</ul><h3>This role is a good fit if</h3><ul>
+<li><p>You enjoy leading strong engineers without needing to micro-manage or control every detail.</p></li>
+<li><p>You thrive in product areas where the complexity is real: edge cases, heavy integrations, and tight operational constraints.</p></li>
+<li><p>You are genuinely interested in how AI can become part of the core product architecture and daily engineering workflow.</p></li>
+<li><p>You can challenge a roadmap constructively, asking the sharp questions that help a team navigate trade-offs between speed and quality.</p></li>
+</ul><h3>Why join <a href="https://himalayas.app/companies/parcellab">parcelLab</a>
+</h3><p><a href="https://himalayas.app/companies/parcellab">parcelLab</a> connects tracking, delivery, returns, and customer engagement in one post-purchase platform. We help brands reduce friction for their customers and build stronger relationships after checkout.</p><p>Our Returns Platform is one of the product areas where a lot is being rebuilt, expanded, and pushed forward. You’ll join at a point where the foundation is new, the product ambition is high, and the technical decisions still matter.</p><h3>Every day, we:</h3><ul>
+<li><h3>Monitor over six million shipments.</h3></li>
+<li><h3>Support customers across 175+ countries.</h3></li>
+<li><p>Power post-purchase experiences for 1,000+ brands.</p></li>
+<li><h3>Integrate with 350+ carriers worldwide.</h3></li>
+<li><h3>Work as a global team of 150+ people.</h3></li>
+</ul><h3>We offer:</h3><ul>
+<li><h3>Competitive salary and benefits.</h3></li>
+<li><h3>Flexible remote-first working.</h3></li>
+<li><p>Career development and mentorship opportunities.</p></li>
+<li><h3>Mental wellbeing support and coaching.</h3></li>
+<li><p>Regular company retreats, meet-ups, and off-sites.</p></li>
+<li><p>A collaborative international team representing 25+ nationalities.</p></li>
+<li><p>A culture that values creativity, experimentation, ownership, and practical execution.</p></li>
+</ul><p><em>At <a href="https://himalayas.app/companies/parcellab">parcelLab</a>, people bring their own perspectives. We judge qualifications and performance, not age, sex, religion, skin colour, gender identity, family status, or disability.</em></p><p>Originally posted on <a href="https://himalayas.app">Himalayas</a></p>",
+        "id": "himalayas:https://himalayas.app/companies/parcellab/jobs/engineer-manager-returns",
+        "location": "",
+        "postedAt": 1783984056,
+        "role": "Engineer Manager, Returns",
+        "source": "himalayas",
+        "url": "https://himalayas.app/companies/parcellab/jobs/engineer-manager-returns",
+      },
+      {
+        "company": "AECOM",
+        "description": "<p><a href="https://himalayas.app/companies/aecom">AECOM</a> is seeking a skilled  Mechanical Engineer to join our Water business line, specializing in large scale mechanical engineering projects <strong>to be based anywhere in the United States</strong>. In this role, you will design, develop, and oversee the design of large-scale mechanical systems that are critical to water infrastructure.</p><p>You will work on a variety of complex projects involving water control structures such as vertical lift gates, radial gates, sluice gates, Tainter gates, sector gates, bulkheads, and stoplogs.  Additionally, you will be involved with sizing and specifying winches, wire rope and chain hoisting systems, hydraulic, pneumatic and electric actuators, gear systems, and other precision mechanisms associated with these gates, delivering solutions that meet the highest standards of performance and reliability.  Familiarity with various types of cranes, including Overhead Gantry Cranes and Rail Mounted Gantry Cranes that are associated with these structures is a plus.  The ideal candidate will also have experience with large pumps and pumping stations and be experienced with Autodesk CAD software.</p><h3>Key Responsibilities</h3><ul>
+<li>Design and develop large-scale mechanical systems for water infrastructure projects.</li>
+<li>Create 3D models using Autodesk Inventor, Autodesk Revit or other mechanical design software for use in design drawings.</li>
+<li>Size and select hoists, actuators and associated waterworks mechanical systems.</li>
+<li>Conduct engineering calculations and analysis to ensure structural integrity and mechanical performance according to industry standards and specifications.</li>
+<li>Review and approve engineering drawings and vendor submittals.</li>
+<li>Collaborate with multidisciplinary teams including Civil, Structural, and Electrical Engineers.</li>
+<li>Ensure designs comply with applicable codes, standards, and client requirements.</li>
+<li>Prepare technical reports, specifications, and documentation.</li>
+<li>Support proposal development by providing technical input.</li>
+<li>The ability to travel a few times a year for site visits and meetings with clients.</li>
+</ul><h3>Minimum Requirements</h3><ul>
+<li>Bachelor’s Degree from an ABET accredited Mechanical Engineering university program and 6+ years of relevant experience or demonstrated equivalency of experience and/or education.</li>
+<li>Professional Engineering licensure in the United States or abilty to obtain licensure within two years</li>
+</ul><h3>Preferred Experience</h3><ul>
+<li>10+ years of mechanical engineering design related to water, infrastructure, or similar industrial mechanical equipment.</li>
+<li>Experience with locks, dams and other large water works structures.</li>
+<li>Ability to work independently with guidance.</li>
+<li>The ability to travel a few times a year for site visits and meetings with clients.</li>
+<li>Mechanical design experience of gates, hoisting mechanisms, actuators or large-scale mechanical systems.</li>
+<li>Experience with cranes or other lifting devices.</li>
+<li>Experience with hydraulic systems and hydraulic schematics.</li>
+<li>Experience with large pumps, pump stations or pumping systems.</li>
+<li>Experience with heavy steel fabrication, welding, construction and/or large-scale mechanical engineering projects.</li>
+<li>Proficiency in Autodesk Inventor, Autodesk Revit or other 3D design tools.</li>
+<li>Proficiency in Microsoft Excel.</li>
+<li>Proficiency with Finite Element Analysis (FEA) software and analysis methods.</li>
+<li>Experience working in hybrid environments with multidisciplinary teams.</li>
+</ul><ul>
+<li>Relocation is not available for this role </li>
+<li>Sponsorship is not available for ths role.</li>
+</ul><p>At <a href="https://himalayas.app/companies/aecom">AECOM</a>, we are committed to maintaining a secure and trustworthy recruitment process and take any fraudulent hiring activity seriously. <strong><em>To support this commitment, all newly hired employees are required to attend an in-person Day 1 onboarding at an <a href="https://himalayas.app/companies/aecom">AECOM</a> office location as a condition of employment.</em></strong></p><h3>About <a href="https://himalayas.app/companies/aecom">AECOM</a>
+</h3><p><a href="https://himalayas.app/companies/aecom">AECOM</a> is proud to offer comprehensive benefits to meet the diverse needs of our employees. Depending on your employment status, <a href="https://himalayas.app/companies/aecom">AECOM</a> benefits may include medical, dental, vision, life, AD&amp;D, disability benefits, paid time off, leaves of absences, voluntary benefits, perks, flexible work options, well-being resources, employee assistance program, business travel insurance, service recognition awards, retirement savings plan, and employee stock purchase plan. </p><p><a href="https://himalayas.app/companies/aecom">AECOM</a> is the global infrastructure leader, committed to delivering a better world. As a trusted professional services firm powered by deep technical abilities, we solve our clients’ complex challenges in water, environment, energy, transportation and buildings. Our teams partner with public- and private-sector clients to create innovative, sustainable and resilient solutions throughout the project lifecycle – from advisory, planning, design and engineering to program and construction management. <a href="https://himalayas.app/companies/aecom">AECOM</a> is a Fortune 500 firm that had revenue of $16.1 billion in fiscal year 2025. Learn more at aecom.com. </p><h3>What makes <a href="https://himalayas.app/companies/aecom">AECOM</a> a great place to work</h3><p>You will be part of a global team that champions your growth and career ambitions. Work on groundbreaking projects - both in your local community and on a global scale - that are transforming our industry and shaping the future. With cutting-edge technology and a network of experts, you’ll have the resources to make a real impact. Our award-winning training and development programs are designed to expand your technical expertise and leadership skills, helping you build the career you’ve always envisioned. Here, you’ll find a welcoming workplace built on respect, collaboration and community—where you have the freedom to grow in a world of opportunity. </p><p>As an Equal Opportunity Employer, we believe in your potential and are here to help you achieve it. All your information will be kept confidential according to EEO guidelines. </p><h3>Work with Us. Change the World.</h3><p>At <a href="https://himalayas.app/companies/aecom">AECOM</a>, we're delivering a better world. Whether improving your commute, keeping the lights on, providing access to clean water, or transforming skylines, our work helps people and communities thrive. We are the world's trusted infrastructure consulting firm, partnering with clients to solve the world’s most complex challenges and build legacies for future generations.</p><p>There has never been a better time to be at <a href="https://himalayas.app/companies/aecom">AECOM</a>. With accelerating infrastructure investment worldwide, our services are in great demand. We invite you to bring your bold ideas and big dreams and become part of a global team of over 50,000 planners, designers, engineers, scientists, digital innovators, program and construction managers and other professionals delivering projects that create a positive and tangible impact around the world.</p><p>We're one global team driven by our common purpose to deliver a better world. Join us.</p><p>Originally posted on <a href="https://himalayas.app">Himalayas</a></p>",
+        "id": "himalayas:https://himalayas.app/companies/aecom/jobs/mechanical-engineer",
+        "location": "",
+        "postedAt": 1780103137,
+        "role": "Mechanical Engineer",
+        "source": "himalayas",
+        "url": "https://himalayas.app/companies/aecom/jobs/mechanical-engineer",
+      },
+    ],
+    "source": "himalayas",
+  },
+  {
+    "label": "Jobicy",
+    "listings": [
+      {
+        "company": "Toast",
+        "description": "<p><strong>Location(s): </strong>US (remote), Boston (hybrid), or New York (hybrid)</p><p> </p><p>Years spent building on the restaurant front lines taught us how to build for speed, reliability, and complexity. Built for the dinner rush, our cloud-based platform and tough hardware now power high-velocity operations beyond restaurants. Join us to expand Toast’s impact to other industries – helping all kinds of business operators delight their customers, do what they love, and thrive.</p><p><strong>Bready* to make a change?</strong></p><p>Toast’s New Ventures business unit has the goal of researching, developing, and eventually scaling a new generation of products and business lines that can have a substantial impact on Toast’s long-term growth. In this unique role, you will be one of the founding engineers on one of our New Venture teams. If you are the type of engineer who would love to build from scratch on the existing Toast ecosystem, this could be the perfect job for you.</p><p>We are in the early stages of building out features that cater to new types of establishments, and have seen an exciting level of interest in early conversations with operators. We’re scrappy and motivated to capture this growth, with many opportunities to make a big impact in this emerging space!</p><p><strong>About this roll* (Responsibilities)</strong></p><ul>
+<li>Be a strong independent <strong>fullstack</strong> contributor for a new team to address critical operator needs currently unmet by Toast. Pair closely with Principal and Staff engineers to ship our roadmap.</li>
+<li>Bring <strong>frontend</strong> expertise to the team, establishing and advocating for best practices in frontend patterns to elevate our UI architecture and development standards.</li>
+<li>Contribute to the architecture and implementation of key features and components for the New Venture across the Toast codebase.</li>
+<li>Understand operator needs and contribute to the team’s business strategy.</li>
+<li>Collaborate closely with New Ventures Leads to successfully launch an MVP and facilitate its scalable adoption by a broad customer base.</li>
+<li>Navigate diverse codebases across disciplines to consistently deliver high-quality code within established timelines.</li>
+<li>Demonstrate a high degree of ownership in all aspects of development.</li>
+<li>Leverage cutting edge AI tools to enhance your development workflow, improve velocity, and help pioneer new approaches to building - contributing to a culture of innovation and productivity across the team.</li>
+</ul><p><strong>Do you have the right ingredients*? (Requirements)</strong></p><ul>
+<li>Proficiency in <strong>React</strong> and modern frontend frameworks</li>
+<li>Proficiency in <strong>Kotlin</strong> (preferred) or <strong>Java</strong></li>
+<li>A track record of significant technical impact on your team.</li>
+<li>Experience in <strong>0 -&gt; 1 builds</strong>.</li>
+<li>Strong experience with frontend patterns and architecture, with a proven ability to advise others on building scalable and maintainable frontend solutions.</li>
+<li>Hands-on experience in working within complex, large-scale distributed systems in production environments.</li>
+<li>Experience in distributed systems, asynchronous messaging, event-driven architecture, APIs, and integration patterns, especially as they relate to front end clients.</li>
+<li>Demonstrated ability to deliver clean, maintainable, and resilient code that withstands the test of time.</li>
+<li>Exceptional communication and collaboration skills.</li>
+<li>Experience in communicating technical designs within their team.</li>
+<li>Act as a collaborative and solution-oriented partner to leadership and colleagues.</li>
+</ul><p><strong>AI at Toast</strong></p><p>At Toast, one of our company values is that we're hungry to build and learn. We believe learning new AI tools empowers us to build for our customers faster, more independently, and with higher quality. We provide these tools across all disciplines, from Engineering and Product to Sales and Support, and are inspired by how our Toasters are already driving real value with them. The people who thrive here are those who embrace changes that let us build more for our customers; it’s a core part of our culture.</p><p><strong>Our Total Rewards Philosophy </strong><br>We strive to provide competitive compensation and benefits programs that help to attract, retain, and motivate the best and brightest people in our industry. Our total rewards package goes beyond great earnings potential and provides the means to a healthy lifestyle with the flexibility to meet Toasters’ changing needs. Learn more about our benefits at <a href="https://careers.toasttab.com/toast-benefits" target="_blank" rel="nofollow ugc noopener">https://careers.toasttab.com/toast-benefits</a>.</p><div><div><div><p>The base salary range for this role is listed below. The starting salary will be determined based on skills, experience, and geographic location. In addition to base salary, our total rewards components include cash compensation (overtime, bonus/commissions if eligible), equity, and benefits. You can learn more about how we align pay with local labor markets in our <a href="https://careers.toasttab.com/us-pay-zones" target="_blank" rel="nofollow ugc noopener">Geographic Pay Zone Philosophy</a>.</p></div><div>Zone A</div><div>$159,000—$254,000 USD</div></div><div><div>Zone B</div><div>$138,000—$221,000 USD</div></div><div><div>Zone C</div><div>$125,000—$200,000 USD</div></div></div><div><p><strong>How Toast Uses AI in its Hiring Process</strong></p>
+<p>Throughout the hiring process, our goal is to get to know you. We use AI tools to support our recruiters and interviewers with tasks like note-taking, summarization, and documentation of interviews to ensure they can be fully focused on your conversation. All hiring decisions are made by people. To learn more: <a href="https://careers.toasttab.com/ai-in-hiring" rel="nofollow ugc noopener" target="_blank">https://careers.toasttab.com/ai-in-hiring</a></p>
+<p><strong>Our Approach to Hybrid Working</strong><br />We embrace a hybrid work model that fosters in-person collaboration while valuing individual needs. Our goal is to build a strong culture of connection as we work together to empower the hospitality community, regardless of location. Please visit the Locations page on our career site to learn more about our in-office expectations by region: <a href="https://careers.toasttab.com/locations-toast" rel="nofollow ugc noopener" target="_blank">https://careers.toasttab.com/locations-toast</a></p>
+<p><strong><strong>Diversity, Equity, and Inclusion is Baked into our Recipe for Success</strong></strong></p>
+<p>At Toast, our employees are our secret ingredient—when they thrive, we thrive. The restaurant industry is one of the most diverse, and we embrace that diversity with authenticity, inclusivity, respect, and humility. By embedding these principles into our culture and design, we create equitable opportunities for all and raise the bar in delivering exceptional experiences.</p>
+<p><strong>We Thrive Together</strong></p>
+<p>We embrace a hybrid work model that fosters in-person collaboration while valuing individual needs. Our goal is to build a strong culture of connection as we work together to empower the restaurant community. To learn more about how we work globally and regionally, check out: <a href="https://careers.toasttab.com/locations-toast" target="_blank" rel="nofollow ugc noopener">https://careers.toasttab.com/locations-toast</a>.</p>
+<p><strong>Apply today!</strong></p>
+<p>Toast is committed to creating an accessible and inclusive hiring process. As part of this commitment, we strive to provide reasonable accommodations for persons with disabilities to enable them to access the hiring process. If you need an accommodation to access the job application or interview process, please contact <a href="mailto:candidateaccommodations@toasttab.com" rel="nofollow ugc noopener" target="_blank">candidateaccommodations@toasttab.com</a>.</p>
+<p><em>------</em></p>
+<p><em>For roles in the United States, it is unlawful in Massachusetts to require or administer a lie detector test as a condition of employment or continued employment. An employer who violates this law shall be subject to criminal penalties and civil liability.</em></p></div>",
+        "id": "jobicy:149290",
+        "location": "USA",
+        "postedAt": "2026-07-29T04:30:03+00:00",
+        "role": "Senior Software Engineer (Fullstack), New Ventures",
+        "source": "jobicy",
+        "url": "https://jobicy.com/jobs/149290-senior-software-engineer-fullstack-new-ventures",
+      },
+      {
+        "company": "QAD, Inc.",
+        "description": "<h2>Company Description</h2><p><strong>Redzone is the #1 Connected Workforce Solution </strong>for manufacturers big and small. We work to improve efficiency in plants, provide coaching for best practices, and enable the front-line worker to improve the quality of their work and their work life by providing them with tools, processes, and collaboration tools to keep their manufacturing lines running smoothly and efficiently. </p><p>At Redzone we focus on the customer experience, listening to the customer, and providing solutions that create great outcomes. We are a combination of great leadership, years of manufacturing experience, and an incredible technology team that all work together to create great products. </p><p>This role is fully remote.</p><h2>Job Description</h2><p>ChampionAI is QAD | Redzone agentic platform, purpose-built for manufacturing and utilized by the various business units within QAD | Redzone. This engineer joins the core platform team with three main areas of focus: building new capabilities into the platform, helping Applied AI teams at partner business units build and ship Champions correctly, and directly building Champion agents for business-unit use cases when needed.<br>
+You will work in the same codebase as the Applied AI engineers you support, which keeps the enablement work<br>
+practical and the platform work focused on real problems.</p><p>
+<strong>Key Responsibilities</strong><br>
+<strong>Platform Development</strong></p><ul><li>Build and ship features across the Champion platform repositories</li><li> Improve developer experience: tooling, scaffolding, internal documentation, and onboarding paths for Applied AI engineers.</li><li>Maintain and evolve the MCP tool server and agent infrastructure that BU teams depend on.</li><li>Identify and address friction points that slow down Champion development or deployment</li></ul><p><strong>Applied AI Enablement</strong></p><ul><li>Support BU Applied AI engineers in building, deploying, and operating Champions correctly</li><li>Review agent implementations for prompt quality, scope enforcement, auth configuration, and deployment setup</li><li>Contribute to internal engineering guides and skill documentation</li><li>Pair with BU engineers on first K8S manifest creation, database registration, and LaunchDarkly prompt rollout</li></ul><p><strong>Agent Development</strong></p><ul><li>Design and build Champion agents for BU use-cases when the platform team is directly engaged</li><li>Write and iterate on system prompts, tool bindings, and context injection for production agents</li><li>Register agents in Champion Server and configure LaunchDarkly-gated prompt rollout across environments</li></ul><p><strong>Engineering Practices</strong><br>
+We follow trunk-based development with PR-gated merges to main. Engineers are expected to:</p><ul><li>Write tests before implementing. TDD is the expectation, not a nice-to-have.</li><li>Keep PRs small and focused; use feature flags to ship partial work incrementally</li><li>Follow conventional commit format (feat:, fix:, etc.)</li><li>Be mindful of API and schema backward-compatibility; prefer additive changes over breaking ones</li><li>Review your own diff before requesting review</li></ul><h2>Qualifications</h2><p><strong>Core Requirements</strong></p><ul><li>Python: Proficient in async Python, Pydantic, type hints, and FastAPI. Experience with the Strands agent SDK or a comparable agentic framework. Testing is non-optional: candidates should be comfortable with pytest, pytest- asyncio, and DeepEval for agent-specific evaluation. We test agent behavior, not just unit logic.</li><li>Prompt Engineering: Able to write and iterate on production system prompts: XML-structured, scope-enforced, with tool descriptions that guide LLM delegation reliably.</li><li>Model Context Protocol (MCP): Solid understanding of MCP and hands-on experience building or consuming MCP servers. Familiarity with Agent-to-Agent (A2A) protocol is a strong plus.</li><li>Agent Patterns: Familiar with multi-agent architectures and orchestration patterns beyond basic ReAct: supervisor/subagent delegation, parallel tool use, handoffs, and context management across agent boundaries.</li><li>Agent Evals: Able to design and run evaluation suites for agent behavior: correctness checks, scope enforcement tests, regression coverage, and systematic prompt iteration based on eval results.</li><li>Docker: Comfortable authoring Dockerfiles, multi-stage builds, and local dev environments via docker-compose / make.</li><li>PostgreSQL: Comfortable with templated INSERT/SELECT, foreign key relationships, and reading an ER diagram.</li><li>Git / Semantic Versioning: Follows conventional commit format (feat:, fix:) and a PR-based trunk workflow.</li></ul><p><strong>Nice to Have</strong></p><ul><li>Kubernetes: Working knowledge of Deployments, Services, ConfigMaps, and ServiceAccounts. Able to read and adapt K8s manifests and use kubectl for basic troubleshooting.</li><li>AWS: Working knowledge of ECR, EKS, IAM, and Bedrock (inference layer).</li><li>OAuth2 / OIDC: Conceptual understanding of Authorization Code Flow with PKCE, token exchange, and agent auth delegation.</li><li>Terraform: Beginner-level familiarity; able to make targeted changes to existing modules and interpret a plan diff.</li><li>LaunchDarkly: Experience managing feature flags or AI config overrides for environment-gated rollout.</li><li>Document Intelligence / OCR: AWS Textract or comparable pipeline experience for use cases involving structured document extraction.</li></ul><p>
+<strong>AI-Native Development</strong></p><ul><li>We run an AI-native SDLC. AI-assisted tools (Claude Code, Cursor) are part of the standard engineering workflow at every stage: planning, implementation, review, and documentation. This is not optional or supplemental; it is how we work. Candidates should be comfortable with AI-assisted development and willing to invest in getting good at it.</li><li>Use Claude Code and Cursor actively across planning, implementation, and code review</li><li>Know when AI output is wrong and push back on it.</li><li>Help drive adoption across the team by sharing what works</li></ul><p><strong>What This Role Is Not</strong><br>
+This is not an ML research or data science role. The platform team owns cluster networking, observability pipelines, auth configuration, and LLM routing, so deep expertise in those areas is not required. The job is building reliable<br>
+software on top of that infrastructure and helping others do the same.</p><h2>Additional Information</h2><p><strong>About QAD:</strong></p><p><a href="https://www.qad.com/" rel="nofollow ugc noopener" target="_blank">QAD</a> | <a href="https://rzsoftware.com/" rel="nofollow ugc noopener" target="_blank">Redzone</a> is redefining manufacturing and supply chains through its intelligent, adaptive platform that connects people, processes, and data into a single System of Action. With three core pillars — Redzone (frontline empowerment), Adaptive Applications (the intelligent backbone), and Champion AI (Agentic AI for manufacturing) — QAD | Redzone helps manufacturers operate with <a href="https://www.qad.com/champion-pace" rel="nofollow ugc noopener" target="_blank">Champion Pace</a>, achieving measurable productivity, resilience, and growth in just 90 days.</p><p>QAD is committed to ensuring that every employee feels they work in an environment that values their contributions, respects their unique perspectives and provides opportunities for growth regardless of background. QAD’s DEI program is driving higher levels of diversity, equity and inclusion so that employees can bring their whole self to work.</p><p>We are an Equal Opportunity Employer and do not discriminate against any employee or applicant for employment because of race, color, sex, age, national origin, religion, sexual orientation, gender identity, status as a veteran, and basis of disability or any other federal, state or local protected class. </p><p>#LI-Remote</p>",
+        "id": "jobicy:147582",
+        "location": "Mexico",
+        "postedAt": "2026-07-28T15:00:04+00:00",
+        "role": "Software Engineer, AI Agent Platform",
+        "source": "jobicy",
+        "url": "https://jobicy.com/jobs/147582-software-engineer-ai-agent-platform",
+      },
+      {
+        "company": "Twilio",
+        "description": "<p><strong>Who we are </strong></p><p>At Twilio, we’re shaping the future of communications, all from the comfort of our homes. We deliver innovative solutions to<a href="https://customers.twilio.com/" target="_blank" rel="nofollow ugc noopener"> hundreds of thousands of businesses </a>and empower millions of developers worldwide to craft personalized customer experiences.</p><p>Our dedication to <a href="https://www.twilio.com/en-us/blog/open-work" target="_blank" rel="nofollow ugc noopener">remote-first work</a>, and strong culture of connection and global inclusion means that no matter your location, you’re part of a vibrant team with diverse experiences making a global impact each day. As we continue to revolutionize how the world interacts, we’re acquiring new skills and experiences that make work feel truly rewarding. Your career at Twilio is in your hands.<br />We use Artificial Intelligence (AI) to help make our hiring process efficient. That said, every hiring decision is made by real Twilions!</p><p>.</p><p><strong>See yourself at Twilio</strong></p><p>Join the team as Twilio’s next Senior Cloud Software Engineer.</p><p><strong>About the job</strong></p><p>This position is needed to help out the Edge Services team. The team that is responsible for the ingestion of Twilio’s Web Console and API traffic, and its supporting services. As part of the Edge Platform organization, we provide building blocks for all Twilio customers and engineers alike, with high-availability and low-latency requirements, in order to effectively enable over billions of inbound requests every day. We take great pride in wearing customer’s shoes and making decisions inclusively. It is extremely important for us to build services with exceptionally high uptime, availability, and success rates.</p><p><strong>Responsibilities</strong></p><p>In this role, you’ll:</p><ul>
+<li><strong>Lead the execution end-to-end:</strong> Design and lead the implementation of scalable, high-availability cloud infrastructure, moving beyond feature work to drive long-term platform strategy while championing Twilio’s "progress over perfection" mindset to deliver continuous, high-impact shipments.</li>
+<li><strong>Operational Excellence:</strong> Own the reliability of services handling billions of weekly requests, setting the standard for operational best practices and incident response.</li>
+<li><strong>Infrastructure Strategy:</strong> Drive the evolution of our Infrastructure as Code (IaC) patterns using Terraform, ensuring modularity, security, and reusability across the organization. Always aim for a self -service approach such that it keeps the team’s TOIL at minimum.</li>
+<li><strong>Continuous optimization:</strong> Continuously looks for optimizations in our pipelines/releases/deliveries that balance rapid deployment with rigorous safety checks.</li>
+<li><strong>Technical Mentorship and Reviews:</strong> Actively mentor L1 and L2 engineers as well as help with code reviews, design docs, and pair programming to foster a culture of technical excellence.</li>
+<li><strong>Cross-Functional Influence:</strong> Collaborate with Cross teams, Product and Engineering leadership to align technical roadmap, debt reduction and new feature deliveries.</li>
+<li><strong>Continuous Innovation:</strong> Be an owner and continuously research and prototype to optimise Twilio’s API infrastructure to provide best in class service to the customers</li>
+</ul><p><strong>Qualifications </strong></p><p>Twilio values diverse experiences from all kinds of industries, and we encourage everyone who meets the required qualifications to apply. If your career is just starting or hasn't followed a traditional path, don't let that stop you from considering Twilio. We are always looking for people who will bring something new to the table!</p><p><strong>*Required:</strong></p><ul>
+<li>5+ years of professional experience in Cloud, DevOps, or Site Reliability Engineering (SRE), with deep proficiency in Python, Java, Go or another other language of choice.</li>
+<li>Architectural Depth: Proven track record of designing and deploying complex AWS cloud-native solutions (e.g., CloudFront, Multitenancies, DNS, Caching strategies, WAF, Lambda, S3, developing hosting solutions, etc) at scale.</li>
+<li>IaC Expert: Advanced experience with Terraform, including writing custom providers or managing state at scale across multiple environments.</li>
+<li>System Reliability: Deep understanding of SLIs, SLOs, Golden signals, Error Budgets and establishing monitoring strategies; in depth experience using Datadog, Grafana, or Athena to drive data-informed engineering decisions.</li>
+<li>Strong background in microservices architecture, specifically regarding traffic routing, rate limiting, and service discovery.</li>
+<li>Demonstrated ability to lead technical projects from conception to completion, navigating trade-offs and communicating complex technical concepts to non-technical stakeholders.</li>
+</ul><p><strong>Desired</strong>:</p><ul>
+<li>Experience implementing security-at-scale, including WAF management, DDoS mitigation, and Zero Trust architectures.</li>
+<li>Platform Engineering previous experience, passion for building "Internal Developer Platforms" that abstract infrastructure complexity for product teams.</li>
+<li>A proven track record of contributing to the cloud-native or networking ecosystem, also has contributions to public Terraform providers or similar open-source initiatives</li>
+</ul><p><strong>Location</strong></p><p>This role will be remote, and based in Spain.</p><p><strong>Travel </strong></p><p>We prioritize connection and opportunities to build relationships with our customers and each other. For this role, you may be required to travel occasionally to participate in project or team in-person meetings.</p><p><strong>What We Offer</strong></p><p>Working at Twilio offers many benefits, including competitive pay, generous time off, ample parental and wellness leave, healthcare, a retirement savings program, and much more. Offerings vary by location.</p><p><strong>Twilio thinks big. Do you?</strong></p><p>We like to solve problems, take initiative, pitch in when needed, and are always up for trying new things. That's why we seek out colleagues who embody our values — something we call <a href="https://www.twilio.com/company/values" rel="nofollow ugc noopener" target="_blank">Twilio Magic</a>. Additionally, we empower employees to build <a href="https://twilio.org/support-and-resources/impact-fund" rel="nofollow ugc noopener" target="_blank">positive change in their communities</a> by supporting their volunteering and donation efforts.</p><p>So, if you're ready to unleash your full potential, do your best work, and be the best version of yourself, apply now! If this role isn't what you're looking for, <a href="https://www.twilio.com/company/jobs#open-positions" rel="nofollow ugc noopener" target="_blank">please consider other open positions.</a></p><p><strong>Twilio is proud to be an equal opportunity employer.</strong> We do not discriminate based upon race, religion, color, national origin, sex (including pregnancy, childbirth, reproductive health decisions, or related medical conditions), sexual orientation, gender identity, gender expression, age, status as a protected veteran, status as an individual with a disability, genetic information, political views or activity, or other applicable legally protected characteristics. We also consider qualified applicants with criminal histories, consistent with applicable federal, state and local law. Qualified applicants with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act. Additionally, Twilio participates in the E-Verify program in certain locations, as required by law.</p>",
+        "id": "jobicy:142478",
+        "location": "Spain",
+        "postedAt": "2026-07-28T13:15:06+00:00",
+        "role": "Senior Cloud Software Engineer",
+        "source": "jobicy",
+        "url": "https://jobicy.com/jobs/142478-senior-cloud-software-engineer",
+      },
+      {
+        "company": "Akamai Technologies",
+        "description": "<p><b>Are you passionate about cutting edge technology?</b></p><p><b>Do solving some of the Internet's most difficult content delivery challenges interest you?</b></p><p><b>Join our highly skilled Site Reliability team</b></p><p>Our team designs, develops, and manages applications and infrastructure that support Akamai's Compute products and services. We do this while maintaining Akamai's mission at the forefront of what we do. Make life better for billions of people, billions of times a day.</p><p><b>Partner with the best</b></p><p>The Senior Engineer creates solutions to improve automation and efficiency for systems and teams. Responsibilities include optimizing workflows, infrastructure, and applications. Expertise in Linux administration, configuration management, and performance tuning is essential. Collaborate on deployment, monitoring, and resolving incidents. Focus on reliability, scalability, and efficiency through automation and resource optimization. Promote continuous improvement and operational excellence across all systems.</p><p>As a Senior Site Reliability Engineer, you will be:</p><ul><li>Providing support and mentorship for other engineers within the department</li><li>Developing and maintaining automated tools and scripts to enhance system reliability, deployment processes, and incident response efficiency.</li><li>Improving our system monitoring to speed error detection and remediation, enhancing performance and reliability of virtualization platform</li><li>Participating in on-call rotations, guiding restoration and repair of service-impacting issues</li><li>Writing automation and tooling to reduce operational toil, improve deployment safety, and accelerate incident response</li><li>Contributing to capacity planning, autoscaling configuration, and workload scheduling for AI compute infrastructure</li></ul><p><b>Do what you love</b></p><p>To be successful in this role you will:</p><ul><li>Possess expert level experience in a SysAdmin (Linux/Unix Administration), DevOps or SRE role, working with large scale distributed systems</li><li>Demonstrate expertise in Kubernetes and large-scale containerization systems.</li><li>Possess at least one programming language (Python/Golang) and configuration management with Terraform/SaltStack/Ansible</li><li>Define SLOs and work with observability tools like Prometheus, Grafana, and distributed tracing to enhance system monitoring.</li><li>Have experience with architecting software and infrastructure at scale</li><li>Demonstrate accountability for reliability, develop automation and monitoring, and collaborate effectively with an engineering team unfamiliar with SRE practices.</li></ul><p><b>Work in a way that works for you</b></p><p>FlexBase, Akamai's Global Flexible Working Program, is based on the principles that are helping us create the best workplace in the world. When our colleagues said that flexible working was important to them, we listened. We also know flexible working is important to many of the incredible people considering joining Akamai. FlexBase, gives 95% of employees the choice to work from their home, their office, or both (in the country advertised). This permanent workplace flexibility program is consistent and fair globally, to help us find incredible talent, virtually anywhere. We are happy to discuss working options for this role and encourage you to speak with your recruiter in more detail when you apply. <br /><a href="https://www.akamai.com/careers" target="_blank" rel="nofollow ugc noopener">Learn</a> what makes Akamai a great place to work</p><p>Connect with us on social and see what life at Akamai is like! </p><p><b>We power and protect life online, by solving the toughest challenges, together.</b></p><p>At Akamai, we're curious, innovative, collaborative and tenacious. We celebrate diversity of thought and we hold an unwavering belief that we can make a meaningful difference. Our teams use their global perspectives to put customers at the forefront of everything they do, so if you are people-centric, you'll thrive here.</p><p><b>Working for you</b></p><p>At Akamai, we will provide you with opportunities to grow, flourish, and achieve great things. Our benefit options are designed to meet your individual needs for today and in the future. We provide benefits surrounding all aspects of your life:</p><ul><li>Your health</li><li>Your finances</li><li>Your family</li><li>Your time at work</li><li>Your time pursuing other endeavors</li></ul><p>Our benefit plan options are designed to meet your individual needs and budget, both today and in the future.</p><p><b>About us</b></p><p>Akamai powers and protects life online. Leading companies worldwide choose Akamai to build, deliver, and secure their digital experiences helping billions of people live, work, and play every day. With the world's most distributed compute platform from cloud to edge we make it easy for customers to develop and run applications, while we keep experiences closer to users and threats farther away.</p><p><b>Join us</b></p><p>Are you seeking an opportunity to make a real difference in a company with a global reach and exciting services and clients? Come join us and grow with a team of people who will energize and inspire you!<br />#LI-Remote</p>",
+        "id": "jobicy:143565",
+        "location": "Poland",
+        "postedAt": "2026-07-28T12:35:04+00:00",
+        "role": "Senior Site Reliability Engineer",
+        "source": "jobicy",
+        "url": "https://jobicy.com/jobs/143565-senior-site-reliability-engineer-3",
+      },
+      {
+        "company": "Headspace",
+        "description": "<p><strong>About the </strong><strong>Staff Machine Learning Engineer</strong><strong> at Headspace:</strong></p><p><em>The AI &amp; Machine Learning group at Headspace is a dynamic and innovative group whose mission is to improve the experiences of our members and clinicians through the mindful application of AI. Our group builds conversational AI systems including Ebb, as well as search, recommendation &amp; personalization systems that power the Headspace experience. The Staff ML Engineer for Personalization will be part of the team developing and delivering the holistic system to enable the personalization of the Headspace experience, including content recommendation, personalized nudges &amp; notifications, and a tailored conversational AI experience with Ebb. You’ll have the opportunity to lead the vision, alignment, development, deployment, and adoption of these solutions, helping to realize Headspace’s mission to improve the health and happiness of the world.</em></p><p><strong>What you will do:</strong></p><ul>
+<li><strong>Technical Leadership: </strong>Lead the development of recommender systems for Headspace meditation &amp; mindfulness content as well as other backend services that enable a personalized member experience including search, a user knowledge graph, and conversational AI memory. This will involve developing and deploying complex, scalable AI models and applications. Drive impactful ML technology initiatives that will shape the delivery of and access to mental healthcare. Serve as a go-to expert and mentor, exemplifying excellence in AI/ML engineering and inspiring others to pursue technical career growth.</li>
+<li><strong>Shape Personalization Architecture: </strong>Contribute to the design, development, and evolution of our AI systems, taking it from high-level vision to robust implementation, enabling production-ready AI capabilities.</li>
+<li><strong>Collaborative Problem-Solving: </strong>Partner with our team of software engineers,ML engineers, and MLOps engineers, and our Product &amp; Clinical leads to build high quality features that improve members’ lives.</li>
+</ul><p><strong>What you will bring</strong>:</p><p><strong>Required Skills:</strong></p><ul>
+<li>Bachelor of Science degree or higher in Computer Science, Statistics, Mathematics or a related field OR equivalent experience</li>
+<li>5+ years of ML engineering experience in an academic or professional setting, programming in Python</li>
+<li>5+ years of experience with any of the following fundamental technologies: vector search, embedding models, recommender systems, supervised, unsupervised machine learning, deep learning, reinforcement learning, LLM orchestration, RAG systems.</li>
+<li>3+ years of experience with modern NLP tools and machine learning libraries (scikit-learn, PyTorch, TensorFlow, spaCy)</li>
+<li>Experience with unit, integration, and end-to-end testing, version control</li>
+<li>Strong problem solving and communication skills and ability to influence across internal organizations</li>
+<li>Mentorship of junior engineers and contribution to DEIB initiatives</li>
+</ul><p><strong>Preferred Skills:</strong></p><ul>
+<li>Master’s degree in relevant field or equivalent experience</li>
+<li>Professional experience with clinical and/or healthcare applications of machine learning</li>
+<li>Familiarity with current ML literature</li>
+<li>Experience with implementation of robust and highly scalable services</li>
+<li>Experience with AWS, including SageMaker, Lambda, S3, DynamoDB, IAM</li>
+</ul><p><strong>Location: We are currently hiring this role remotely. Candidates must permanently reside in the US full-time.</strong></p><p><strong><br></strong>For candidates with a primary residence in the greater SF area, this role will follow our hybrid model. You’ll work 3 days per week from our office, allowing for impactful in-office collaboration and connection, while enjoying the flexibility of remote work for the rest of the week. Your recruiter will share more details about our hybrid model. <strong><br></strong></p><p><strong>Pay &amp; Benefits</strong>:</p><p>The anticipated new hire base salary range for this full-time position is <strong>$140,400-$200,000</strong> + equity + benefits. </p><p>Our salary ranges are based on the job, level, and location, and reflect the lowest to highest geographic markets where we are hiring for this role within the United States. Within this range, individual compensation is determined by a candidate’s location as well as a range of factors including but not limited to: unique relevant experience, job-related skills, and education or training. <br><em>Your recruiter will provide more details on the specific salary range for your location during the hiring process.</em></p><p>At Headspace, base salary is but one component of our Total Rewards package. We’re proud of our robust package inclusive of: base salary, stock awards, comprehensive healthcare coverage, monthly wellness stipend, retirement savings match, lifetime Headspace membership, generous parental leave, and more. Additional details about our Total Rewards package will be provided during the recruitment process. </p><p><strong>About Headspace</strong></p><p>Headspace exists to provide every person access to lifelong mental health support. We combine evidence-based content, clinical care, and innovative technology to help millions of members around the world get support that’s effective, personalized, and truly accessible whenever and wherever they need it.</p><p>At Headspace, our values aren’t just what we believe, they’re how we work, grow, and make an impact together. We live them daily: <strong>Make the Mission Matter, Iterate to Great, Own the Outcome, and Connect with Courage.</strong> These values shape our decisions, guide our collaborations, and define our culture. They’re our shared commitment to building a more connected, human-centered team—one that’s redefining how mental health care supports people today and for generations to come.</p><p><strong>Why You’ll Love Working Here:</strong></p><p>A mission that matters—with impact you can see and feel</p><p>A culture that’s collaborative, inclusive, and grounded in our values</p><p>The chance to shape what mental health care looks like next</p><p>Competitive pay and benefits that support your whole self</p><p><strong>How we feel about Diversity, Equity, Inclusion and Belonging:</strong></p><p>Headspace is committed to bringing together humans from different backgrounds and perspectives, providing employees with a safe and welcoming work environment free of discrimination and harassment. We strive to create a diverse &amp; inclusive environment where everyone can thrive, feel a sense of belonging, and do impactful work together. </p><p>As an equal opportunity employer, we prohibit any unlawful discrimination against a job applicant on the basis of their race, color, religion, gender, gender identity, gender expression, sexual orientation, national origin, family or parental status, disability*, age, veteran status, or any other status protected by the laws or regulations in the locations where we operate. We respect the laws enforced by the EEOC and are dedicated to going above and beyond in fostering diversity across our workplace. </p><p><em>*Applicants with disabilities may be entitled to reasonable accommodation under the terms of the Americans with Disabilities Act and certain state or local laws. A reasonable accommodation is a change in the way things are normally done which will ensure an equal employment opportunity without imposing undue hardship on Headspace. </em><strong><em>Please inform our Talent team by filling out </em></strong><a href="https://docs.google.com/forms/d/e/1FAIpQLSdE8hXeZCqOzzVSXbYKv3gO_88tTdlJYs3XUPHSyNvhkzqqRQ/viewform" rel="nofollow ugc noopener" target="_blank"><strong><em>this form</em></strong></a><strong><em> if you need any assistance completing any forms or to otherwise participate in the application or interview process.</em></strong></p><p><em>Headspace participates in the </em><a href="https://www.ginger.com/careers/ginger-e-verify" rel="nofollow ugc noopener" target="_blank"><em>E-Verify Program</em></a><em>.</em></p><p><strong><em>Privacy Statement</em></strong></p><p><em>All member records are protected according to our<a href="https://organizations.headspace.com/page/applicant-notice" rel="nofollow ugc noopener" target="_blank"> Privacy Policy</a>. Further, while employees of Headspace (formerly Ginger) cannot access Headspace products/services, they will be offered benefits according to the company's benefit plan. To ensure we are adhering to best practice and ethical guidelines in the field of mental health, we take care to avoid dual relationships. A dual relationship occurs when a mental health care provider has a second, significantly different relationship with their client in addition to the traditional client-therapist relationship—including, for example, a managerial relationship. </em></p><p><em>As such, Headspace requests that individuals who have received coaching or clinical services at Headspace wait until their care with Headspace is complete before applying for a position. If someone with a Headspace account is hired for a position, please note their account will be deactivated and they will not be able to use Headspace services for the duration of their employment. </em></p><p><em>Further, if Headspace cannot find a role that fails to resolve an ethical issue associated with a dual relationship, Headspace may need to take steps to ensure ethical obligations are being adhered to, including a delayed start date or a potential leave of absence. Such steps would be taken to protect both the former member, as well as any relevant individuals from their care team, from impairment, risk of exploitation, or harm.</em></p><p>For how how we will use the personal information you provide as part of the application process, please see: https://www.headspace.com/applicant-notice</p>",
+        "id": "jobicy:143131",
+        "location": "USA",
+        "postedAt": "2026-07-28T12:25:03+00:00",
+        "role": "Staff Machine Learning Engineer",
+        "source": "jobicy",
+        "url": "https://jobicy.com/jobs/143131-staff-machine-learning-engineer",
+      },
+      {
+        "company": "Clickhouse",
+        "description": "<h2>About ClickHouse</h2><p>Recognized on the 2025 Forbes Cloud 100 list, ClickHouse is one of the most innovative and fast-growing private cloud companies. With more than 3,000 customers and ARR that has grown over 250 percent year over year, ClickHouse leads the market in real-time analytics, data warehousing, observability, and AI workloads.</p><p>The company’s sustained, accelerating momentum was recently validated by a $400M Series D financing round. Over the past three months, customers including Capital One, Lovable, Decagon, Polymarket, and Airwallex have adopted the platform or expanded existing deployments. These customers join an established base of AI innovators and global brands such as Meta, Cursor, Sony, and Tesla.</p><p>We’re on a mission to transform how companies use data. Come be a part of our journey!</p><p>We are currently expanding our Support Services team at ClickHouse, which delivers exceptional service to our customers worldwide. We are seeking a Senior Consulting Engineer<strong> </strong>to join our global team, where you'll provide Consultative Support to our ClickHouse enterprise customers. The role uniquely blends hands-on engineering, development assistance, and high-tier support, performing functions across Consultative Support, Engineering, and Support. You will work directly with a set of strategic customers, providing guidance, case answers, and technical oversight. Consulting Engineers will also be assisting with support cases for customers in our Support L1 to L3 tiers, particularly when not assigned to larger projects.</p><p><strong>Responsibilities:</strong></p><ul>
+<li><strong>Project Engineering &amp; Consulting (50%):</strong> Serve as a team member on customer projects, focusing on design, architecture, integration, implementation, and documentation. This includes research, benchmarking, performance and functional testing, reference architectures, sizing, migration, integration, development, and tooling.</li>
+<li><strong>Consultative Support (50%):</strong> Provide case-initiated consultative support to strategic users, customers, and prospects, assisting with implementation, onboarding, production launches, and Proof of Concepts (POCs).</li>
+<li>Provide architectural, technical, and migration assistance, including hands-on tasks.</li>
+<li>Work as a member of the Support Team, handling L1 to L3 cases and communications when not actively assigned to customer projects.</li>
+<li>Partner closely with ClickHouse Product Management, Engineering, and Sales to contribute to the product roadmap and account plans.</li>
+<li>Develop and assist with a wide range of content, including Public and Internal Documentation, Knowledge Base articles, ClickHouse Learning, Reference Architecture, blogs, and benchmark results.</li>
+<li>Assist with hiring and mentoring new team members as we grow and scale.</li>
+<li>Be available for scheduling and on-call needs to deliver high-quality 24x7 support in a global, distributed environment, including up to 35% estimated onsite regional travel.</li>
+</ul><p><strong>Requirements:</strong></p><ul>
+<li>5+ years of experience in Professional Services, Support, Technical Accounts Management, Engineering/SRE, and/or Project Management roles.</li>
+<li>5+ years of relevant industry experience in implementing, operating, and/or supporting scalable, fault-tolerant, distributed database management systems ("DBMS").</li>
+<li>Technical breadth and depth in relevant subjects such as DBMS, OLAP, Cloud/SaaS platforms, distributed systems software engineering, Linux/Unix, Kubernetes, System or Network Administration, and big data.</li>
+<li>Experience leading and shipping large scope technical projects in collaboration with multiple experienced engineers.</li>
+<li>Expertise with a public cloud provider (AWS, GCP, Azure) and their infrastructure as a service offering (e.g. EC2)</li>
+</ul><p><strong>Bonus points:</strong></p><ul>
+<li>Experience with ClickHouse</li>
+<li>Experience with OSS and open-source technologies, as a user, community member, or contributor</li>
+<li>Experience with Azure, GCP or AWS</li>
+<li>Experience with data pipelines such as Kafka, Kinesis, Spark, RabbitMQ, or others</li>
+</ul><p><strong>You'll love this role if:</strong></p><ul>
+<li>You have excellent communication skills and thrive in a customer-facing role, collaborating closely with Support Services, Engineering, and Sales teams.</li>
+<li>You are self-driven, curious, and eager to continuously learn and grow.</li>
+<li>You possess a mindset of teamwork, global engagement, empathy, and a drive for solving challenging problems.</li>
+<li>You have a sense of adventure and urgency in building the most scalable, highest performing, largest, and fastest databases in the world.</li>
+</ul><h2><strong>Compensation</strong></h2><p>For roles based in the <strong>United States</strong>, the typical starting salary range for this position is listed above. In certain locations, such as the San Francisco Bay Area and the New York City Metro Area, a premium market range may apply, as listed.</p><p>These salary ranges reflect what we reasonably and in good faith believe to be the minimum and maximum pay for this role at the time of posting. The actual compensation may be higher or lower than the amounts listed, and the ranges may be subject to future adjustments.</p><p>An individual’s placement within the range will depend on various factors, including (but not limited to) education, qualifications, certifications, experience, skills, location, performance, and the needs of the business or organization.</p><p>If you have any questions or comments about compensation as a candidate, please get in touch with us at <a href="mailto:paytransparency@clickhouse.com" rel="nofollow ugc noopener" target="_blank">paytransparency@clickhouse.com</a>.</p><h2><strong>Perks</strong></h2><ul>
+<li><strong>Flexible work environment</strong> - ClickHouse is a globally distributed company and remote-friendly. We currently operate in over 20 countries.</li>
+<li><strong>Healthcare</strong> - Employer contributions towards your healthcare.</li>
+<li><strong>Equity in the company</strong> - Every new team member who joins our company receives stock options.</li>
+<li><strong>Time off</strong> - Flexible time off in the US, generous entitlement in other countries.</li>
+<li><strong>A $500 Home office setup </strong>if you’re a remote employee.</li>
+<li><strong>Global Gatherings </strong>– We believe in the power of in-person connection and offer opportunities to engage with colleagues at company-wide offsites.</li>
+</ul><p><strong>Culture - We All Shape It</strong></p><p>As part of a rapidly scaling start up, you will be instrumental in shaping our culture. </p><p>Are you interested in finding out more about our culture? Learn more about our values <a href="https://clickhouse.com/company/careers" rel="nofollow ugc noopener" target="_blank">here</a>. Check out our<a href="https://clickhouse.com/blog" rel="nofollow ugc noopener" target="_blank"> blog posts</a> or follow us on <a href="https://www.linkedin.com/company/clickhouseinc/life/0c1ee7f4-2129-488d-b413-e7f6270659fd/?viewAsMember=true" rel="nofollow ugc noopener" target="_blank">LinkedIn</a> to find out more about what’s happening at ClickHouse.</p><p><strong>Equal Opportunity &amp; Privacy </strong></p><p>ClickHouse provides equal employment opportunities to all employees and applicants and prohibits discrimination and harassment of any type based on factors such as race, color, religion, age, sex, national origin, disability status, genetics, protected veteran status, sexual orientation, gender identity or expression, or any other characteristic protected by federal, state or local laws. </p><p>Please see <a href="https://clickhouse.com/legal/applicant-privacy-notice" target="_blank" rel="nofollow ugc noopener">here</a> for our Privacy Statement.</p>",
+        "id": "jobicy:142499",
+        "location": "Singapore",
+        "postedAt": "2026-07-28T12:15:03+00:00",
+        "role": "Senior Consulting Engineer - Singapore",
+        "source": "jobicy",
+        "url": "https://jobicy.com/jobs/142499-senior-consulting-engineer-singapore",
+      },
+    ],
+    "source": "jobicy",
+  },
+  {
+    "error": "spawn definitely-not-a-real-python-binary-xyz ENOENT",
+    "label": "JobSpy (LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google)",
+    "listings": [],
+    "source": "jobspy",
+  },
+  {
+    "label": "RemoteOK",
+    "listings": [
+      {
+        "company": "Lemon.io",
+        "description": "<p>Are you a talented Senior DevOps looking for a remote job that lets you show your skills and get decent compensation? Look no further than <a href="https://lemon.io/for-developers/?utm_source=remoteok&amp;utm_medium=job_ad&amp;utm_campaign=supply_en_devops_jul_2026_job_ad">Lemon.io</a> â the marketplace that connects you with hand-picked startups in the US and Europe.</p><p><strong>What we offer:</strong></p><ul><li>The rate depends on your seniority level, skills and experience. We've already paid out over $11M to our engineers.</li><li>No more hunting for clients or negotiating rates â let us handle the business side of things so you can focus on what you do best.</li><li>We'll manually find the best project for you according to your skills and preferences.</li><li>Choose a schedule that works best for you. Itâs possible to communicate async or minimally overlap within team working hours.</li><li>We respect your seniority so you can expect no micromanagement or screen trackers.</li><li>Communicate directly with the clients. Most of them have technical backgrounds. Sounds good, yeah?</li><li>We will support you from the time you submit the application throughout all cooperation stages.</li><li>Most of our projects involve working in a fast-paced startup environment. We hope you like it as much as we do.</li><li>Through our community, we will connect you with the best developers from more than 75 countries.</li></ul><p><strong>Requirements - DevOps (Python/Golang):</strong></p><ul><li>4+ years of experience as a DevOps Engineer</li><li>At least 3 years of experience with Python/Golang</li><li>3+ years of experience with Kubernetes is required</li><li>2+ years of experience with Ceph, Networking</li><li>5+ years of experience with Linux</li><li>5+ years of experience with Terraform or 2+ years with Ansible/Pulumi</li></ul><p><strong>Requirements - DevOps (Python/Bash):</strong></p><ul><li><p>4+ years of experience as a DevOps Engineer</p></li><li><p>At least 3 years of experience with Python or Bash</p></li><li><p>3+ years of experience with AWS/GCP/Microsoft Azure/Azure DevOps is required</p></li><li><p>Experience in at least 2 commercial projects using Terraform, Kubernetes and SQL is required</p></li><li><p>Strong technical skills: as a Senior DevOps, you are expected to be able to create projects from scratch and have a deep understanding of application architecture.</p></li><li><p>Clear and effective communication in English â advanced ability to discuss business tasks, justify decisions, and communicate issues. Good self-presentation is also essential for upcoming client calls.</p></li><li><p>Strong self-organizational skills â ability to work full-time remotely with no supervision.</p></li><li><p>Reliability â we want to trust you and expect that you wonât let us and the client down.</p></li><li><p>Adaptability and Flexibility â the ability to onboard the project promptly after accepting it and start delivering results quickly.</p></li></ul><p>Sounds good for you? Apply now and join the <a href="https://lemon.io/for-developers/?utm_source=remoteok&amp;utm_medium=job_ad&amp;utm_campaign=supply_en_devops_jul_2026_job_ad">Lemon.io</a> community!</p><p><strong>NOT YOUR TECH STACK?</strong></p><p>We have a variety of projects, so if you have 4+ years of commercial software development experience and are proficient in AI Agent Architecture, AI Automation Architecture, AI Engineering, Site Reliability Engineering, Platform Engineering, React &amp; Python, React &amp; Golang, Golang, React &amp; Java, React &amp; Ruby, Ruby, PHP &amp; Vue, Vue &amp; Node.js, React &amp; .NET, Android &amp; iOS, iOS &amp; Swift, Flutter &amp; Dart, Blockchain (Ethereum/Ethers.js/Wagmi/Viem/Solana), Angular &amp; Node.js, Vue &amp; .NET, Python &amp; Vue, MLOps, Data Science, Angular &amp; PHP, Angular &amp; .NET, Symfony &amp; React, Symfony &amp; Vue, Symfony &amp; Angular, Python, Symfony &amp; JavaScript &amp; Next.js &amp; TypeScript, Data Analysis, React &amp; PHP, Data Engineering, Project Management, Product Management, QA Automation, QA Manual, Embedded Software Engineering, React Native &amp; Node, React Native &amp; React, React Native &amp; Ruby, React Native &amp; Python, WordPress, Android, Data Annotation, Angular, Python &amp; Node, React &amp; Node.js, Java &amp; Spring, Svelte &amp; Python, Svelte &amp; Node.js, Svelte &amp; TypeScript, Rust, Shopify &amp; JavaScript, Vue &amp; Nuxt, PHP &amp; Laravel, UI/UX Design, Animation, Graphic Design, React &amp; Node &amp; React Native, .NET &amp; C#, Electron, Scala, C++, Unreal Engine &amp; C++, Python &amp; LLM, Unity, or Machine Learning Engineering, we would be happy to connect with you and match you with a project that fits your experience.</p><p>We do not provide visa assistance, and our cooperation model does not include the benefits typically offered with direct hire.</p><p>We work with developers from 75+ countries across Europe, Latin America, North America (the U.S. and Canada), selected countries in Asia (Japan, Singapore, South Korea, the Philippines, Indonesia, Malaysia, Vietnam, Thailand, and Israel), Oceania (Australia, New Zealand, and Papua New Guinea), and Africa (including Morocco and South Africa).</p><p></p><br/><br/>Please mention the word **EXEMPLAR** and tag RMTIuMjQ4LjEzMy4yNDI= when applying to show you read the job post completely (#RMTIuMjQ4LjEzMy4yNDI=). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+        "id": "remoteok:1135562",
+        "location": "",
+        "postedAt": "2026-07-28T15:05:32+00:00",
+        "role": "Senior DevOps Engineer",
+        "source": "remoteok",
+        "url": "https://remoteOK.com/remote-jobs/remote-senior-devops-engineer-lemon-io-1135562",
+      },
+      {
+        "company": "ROAR Organic",
+        "description": "<p><strong>Job Title: </strong></p><p>Area Sales Manager</p><p><strong>Reports to:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p>Director of Sales- East</p><p><strong>Location:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p>Remote- New York Metro</p><p><strong>Status:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></p><p>FT/Exempt</p><p><strong>Compensation:</strong></p><p>$70,000 â $80,000 annual base salary, plus a competitive bonus opportunity. Final compensation will be commensurate with experience, skills, and qualifications.</p><p><br></p><p><strong>ABOUT THE COMPANY</strong></p><p>ROAR is redefining hydration for a new generation. In a category that has become overly serious and hardcore performance obsessed, ROAR stands for something different: hydration that is expressive, effortless, and rooted in real life. Built for people who move, connect, and live life out loud, ROAR delivers complete hydration with vitamins, antioxidants, and electrolytes - all with just 20 calories and 3g of sugar or less per bottle.</p><p><br></p><p>More than a beverage, ROAR is a cultural signal - bright, approachable, and fun. It rejects the intensity and rules of traditional hydration in favor of something more human: joy, spontaneity, and the kind of movement that doesnât need a scoreboard. This positioning has resonated with consumers and retailers alike driving strong momentum across both natural and conventional retail, where ROAR continues to expand rapidly and now ranks as the #2 brand in the natural channel within the enhanced water category.</p><p><strong>&nbsp;</strong></p><p><strong>ROLE OVERVIEW</strong></p><p>ROAR Organic is seeking a hands-on Sales Leader to drive profitable growth in a fast-paced, high-growth environment. This role is responsible for leading all sales activities across grocery customers in the New York Metro area, including new business development, key account management, and executing data-driven strategies to expand market share and increase brand awareness.</p><p><br></p><p>The ideal candidate brings a proven track record of scaling high-growth brands profitably, with experience managing both established and emerging grocery retailers, as well as partners. They are highly relationship-driven, resourceful, and action-oriented, with strong communication and organizational skills. This leader excels at building and implementing the strategies, tools, and processes needed to support sustained growth.</p><p><br></p><p><strong>KEY RESPONSIBILITIES</strong></p><ul><li>Deliver against Annual Operating Plan targets, including gross/net sales and trade spend objectives.</li><li>Grow distribution and topline revenue with a focus on regional and independent retailers.</li><li>Execute customer sales strategies, promotional calendars, and account plans.</li><li>Leverage distributer incentive programs and independent retailer promotional opportunities to drive sales.</li><li>Conduct weekly route rides with distributor sales representatives to support execution and identify growth opportunities.</li><li>Develop and own a field execution strategy based on weekly trend reports, promotional planners, and merchandising opportunities.</li><li>Manage and execute trade spend programs to drive profitable growth and promotional effectiveness.</li><li>Leverage syndicated data (IRI, SPINS) to communicate compelling, retailer-specific presentations.</li><li>Track, measure, and analyze performance metrics, including ROI.</li><li>Represent the brand at regional and national trade shows, customer meetings, and industry events.</li></ul><p><strong>&nbsp;</strong></p><p><strong>SKILLS &amp; EXPERIENCE</strong></p><ul><li>Minimum 2 years of CPG sales experience.</li><li>Strong understanding of the beverage and grocery landscape, including retailers and distributors.</li><li>Experience executing sales planning initiatives.</li><li>Creative, solutions-oriented problem solver with a strong sense of ownership and accountability.</li><li>Thrives in a hands-on, fast-paced, entrepreneurial environment.</li><li>Proficient in Microsoft Excel and PowerPoint; experience with syndicated data tools (SPINS, IRI) preferred.</li><li>Ability to travel extensively as needed.</li><li>Ability to stand and walk for extended periods.</li><li>Ability to lift up to 30 pounds.</li><li>Must be authorized to work in the U.S. without current or future sponsorship.</li></ul><p>&nbsp;</p><p>&nbsp;</p><br/><br/>Please mention the word **STIRRINGLY** and tag RMTIuMjQ4LjEzMy4yNDI= when applying to show you read the job post completely (#RMTIuMjQ4LjEzMy4yNDI=). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+        "id": "remoteok:1135611",
+        "location": "New York City Metropolitan Area",
+        "postedAt": "2026-07-28T14:38:06+00:00",
+        "role": "Area Sales Manager",
+        "source": "remoteok",
+        "url": "https://remoteOK.com/remote-jobs/remote-area-sales-manager-roar-organic-1135611",
+      },
+    ],
+    "source": "remoteok",
+  },
+  {
+    "label": "Remotive",
+    "listings": [
+      {
+        "company": "Workada",
+        "description": "<p><u>Who We Are</u><br><br>Workada creates high-quality labeled data for advanced technology systems. Our team reviews, organizes, categorizes, evaluates, and quality-checks digital content so those systems can better understand information and perform real-world tasks.<br>We believe careful data work matters. Every reviewed item, categorized example, and quality-checked task helps improve how technology interprets information, follows instructions, and responds in practical settings.<br><br><u>About You</u><br><br>We're hiring detail-oriented individuals who are comfortable working on a computer and interested in careful, focused digital work. We're especially interested in:</p>
+<ul style="">
+<li style="">People who can carefully review written information, images, documents, or other digital content</li>
+<li style="">Strong readers and writers with good judgment</li>
+<li style="">People who can follow detailed instructions consistently</li>
+<li style="">Individuals who are comfortable using web-based tools and online platforms</li>
+<li style="">People who take quality seriously and can spot mistakes or inconsistencies</li>
+<li style="">Those who enjoy focused, independent work while contributing to a larger project</li>
+<li style="">Strong character matters — we value integrity, reliability, curiosity, and a commitment to high-quality work</li>
+</ul>
+<p><br><br><u>Qualifications</u></p>
+<ul style="">
+<li style="">Comfortable using a computer for extended periods</li>
+<li style="">Reliable internet connection</li>
+<li style="">Strong attention to detail</li>
+<li style="">Ability to follow written guidelines and project instructions</li>
+<li style="">Clear written communication skills</li>
+<li style="">Basic familiarity with spreadsheets, online forms, or web-based work tools</li>
+<li style="">Ability to work independently and meet deadlines</li>
+<li style="">Prior experience in data labeling, annotation, quality review, research, writing, customer support, operations, or administrative work is helpful but not required</li>
+</ul>
+<p><!-- x-tinymce/html --></p>
+<p><br><br><u>Compensation</u><br><br>Compensation is $18- $22 an hour and a max of 40 hours a week.<br><br><u>A Place to Do Meaningful Work</u><br><br>Data labeling may sound simple, but it plays an important role in improving the technology people use every day. At Workada, your work helps create the examples and feedback that make advanced systems more accurate, consistent, and useful.<br><br>We're looking for people who care about accuracy, consistency, and careful judgment. Whether you're reviewing text, categorizing information, evaluating responses, or checking data quality, your work helps improve the way technology performs.</p>
+<img src="https://remotive.com/job/track/2090903/blank.gif?source=public_api" alt=""/>",
+        "id": "remotive:2090903",
+        "location": "USA",
+        "postedAt": "2026-07-26T20:49:11",
+        "role": "Data Labeling Specialists",
+        "source": "remotive",
+        "url": "https://remotive.com/remote-jobs/data/data-labeling-specialists-2090903",
+      },
+      {
+        "company": "EverAI",
+        "description": "<p> </p>
+<p class="_descriptionText_5yu8i_201" style="box-sizing: border-box; line-height: 0; margin-bottom: 32px; color: #373e4d; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"> </p>
+<div class="h1" style="box-sizing: border-box; margin: 0px; line-height: 28px; padding: 0px; font-weight: 500;">Our Vision &amp; Products</div>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;"><strong style="box-sizing: border-box; font-weight: 600;">🚀 EverAI — Building the Future of AI Companionship</strong></em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">One of the Top 15 Largest &amp; Fastest-Growing AI Companies in the World</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">50 Million Users in 2 years — Help Us Reach 100M first, 500M next</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">At <strong style="box-sizing: border-box; font-weight: 600;">EverAI</strong>, we’re shaping what it means to connect with AI. With <strong style="box-sizing: border-box; font-weight: 600;">50 million users and counting</strong>, we're not just building products — we're creating entirely new categories.</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">Our flagship product is the <strong style="box-sizing: border-box; font-weight: 600;">world’s largest AI companionship platform</strong>, redefining relationships for millions. It is governed by our proprietary moderation system, EverGuard — an internal AI designed to ensure everything we build is <strong style="box-sizing: border-box; font-weight: 600;">safe, ethical, and human-first</strong>.</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">And we’re only just getting started!</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;"> </em></p>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;">Our Team</div>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">We are an enthusiastic, passionate and hardworking team of ≈ 75 people. Our founding team has strong entrepreneurial experience building and scaling web products from 0 to IPO.</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"> </p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;">Alexis Soulopoulos </strong>[CEO]</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• 10+ years in Tech Executive Leadership</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• Co-Founder Mad Paws Holdings (from 0 to IPO)</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• Forbes 30 under 30 + Deloitte TechFast50 ’22 &amp; ‘23</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;"> </strong></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;">Michael Monin</strong> [Co-founder &amp; CTO]</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• 10+ years as CTO / COO (web2/web3), 1+ year in AI/LLM</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• Serial-entrepreneur: MTK Digital (exited / 0-&gt;$20m revenue) and Zipchat (AI Chatbot for E-commerce brands)</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;"> </strong></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;">Thomas Lacroix </strong>[Co-founder &amp; CMO]</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• 8+ years in Customer Acquisition &amp; E-commerce Growth</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• Serial-entrepreneur: Curatible (sold to Blackstone) and MTK Digital (exited / 0-&gt;$20m revenue)</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;"> </strong></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;">Maruša Fasano </strong>[CFO/Legal]</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• 25+ years in Finance, Strategy, M&amp;A</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• Ex-CFO/M&amp;A @Curatible (exited to Blackstone)</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• Ex-President of the Board @SotremoSA (exited)</em></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><em style="box-sizing: border-box;">• Co-founder/CFO @SoftOne (exited)</em></p>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;"> </div>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;">Your Role</div>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;">We are looking for a Mid/Senior AI Cinematic Video Editor who is deeply embedded in generative video workflows and can independently craft high-quality, narrative-driven content from concept to final output.</strong></p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">You are a sharp-eyed video editor comfortable operating at the intersection of creativity and emerging technology, building visually compelling long-form videos using AI-first pipelines. You take ownership of the entire production stack — from prompting and generation to editing, compositing, graphic design work and final delivery. You thrive in a high-performance environment where your quick wits and passion for story-telling shine.</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"> </p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">Reporting to your Content Lead, this is what you'll be doing:</p>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;">Key Responsibilities</div>
+<ul style="">
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Conceptualise scripts based on current production needs and centred around existing AI characters (our own IPs)</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Create <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">narrative-driven, longform video content</strong>, including stylized and explicit NSFW visuals, with a strong focus on storytelling, atmosphere, and visual coherence throughout</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Own and manage <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">end-to-end AI video production workflows</strong>, from ideation and prompting to generation, editing, and post-production</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Utilise tools such as Kling, Seedance, Happy Horse <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">and other AI video models/platforms</strong> to produce high-quality visual sequences</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Develop and maintain <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">consistent character appearance, style, and scene continuity</strong> across longer narratives using advanced techniques</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Integrate <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">motion graphic design and colour correction</strong> to deliver cohesive final outputs</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Experiment rapidly with new <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">AI models, tools, and techniques</strong>, incorporating them into production workflows and sharing skills with the rest of the team</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Align with your Content Lead’s creative direction while maintaining a high degree of <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">autonomy in execution and technical decision-making</strong></p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Continuously refine workflows for <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">efficiency, scalability, and output quality</strong></p>
+</li>
+</ul>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;"> </div>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;">Your Qualifications</div>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;"> </div>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;">Hard Skills</div>
+<ul style="">
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">4–6+ years of experience in <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">video production, VFX, or digital art</strong>, with a strong portfolio (AI-driven video work is a must)</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Hands-on experience with the latest <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">AI video tools and models</strong> (e.g., Kling, Seedance, Happy Horse, and similar emerging options)</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Solid understanding of <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">AI image/video generation pipelines</strong>, including prompting, batching, consistency techniques, and post-processing</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Experience with traditional tools like <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">Premiere Pro, After Effects or similar</strong> for final assembly and polish</p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Strong grasp of <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">visual storytelling, pacing, composition, and cinematic language</strong></p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Ability to maintain <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">character and scene consistency across sequences</strong> in AI-generated content</p>
+</li>
+</ul>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;"> </div>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;">Soft Skills</div>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🗣 Strong communication &amp; collaboration skills (fluent in English)</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🎯 High ownership — able to take ideas from concept to completion independently</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">⚡️ Experimental mindset — comfortable navigating ambiguity and evolving tools</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">⏱️ Fast iteration cycles — able to test, fail, refine, and improve quickly</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🧠 Curious and self-driven — constantly exploring new AI capabilities and workflows</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🧢 Open to feedback and continuous improvement</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🍭 #NSFW — Comfortable working with uncensored models and explicit adult content</p>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;"> </div>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;">Bonus Points</div>
+<ul style="">
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Experience in <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">AI-native storytelling or filmmaking</strong></p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Background in <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">3D, VFX, technical art or as a colourist</strong></p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Familiarity with <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">training/customizing models (LoRAs, embeddings, fine-tuning)</strong></p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Prior experience in <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">adult, dating, or adjacent creative industries a huge bonus</strong></p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Experience with <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">ComfyUI</strong></p>
+</li>
+<li style="">
+<p style="box-sizing: border-box; line-height: 24px; margin: 0px; padding: 0px; min-height: 1.5em;">Experience with <strong style="box-sizing: border-box; font-weight: 600; margin-top: 0px;">Stable Diffusion / AUTOMATIC1111</strong> and related tooling (Advanced prompting, working with trained LoRAs, refining, upscaling, inpainting etc.)</p>
+</li>
+</ul>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;"> </div>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;">Why EverAI?</div>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">📈 <strong style="box-sizing: border-box; font-weight: 600;">Exponential Growth</strong>: From 50M users in 2 years, to 100M next — and 500M beyond</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🚀 <strong style="box-sizing: border-box; font-weight: 600;">Track Record of Category-Creating Innovation</strong>: We consistently launch <strong style="box-sizing: border-box; font-weight: 600;">world-first AI applications</strong> — setting the pace, not following it</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🌍 <strong style="box-sizing: border-box; font-weight: 600;">Global Impact</strong>: Top-tier user growth, real-world adoption, and cultural relevance</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🧠 <strong style="box-sizing: border-box; font-weight: 600;">Proven Leadership</strong>: A senior team that’s <strong style="box-sizing: border-box; font-weight: 600;">launched, scaled, and exited &amp; IPO’d multiple scale ups</strong> — now fully focused on reshaping AI companionship</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">👥 <strong style="box-sizing: border-box; font-weight: 600;">Elite Remote Team</strong>: 100% remote and built to win — world-class talent from <strong style="box-sizing: border-box; font-weight: 600;">Tier 1 tech companies</strong>, with a culture of ownership, velocity, and radical creativity</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">🛡️ <strong style="box-sizing: border-box; font-weight: 600;">Ethical Core</strong>: Our AI ecosystem is governed by <strong style="box-sizing: border-box; font-weight: 600;">EverGuard, our proprietary AI moderation technology</strong>, ensuring responsible development at scale</p>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;"> </div>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;">What We Offer</div>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">✍️ <strong style="box-sizing: border-box; font-weight: 600;">Contract Type:</strong> We prefer B2B, but we’re flexible, what matters is long-term commitment and impact<br style="box-sizing: border-box;">📍 <strong style="box-sizing: border-box; font-weight: 600;">Work From Anywhere:</strong> Fully remote. Choose the environment where you do your best work<br style="box-sizing: border-box;">🏝️ <strong style="box-sizing: border-box; font-weight: 600;">Paid Time Off:</strong> 4 weeks (20 working days) of PTO per year to recharge and reset<br style="box-sizing: border-box;">👨‍👩‍👧‍👦 <strong style="box-sizing: border-box; font-weight: 600;">Annual Gathering:</strong> A yearly in-person meetup to connect, brainstorm, and celebrate wins together<br style="box-sizing: border-box;">❤️‍🩹 <strong style="box-sizing: border-box; font-weight: 600;">Health &amp; Wellness Support: </strong>Monthly allowance of<strong style="box-sizing: border-box; font-weight: 600;"> </strong>100 USD for health insurance expenses<br style="box-sizing: border-box;">🏢 <strong style="box-sizing: border-box; font-weight: 600;">Co-Working Space Budget:</strong> Work from a co-working space up to twice per month (35 EUR / 40 USD per visit) to stay inspired and connected<br style="box-sizing: border-box;">📚 <strong style="box-sizing: border-box; font-weight: 600;">Learning Budget:</strong> Dedicated funds to support your professional growth: courses, books, conferences, events, or certifications<br style="box-sizing: border-box;">💻 <strong style="box-sizing: border-box; font-weight: 600;">Equipment:</strong> Company laptop provided + monitor budget up to 250 USD for your workspace setup<br style="box-sizing: border-box;">⚡ <strong style="box-sizing: border-box; font-weight: 600;">AI Tools Access:</strong> Premium access to ChatGPT, Cursor, Hugging Face, Claude Code, and any other tool needed to excel at your job, power your ideas and workflows</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;">* 💸 Compensation:</strong> Our salary ranges are set based on role level, scope, location, and market data, and applied consistently regardless of candidate background or negotiation history. The final offer within the published range reflects assessed experience and scope</p>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;"> </div>
+<div class="h1" style="box-sizing: border-box; margin: 12px 0px 0px; line-height: 28px; padding: 0px; font-weight: 500;">🎯 Top Tier Talent Is Our Multiplier</div>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">We’re a fully remote group of <strong style="box-sizing: border-box; font-weight: 600;">A-players from Tier 1 tech</strong>, led by an exec team who’ve <strong style="box-sizing: border-box; font-weight: 600;">launched, scaled, and exited multiple companies</strong>. We move fast, and care deeply about what we build — and who we build it with.</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;">We’re looking for <strong style="box-sizing: border-box; font-weight: 600;">exceptional talent</strong> ready to ship &amp; distribute world-first AI products at scale, fast, and co-create with us this category-defining business.</p>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;">If that’s you — reach out and apply!</strong></p>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;"><strong style="box-sizing: border-box; font-weight: 600;"> </strong></div>
+<div class="h2" style="box-sizing: border-box; line-height: 25.2px; margin: 12px 0px 0px; padding: 0px; font-weight: 500;"><strong style="box-sizing: border-box; font-weight: 600;">💡 External Referral Program</strong></div>
+<p style="box-sizing: border-box; line-height: 24px; margin: 8px 0px 0px; padding: 0px; min-height: 1.5em;"><strong style="box-sizing: border-box; font-weight: 600;">Know someone who could be a great fit for this role?</strong> You can refer them through the <strong style="box-sizing: border-box; font-weight: 600;">EverAI External Referral Program</strong> and earn a bonus of <strong style="box-sizing: border-box; font-weight: 600;">up to 2,500 USD</strong> if they’re hired. <a class="decorated-link" href="https://docs.google.com/forms/d/e/1FAIpQLSeuvD8GKtVT8Q33nsdF691LTEAFRErTK4JPyFrZlLMaWF82GQ/viewform?usp=preview" rel="nofollow" style="box-sizing: border-box; background-color: rgba(0, 0, 0, 0); touch-action: manipulation; color: #6059b2;" target="_blank">Submit a referral here.</a></p>
+<img src="https://remotive.com/job/track/2091035/blank.gif?source=public_api" alt=""/>",
+        "id": "remotive:2091035",
+        "location": "Worldwide",
+        "postedAt": "2026-07-24T10:33:35",
+        "role": "Mid/Senior AI Cinematic Video Editor",
+        "source": "remotive",
+        "url": "https://remotive.com/remote-jobs/artificial-intelligence/mid-senior-ai-cinematic-video-editor-2091035",
+      },
+      {
+        "company": "Outsite",
+        "description": "<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">## About Outsite</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Outsite is a global coliving company for remote workers — hotel-quality service, extended-stay flexibility, and a built-in community, at the intersection of hospitality and lifestyle. We operate 40+ properties across 21+ cities on 5 continents, with 6,000+ verified members and an NPS of 65.</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">## About Outsite for Teams</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Outsite for Teams is Outsite's B2B expansion — giving companies, teams, and communities access to our global network of coliving and coworking spaces for their employees. Rather than a bulk discount, we position it as a meaningful perk: founders and leaders purchase memberships on behalf of their team, and a dedicated account manager keeps them active and engaged. This is a genuine growth priority for the business, and you'll be one of the first dedicated sales hires driving it.</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">## Role Overview</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">We're hiring a Business Development Representative to build and run outbound sales for Outsite for Teams. You'll identify and prospect the right companies, run discovery calls, and close new business — turning remote-first startups, distributed teams, and growth-stage companies into long-term Outsite for Teams accounts.</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">This is a highly autonomous, build-it-yourself role. You'll help shape the outbound playbook, not just execute someone else's.</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">## Key Responsibilities</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">### 1. Prospecting &amp; Outbound</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Build and work target lists of remote-first and hybrid companies, using signals like team size (50–500), remote/hybrid language in company descriptions, and titles such as Head of People, Chief of Staff, VP of Operations, or Founder</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Source leads via LinkedIn Sales Navigator, Wellfound/AngelList, Crunchbase, remote job boards (We Work Remotely, Remote.co), and Outsite's own member base</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Run cold outbound via email, LinkedIn, and calls, and continuously test and refine messaging</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Reach out to local companies near Outsite locations to sell business travel and corporate stay packages</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Build partnerships with travel agencies and tour operators to generate referral and bundled-stay opportunities</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">### 2. Sales &amp; Pipeline Management</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Run discovery calls to understand a prospect's team, travel patterns, and remote work culture</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Own the full sales cycle from first touch to close</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Keep the CRM clean and current — every deal staged, every next step logged</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Forecast pipeline accurately and hit monthly/quarterly new business targets</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">### 3. Collaboration &amp; Handoff</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Partner with the Head of Marketing on positioning, collateral, and campaigns that support outbound</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Hand off closed accounts cleanly to the account management side, with full context on the client's goals</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Share market feedback — what's resonating, what isn't — to sharpen Outsite for Teams' pitch and ICP over time</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">### 4. Reporting</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Report weekly on pipeline: volume, stage, conversion, and blockers</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Track and share what's working in outbound so it can be systematized</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">## Required Skills &amp; Experience</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- 1+ years of B2B sales or business development experience (SDR/BDR background a plus)</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Confident, consultative communicator — comfortable running discovery calls with founders and People leaders</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Self-starter who's built pipeline from scratch, not just worked warm leads</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Able to work autonomously and independently </span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Comfortable with taking initiative and being proactive </span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Comfortable working European timezone hours</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Strong written communication — outbound copy is part of the job</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Organized; keeps a CRM honest without being told to</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Comfortable using AI in workflow</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">## Nice to Have</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Experience selling to remote-first or distributed teams</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Familiarity with Pipedrive or HubSpot</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Existing network in the startup, remote work, or travel/hospitality space</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Experience selling a membership, subscription, or perk-style product</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">## What Success Looks Like (First 90 Days)</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- A working, documented outbound playbook (lists, messaging, cadence)</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- A full and accurately-staged pipeline in the CRM</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- First qualified meetings booked and first deals in late-stage or closed</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Clear, weekly reporting rhythm established with Marketing</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Sharpened point of view on which ICPs convert fastest</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">## Benefits</span></p>
+<p><strong> </strong></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Remote, travel encouraged</span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Credits for Outsite locations </span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">- Salary - $45,000 - $50,000 USD + commission </span></p>
+<p><span style="color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"> </span></p>
+<img src="https://remotive.com/job/track/2091075/blank.gif?source=public_api" alt=""/>",
+        "id": "remotive:2091075",
+        "location": "Northern America, Europe, UK, France, European timezones",
+        "postedAt": "2026-07-23T15:39:28",
+        "role": "Business Development Representative",
+        "source": "remotive",
+        "url": "https://remotive.com/remote-jobs/sales/business-development-representative-2091075",
+      },
+      {
+        "company": "TELUS Digital",
+        "description": "<p class="figma-padding-bottom-32 tw-border-b tw-border-[#E3E6E8]" style="border-width: 0px 0px 1px; border-color: #e3e6e8; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-border-opacity: 1; padding-bottom: 32px; color: #212529;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">We are looking for an independent, flexible, remote opportunity where you can help improve AI-powered search technology from the comfort of your home? If you're curious, internet-savvy, and enjoy evaluating online content, this freelance project could be a great fit.</span></p>
+<p style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; font-weight: bolder; background-color: transparent;">A Day in the Life of a Content Reviewer - US</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">In this role, you will analyze and provide feedback on text, webpages, images, and other types of online content for leading search engines using a specialized online platform.</span></p>
+<p style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">By reviewing and rating search results for relevance and quality, you will help improve the overall search experience for millions of users around the world, including yourself.</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">Join our global community and put your skills to work supporting one of the world's leading search technologies.</span></p>
+<p style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; font-weight: bolder; background-color: transparent;">Service Rates </span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;">The estimated hourly earnings for this role are 14 USD per hour. <span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">Compensation is based on tasks completed and project availability. Estimated earnings may vary depending on task volume and program requirements including, quality, and productivity, in accordance with the program's quality standards and guidelines.</span></p>
+<p style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">Please note that only one member per household may participate in this program. If it is identified that more than one person from the same household is participating in the TELUS Digital Rating Program, all associated accounts may be removed from the program.</span></p>
+<p style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; font-weight: bolder; background-color: transparent;">Independent Contractor Relationship</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">This opportunity is offered on an independent contractor basis. Contributors have the flexibility to choose when and how much they work, subject to project availability and quality requirements. This opportunity is not and should not be construed as creating an employment relationship with TELUS Digital.</span></p>
+<p class="pt-7 figma-padding-bottom-32 tw-border-b tw-border-[#E3E6E8]" style="border-width: 0px 0px 1px; border-color: #e3e6e8; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-border-opacity: 1; padding-bottom: 32px; color: #212529; padding-top: 2.5rem !important;"> </p>
+<div class="h4" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; line-height: 1.75rem; color: #414547; letter-spacing: 0px; --tw-text-opacity: 1;">Qualification path</div>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">No previous professional experience is required to apply for this opportunity. However, participation in this project requires meeting the basic requirements and successfully completing the qualification process.</span></p>
+<p style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; font-weight: bolder; background-color: transparent;">Basic Requirements</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">• Excellent written and verbal communication skills in English</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">• Must have resided in the United States for the past three consecutive years</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">• Familiarity with current and historical business, media, sports, news, social media, and cultural affairs in the United States</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">• Active use of Gmail and social media platforms</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">• Experience using web browsers to navigate and interact with a variety of online content</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">• Daily access to a reliable broadband internet connection</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">• Access to a smartphone (Android 5.0 or higher, or iOS 14 or higher)</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">• Access to a personal computer</span></p>
+<p style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; font-weight: bolder; background-color: transparent;">Assessment</span></p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">To join the program as an independent contractor, you will complete a language assessment, an open-book qualification exam, and an identity verification process.</span></p>
+<p style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;"> </p>
+<p class="ql-align-justify" style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; cursor: text; padding: 0px; counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; text-align: justify;"><span style="border-color: #e5e7eb; --tw-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / .5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; background-color: transparent;">The exam must be completed within a specified timeframe, but you may do so at your convenience.</span></p>
+<img src="https://remotive.com/job/track/2091074/blank.gif?source=public_api" alt=""/>",
+        "id": "remotive:2091074",
+        "location": "USA",
+        "postedAt": "2026-07-23T15:37:35",
+        "role": "Content Reviewer - United States",
+        "source": "remotive",
+        "url": "https://remotive.com/remote-jobs/all-others/content-reviewer-united-states-2091074",
+      },
+      {
+        "company": "Tribe Wellness",
+        "description": "<p><strong>Must Love Dogs!!</strong></p>
+<p class="MsoNormal">At Tribe Wellness, we're more than just a tribe – we're a movement. Rooted in courage, empowerment, and integrity, we've pioneered solutions that transform the world's wellness brands into revenue-generating machines. We bridge the gap between brands and revenue by turning our clients’ customers into lifetime supporters, and we do that by turning good salespeople into great salespeople.</p>
+<p class="MsoNormal">At Tribe Wellness Sales, we’re on a mission to help pets live longer, healthier lives through supplements that actually deliver. But here’s the catch: too many pet owners grab a product online and then flounder—unsure how to use it or missing the guidance to make it work. That’s where you, our Product Sales Specialist (called a Protocol Review Specialist in our world), make the difference. Without you, pets miss out on better health, owners lose confidence, and our mission stalls. With you? You’re the spark that turns a purchase into a transformation—for pets and their people.</p>
+<p class="MsoNormal"><strong><br>What You'll Do:</strong></p>
+<ul style="">
+<li class="MsoNormal" style="">
+<p><strong>Sell:</strong> You’ll sell products and services for our pet client, a company built for pet owners, by pet owners, with over a million happy dogs and growing!</p>
+</li>
+<li class="MsoNormal" style="">
+<p><strong>Grow:</strong> Work with a broad range of potential customers, transforming clients’ prospects into brand loyalists.</p>
+</li>
+<li class="MsoNormal" style="">
+<p><strong>Learn:</strong> Work closely with our dedicated leaders, leveraging our top-notch training resources to master the art of selling and representing Tribe's ethos.</p>
+</li>
+<li class="MsoNormal" style="">
+<p><strong>Earn:</strong> Operate with no cap on commission, providing limitless earning potential to integrate with our operations seamlessly.</p>
+</li>
+<li class="MsoNormal" style="">
+<p><strong>Live: </strong>Work from home in a global remote environment, utilizing our communication tools and platforms.</p>
+</li>
+</ul>
+<p class="MsoNormal"> </p>
+<p class="MsoNormal"><strong>What's In It For You:</strong></p>
+<ul style="">
+<li class="MsoNormal" style="">
+<p><strong>Earnings:</strong> This is a commission-only role. You will have between 8 and 18 appointments scheduled for you each day (more if you want them and you are closing sales). You will earn a 20% commission on the gross margin of every sale you make. Please tell us how much you want to earn, and we will show you what it takes to get there. Each sale is between $250 and $2,500.</p>
+</li>
+<li class="MsoNormal" style="">
+<p><strong>The Tribe Tool Kit:</strong> We have a battle-tested tool kit we provide for all our sales consultants, including Rippling and Salesforce, ensuring you're primed for success the second you hit the phones.</p>
+</li>
+<li class="MsoNormal" style="">
+<p><strong>Remote Work: </strong>You’ll have the freedom of a fully remote position, allowing for a work-life balance that suits your lifestyle.</p>
+</li>
+<li class="MsoNormal" style="">
+<p><strong>Be Part of the Tribe:</strong> No matter your title, you’ll join a community that values partnership, advocacy, and growth. We believe in nurturing our team members and fostering an environment of collaboration, support, and mutual success.</p>
+</li>
+</ul>
+<p class="MsoNormal"> </p>
+<p class="MsoNormal"><strong>What We’re Looking For:</strong></p>
+<ul style="">
+<li style="">
+<p>Highly-driven self starters, who are motivated by growth opportunities and the drive to excel in sales.</p>
+</li>
+<li style="">
+<p>Knowledge, background, or raw passion around health and wellness.</p>
+</li>
+<li style="">
+<p>Excellent verbal and written skills, with top-notch communication skills and a knack for building genuine connections.</p>
+</li>
+<li style="">
+<p>The ability to work 40 hours per week (8 hours per day) starting at 8 AM CST.</p>
+</li>
+<li style="">
+<p><strong>Reliable internet and equipment are required.</strong> Because this position involves frequent phone and video calls, you’ll need a setup that can support clear, uninterrupted conversations.</p>
+<p>This means you should have:</p>
+<ul style="">
+<li style="">
+<p>A fast and reliable laptop or desktop computer, with a working mic, camera, and a headset, so you can comfortably run our call system, Salesforce, and Zoom at the same time.</p>
+</li>
+<li style="">
+<p>Ethernet connection strongly preferred because it provides the most consistent call quality. (Usually requires only an inexpensive cable you plug into your desktop/laptop and modem.)</p>
+</li>
+<li style="">
+<p>Enough dedicated internet speed to support calls and video without freezing, delays, or dropped audio. Minimum <strong>[10] Mbps download / [5] Mbps upload</strong> of dedicated bandwidth, with <strong>latency under ~150ms, jitter under ~30ms, and packet loss under ~1%</strong>.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Join us if you’re ready to play a pivotal role in reshaping the world of pet health and wellness while thriving in a growth-centric global environment with amazing people. If that sounds like you, <strong>Tribe Wellness is your tribe. </strong>Apply today and work with a very different type of company.</p>
+<p>#li-remote</p>
+<img src="https://remotive.com/job/track/2091072/blank.gif?source=public_api" alt=""/>",
+        "id": "remotive:2091072",
+        "location": "Worldwide",
+        "postedAt": "2026-07-22T06:22:11",
+        "role": "Product Sales Specialist - Pet Health (CST timezone)",
+        "source": "remotive",
+        "url": "https://remotive.com/remote-jobs/sales/product-sales-specialist-pet-health-cst-timezone-2091072",
+      },
+    ],
+    "source": "remotive",
+  },
+]
+`;

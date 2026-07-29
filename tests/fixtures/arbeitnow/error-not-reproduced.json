@@ -1,0 +1,6 @@
+{
+  "attempted": true,
+  "reproduced": false,
+  "capturedAt": "2026-07-29T15:22:21.000Z",
+  "note": "Requested /api/job-board-api-typo (a deliberately wrong path) hoping for a 404. Got a 200 instead, with a real but differently-sized JSON body (1032372 bytes vs typical.json's 1247184 bytes) — most likely explained by the live job feed simply changing between the two calls made seconds apart (this API has no server-side query/pagination to vary output any other way), not by the wrong path actually being handled differently. Not fabricating an error fixture — recording this as an honest non-reproduction instead. Flagged in docs/architecture-audit.md."
+}

@@ -1,0 +1,6 @@
+{
+  "finding": "Remotive's `search` query param does not appear to filter server-side.",
+  "evidence": "typical.json (search=engineer) and empty.json (search=zzzznonexistentjobtitle999999) both returned job-count/total-job-count: 35, with byte-for-byte identical response sizes (488863 bytes) captured seconds apart.",
+  "implication": "docs/architecture-audit.md's per-source inventory table listed Remotive as accepting `search` as a real server-side filter (matching lib/jobSources/remotive.ts's own comment/assumption). This live check casts doubt on that. It doesn't affect today's app behavior since app/api/jobs/search/route.ts already applies its own uniform post-fetch title filter regardless of what any upstream source does (audit §4) — so results are still correct — but the capability declaration for a future Remotive adapter (docs/adapter-interface.md) should have supportsKeywordQuery: false, not true, unless someone confirms otherwise with Remotive directly (e.g. trying a term that legitimately narrows the default set, or checking if `search` requires a minimum length / whole-word match this nonsense string didn't satisfy).",
+  "capturedAt": "2026-07-29T15:22:05.000Z"
+}

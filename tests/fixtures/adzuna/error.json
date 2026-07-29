@@ -1,0 +1,11 @@
+{
+  "status": 401,
+  "capturedAt": "2026-07-29T15:22:21.721Z",
+  "note": "Deliberately corrupted app_key to trigger a genuine auth error.",
+  "body": {
+    "exception": "AUTH_FAIL",
+    "doc": "https://api.adzuna.com/v1/doc",
+    "__CLASS__": "Adzuna::API::Response::Exception",
+    "display": "Authorisation failed"
+  }
+}

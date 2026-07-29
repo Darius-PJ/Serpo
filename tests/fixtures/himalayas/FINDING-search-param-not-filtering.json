@@ -1,0 +1,6 @@
+{
+  "finding": "Himalayas' `q` query param does not appear to filter strictly by keyword server-side.",
+  "evidence": "Querying q=zzzznonexistentjobtitle999999 (see not-empty-search-not-filtering.json) returned 19 real jobs with titles like 'Your Dream Job', 'E-commerce Customer Support Specialist (Zendesk & Shopify)', 'ZScaler Engineer (R-00171)' — none of which contain the nonsense query string. Same pattern as tests/fixtures/remotive/FINDING-search-param-not-filtering.json.",
+  "implication": "docs/architecture-audit.md's per-source inventory listed `q` (keywords) as Himalayas' server-side filter. This live check casts doubt on that — it may be a fuzzy/best-effort match that falls back to a default set rather than a strict filter. Doesn't affect today's app correctness (app/api/jobs/search/route.ts already re-filters every source's results locally regardless, audit §4), but a future Himalayas adapter's supportsKeywordQuery capability flag should probably be false, or at least not fully trusted, pending confirmation directly with Himalayas.",
+  "capturedAt": "2026-07-29T15:22:05.000Z"
+}
