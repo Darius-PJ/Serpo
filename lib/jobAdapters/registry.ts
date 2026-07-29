@@ -19,6 +19,7 @@ import { remotiveAdapter } from "./adapters/remotive";
 import { himalayasAdapter } from "./adapters/himalayas";
 import { jobicyAdapter } from "./adapters/jobicy";
 import { usaJobsAdapter } from "./adapters/usajobs";
+import { joobleAdapter } from "./adapters/jooble";
 
 const ADAPTERS: Adapter[] = [
   arbeitnowAdapter,
@@ -29,6 +30,7 @@ const ADAPTERS: Adapter[] = [
   himalayasAdapter,
   jobicyAdapter,
   usaJobsAdapter,
+  joobleAdapter,
 ];
 
 export function listAdapters(): Adapter[] {
