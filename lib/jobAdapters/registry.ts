@@ -12,8 +12,9 @@
 import type { Adapter } from "./types";
 import { isAdapterConfigured } from "./config";
 import { arbeitnowAdapter } from "./adapters/arbeitnow";
+import { jobSpyAdapter } from "./adapters/jobspy";
 
-const ADAPTERS: Adapter[] = [arbeitnowAdapter];
+const ADAPTERS: Adapter[] = [arbeitnowAdapter, jobSpyAdapter];
 
 export function listAdapters(): Adapter[] {
   return ADAPTERS;
