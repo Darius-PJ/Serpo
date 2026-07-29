@@ -9,8 +9,14 @@ function hashCriteria(criteria: object): string {
   return createHash("sha256").update(canonical).digest("hex");
 }
 
-/** Returns cached listings for this source+criteria if present and within the TTL, else null (cache miss/stale). */
-export async function getCachedListings(source: string, criteria: object): Promise<NormalizedJobListing[] | null> {
+/**
+ * Returns cached listings for this source+criteria if present and within the TTL, else
+ * null (cache miss/stale). Generic over T (default: the legacy NormalizedJobListing)
+ * so lib/jobAdapters/services/cache.ts can reuse this same table/TTL logic for the new,
+ * richer adapter record shape without duplicating it — the table only stores opaque
+ * JSON, so the type parameter is purely a caller-side contract, not a schema change.
+ */
+export async function getCachedListings<T = NormalizedJobListing>(source: string, criteria: object): Promise<T[] | null> {
   const criteriaHash = hashCriteria(criteria);
   const row = await prisma.jobSourceCache.findUnique({ where: { source_criteriaHash: { source, criteriaHash } } });
   if (!row) return null;
@@ -19,17 +25,17 @@ export async function getCachedListings(source: string, criteria: object): Promi
   if (Date.now() - row.fetchedAt.getTime() > ttlMs) return null;
 
   try {
-    return JSON.parse(row.listingsJson) as NormalizedJobListing[];
+    return JSON.parse(row.listingsJson) as T[];
   } catch {
     return null;
   }
 }
 
 /** Stores this source+criteria's normalized results, resetting the TTL clock. Only call this after a successful fetch — never cache an empty/error result. */
-export async function setCachedListings(
+export async function setCachedListings<T = NormalizedJobListing>(
   source: string,
   criteria: object,
-  listings: NormalizedJobListing[]
+  listings: T[]
 ): Promise<void> {
   const criteriaHash = hashCriteria(criteria);
   const listingsJson = JSON.stringify(listings);
