@@ -18,8 +18,18 @@ import { adzunaAdapter } from "./adapters/adzuna";
 import { remotiveAdapter } from "./adapters/remotive";
 import { himalayasAdapter } from "./adapters/himalayas";
 import { jobicyAdapter } from "./adapters/jobicy";
+import { usaJobsAdapter } from "./adapters/usajobs";
 
-const ADAPTERS: Adapter[] = [arbeitnowAdapter, jobSpyAdapter, remoteOkAdapter, adzunaAdapter, remotiveAdapter, himalayasAdapter, jobicyAdapter];
+const ADAPTERS: Adapter[] = [
+  arbeitnowAdapter,
+  jobSpyAdapter,
+  remoteOkAdapter,
+  adzunaAdapter,
+  remotiveAdapter,
+  himalayasAdapter,
+  jobicyAdapter,
+  usaJobsAdapter,
+];
 
 export function listAdapters(): Adapter[] {
   return ADAPTERS;
