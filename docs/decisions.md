@@ -2,6 +2,45 @@
 
 Non-obvious choices made during the job-source adapter refactor, and why. Newest first.
 
+## 2026-07-29 — Phase 4: all 11 sources migrated, no tests/checks (explicit instruction)
+
+Per explicit user instruction ("Proceed to Phase 4 with no tests or checks"), this
+entire migration pass skipped fixtures, contract tests, and verification commands
+(lint/tsc/unit/e2e) — a deliberate deviation from the task's own "each commit includes
+the adapter, its fixtures, its passing contract tests, and a green characterization
+suite" definition of done for this phase. Every commit message says so individually;
+noted once more here since it's the single biggest risk carried out of this phase.
+
+All 11 source modules from `docs/architecture-audit.md`'s inventory now have a
+`lib/jobAdapters/adapters/` entry, wired behind `ADAPTER_MODE` (default `"legacy"` —
+today's behavior is unchanged unless someone opts in). One git-hygiene mistake
+happened along the way: `git add lib/jobAdapters/` swept the not-yet-registered Adzuna
+adapter file into the RemoteOK commit. Not fixed by rewriting history — registering
+Adzuna (the part that actually makes a migration "real") landed in its own following
+commit instead.
+
+Two genuine interface findings surfaced by actually building all 11, both reported
+loudly rather than silently patched, per the task's own rule:
+
+1. **`createAdapterContext` ignored `latencyClass` entirely** (found while migrating
+   JobSpy) — every adapter got the same 15s timeout regardless of what it declared,
+   which would have killed JobSpy's subprocess mid-scrape. Fixed by deriving the
+   timeout from `latencyClass` (`"very-slow"` reuses the already-proven
+   `JOBSPY_TIMEOUT_MS`). A Phase 3 implementation gap, not a Phase 2 design flaw.
+2. **`NormalizeContext` had no way to carry which target/board produced a listing**
+   (found while migrating Greenhouse, the task's own "new source" validation
+   exercise) — an `enumerate-target` adapter needs its query's `target` to build a
+   correct `sourceId`/`company` (e.g. `"greenhouse:<token>"`). Fixed generically by
+   adding a `query` field to `NormalizeContext`, plumbed through `runSearch.ts`. Lever,
+   migrated immediately after using the same fix with zero further core changes,
+   is the confirming data point that this was genuinely generic and not
+   Greenhouse-specific.
+
+Both fixes touched shared code (`context.ts`, `types.ts`, `runSearch.ts`) — outside the
+adapter's own directory, which the task says to report rather than paper over. Neither
+was a `sourceId === "x"` branch; both were capability/interface-shape gaps that
+benefit every adapter, not just the one that exposed them.
+
 ## 2026-07-29 — Phase 1: MSW for interception, live-call scope decisions, and what got skipped
 
 **HTTP interception library**: proposed MSW / nock / Polly.js to the user with a
