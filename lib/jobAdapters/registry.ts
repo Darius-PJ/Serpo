@@ -15,8 +15,9 @@ import { arbeitnowAdapter } from "./adapters/arbeitnow";
 import { jobSpyAdapter } from "./adapters/jobspy";
 import { remoteOkAdapter } from "./adapters/remoteok";
 import { adzunaAdapter } from "./adapters/adzuna";
+import { remotiveAdapter } from "./adapters/remotive";
 
-const ADAPTERS: Adapter[] = [arbeitnowAdapter, jobSpyAdapter, remoteOkAdapter, adzunaAdapter];
+const ADAPTERS: Adapter[] = [arbeitnowAdapter, jobSpyAdapter, remoteOkAdapter, adzunaAdapter, remotiveAdapter];
 
 export function listAdapters(): Adapter[] {
   return ADAPTERS;
