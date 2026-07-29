@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, NormalizedJobListing } from "./types";
 
 // Greenhouse Job Board API docs: https://developers.greenhouse.io/job-board.html
@@ -20,7 +21,9 @@ export async function fetchGreenhouseBoard(
   token: string,
   criteria: JobSearchCriteria
 ): Promise<NormalizedJobListing[]> {
-  const res = await fetch(`https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(token)}/jobs?content=true`);
+  const res = await fetch(`https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(token)}/jobs?content=true`, {
+    signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
+  });
   if (!res.ok) {
     throw new Error(`Greenhouse board "${token}" search failed: ${res.status} ${res.statusText}`);
   }

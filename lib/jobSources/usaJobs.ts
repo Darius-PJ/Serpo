@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // USAJobs API docs: https://developer.usajobs.gov/api-reference/get-api-search
@@ -36,6 +37,7 @@ export const usaJobsConnector: JobSourceConnector = {
         "User-Agent": process.env.USAJOBS_USER_AGENT!,
         "Authorization-Key": process.env.USAJOBS_API_KEY!,
       },
+      signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
     });
 
     if (!res.ok) {

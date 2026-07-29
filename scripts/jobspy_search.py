@@ -2,9 +2,11 @@
 Helper invoked by lib/jobSources/jobSpy.ts. Requires `pip install python-jobspy`.
 Prints a JSON array of results to stdout so the Node connector can parse them.
 
-Only runs when JOBSPY_ENABLED=true is set — JobSpy scrapes sites (LinkedIn,
-Indeed, Glassdoor, ZipRecruiter) whose Terms of Service restrict automated
-access. That's a call for the person running this tool to make, not a default.
+Always invoked when lib/jobSources/jobSpy.ts's connector runs — there is no
+separate opt-in flag. JobSpy scrapes sites (LinkedIn, Indeed, Glassdoor,
+ZipRecruiter, Google) whose Terms of Service restrict automated access;
+running this tool at all is the call the person running it has already made
+(see jobSpy.ts's isConfigured()).
 """
 
 import argparse

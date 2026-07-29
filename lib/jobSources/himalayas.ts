@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // Himalayas public API docs: https://himalayas.app/docs/remote-jobs-api
@@ -33,7 +34,9 @@ export const himalayasConnector: JobSourceConnector = {
     // this app's own isUsOrRemoteListing post-filter already covers it.
     const params = new URLSearchParams({ q: criteria.keywords });
 
-    const res = await fetch(`https://himalayas.app/jobs/api/search?${params.toString()}`);
+    const res = await fetch(`https://himalayas.app/jobs/api/search?${params.toString()}`, {
+      signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
+    });
     if (!res.ok) {
       throw new Error(`Himalayas search failed: ${res.status} ${res.statusText}`);
     }

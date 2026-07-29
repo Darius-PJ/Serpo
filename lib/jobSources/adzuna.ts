@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // Adzuna API docs: https://developer.adzuna.com/docs/search
@@ -35,7 +36,8 @@ export const adzunaConnector: JobSourceConnector = {
     if (criteria.location) params.set("where", criteria.location);
 
     const res = await fetch(
-      `https://api.adzuna.com/v1/api/jobs/${COUNTRY}/search/1?${params.toString()}`
+      `https://api.adzuna.com/v1/api/jobs/${COUNTRY}/search/1?${params.toString()}`,
+      { signal: AbortSignal.timeout(getSourceFetchTimeoutMs()) }
     );
 
     if (!res.ok) {

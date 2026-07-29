@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // RemoteOK public feed: https://remoteok.com/api
@@ -28,6 +29,7 @@ export const remoteOkConnector: JobSourceConnector = {
         // RemoteOK blocks requests without a descriptive User-Agent.
         "User-Agent": "job-tracker/1.0 (personal use, local-only)",
       },
+      signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
     });
 
     if (!res.ok) {

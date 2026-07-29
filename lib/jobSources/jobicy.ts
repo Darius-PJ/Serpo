@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // Jobicy public API docs: https://jobicy.com/api/v2/remote-jobs
@@ -36,7 +37,9 @@ export const jobicyConnector: JobSourceConnector = {
     // isUsOrRemoteListing post-filter already covers it.
     const params = new URLSearchParams({ count: "25", tag: criteria.keywords });
 
-    const res = await fetch(`https://jobicy.com/api/v2/remote-jobs?${params.toString()}`);
+    const res = await fetch(`https://jobicy.com/api/v2/remote-jobs?${params.toString()}`, {
+      signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
+    });
     if (!res.ok) {
       throw new Error(`Jobicy search failed: ${res.status} ${res.statusText}`);
     }

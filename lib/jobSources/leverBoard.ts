@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, NormalizedJobListing } from "./types";
 
 // Lever Postings API docs: https://github.com/lever/postings-api
@@ -14,7 +15,9 @@ interface LeverPosting {
 }
 
 export async function fetchLeverBoard(token: string, criteria: JobSearchCriteria): Promise<NormalizedJobListing[]> {
-  const res = await fetch(`https://api.lever.co/v0/postings/${encodeURIComponent(token)}?mode=json`);
+  const res = await fetch(`https://api.lever.co/v0/postings/${encodeURIComponent(token)}?mode=json`, {
+    signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
+  });
   if (!res.ok) {
     throw new Error(`Lever board "${token}" search failed: ${res.status} ${res.statusText}`);
   }

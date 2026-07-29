@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // Remotive public API docs: https://github.com/remotive-com/remote-jobs-api
@@ -32,7 +33,9 @@ export const remotiveConnector: JobSourceConnector = {
   async search(criteria: JobSearchCriteria): Promise<NormalizedJobListing[]> {
     const params = new URLSearchParams({ search: criteria.keywords, limit: "25" });
 
-    const res = await fetch(`https://remotive.com/api/remote-jobs?${params.toString()}`);
+    const res = await fetch(`https://remotive.com/api/remote-jobs?${params.toString()}`, {
+      signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
+    });
     if (!res.ok) {
       throw new Error(`Remotive search failed: ${res.status} ${res.statusText}`);
     }

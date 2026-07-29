@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // Arbeitnow public API docs: https://www.arbeitnow.com/api/job-board-api
@@ -29,7 +30,9 @@ export const arbeitnowConnector: JobSourceConnector = {
   },
 
   async search(criteria: JobSearchCriteria): Promise<NormalizedJobListing[]> {
-    const res = await fetch("https://www.arbeitnow.com/api/job-board-api");
+    const res = await fetch("https://www.arbeitnow.com/api/job-board-api", {
+      signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
+    });
     if (!res.ok) {
       throw new Error(`Arbeitnow search failed: ${res.status} ${res.statusText}`);
     }

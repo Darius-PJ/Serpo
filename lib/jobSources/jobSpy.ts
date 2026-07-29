@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
+import { getJobSpyTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 interface JobSpyRawResult {
@@ -16,14 +17,23 @@ interface JobSpyRawResult {
 function runPythonScript(scriptPath: string, args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
     const python = process.env.JOBSPY_PYTHON || "python";
-    const child = spawn(python, [scriptPath, ...args]);
+    // signal: kills the subprocess past getJobSpyTimeoutMs() — otherwise a
+    // stalled scrape hangs this connector, and Promise.all in index.ts means
+    // that hangs every other source's results along with it.
+    const child = spawn(python, [scriptPath, ...args], { signal: AbortSignal.timeout(getJobSpyTimeoutMs()) });
 
     let stdout = "";
     let stderr = "";
     child.stdout.on("data", (chunk) => (stdout += chunk));
     child.stderr.on("data", (chunk) => (stderr += chunk));
 
-    child.on("error", reject);
+    child.on("error", (err) => {
+      if (err.name === "AbortError") {
+        reject(new Error(`jobspy_search.py timed out after ${getJobSpyTimeoutMs()}ms`));
+      } else {
+        reject(err);
+      }
+    });
     child.on("close", (code) => {
       if (code !== 0) {
         reject(new Error(`jobspy_search.py exited ${code}: ${stderr.trim()}`));

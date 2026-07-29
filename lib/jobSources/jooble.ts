@@ -1,3 +1,4 @@
+import { getSourceFetchTimeoutMs } from "./timeoutConfig";
 import type { JobSearchCriteria, JobSourceConnector, NormalizedJobListing } from "./types";
 
 // Jooble REST API docs: https://jooble.org/api/about
@@ -36,6 +37,7 @@ export const joobleConnector: JobSourceConnector = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ keywords: criteria.keywords, location }),
+      signal: AbortSignal.timeout(getSourceFetchTimeoutMs()),
     });
 
     if (!res.ok) {
