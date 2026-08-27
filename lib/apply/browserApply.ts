@@ -1,13 +1,16 @@
 import "server-only";
 import { chromium, type Locator } from "playwright";
 import { prisma } from "@/lib/db/prisma";
+import { assertSafeExternalUrl } from "@/lib/security/externalUrl";
 import { matchFieldKey } from "./fieldSynonyms";
+import { hasSubmissionConfirmation } from "./submissionSignals";
 
 export interface ApplyResult {
-  status: "submitted" | "needs_input" | "failed";
+  status: "submitted" | "review_required" | "needs_input" | "blocked" | "unknown" | "failed";
   missingFieldKey?: string;
   missingFieldLabel?: string;
   formAnswersSnapshot?: Record<string, string>;
+  submissionEvidence?: { kind: "detected_confirmation"; recordedAt: string; finalUrl: string; signal: string };
   error?: string;
 }
 
@@ -76,7 +79,8 @@ export async function runApplyAutomation(
   const browser = await chromium.launch({ headless: false });
   try {
     const page = await browser.newPage();
-    await page.goto(application.url, { waitUntil: "domcontentloaded", timeout: 30_000 });
+    const safeUrl = await assertSafeExternalUrl(application.url);
+    await page.goto(safeUrl.toString(), { waitUntil: "domcontentloaded", timeout: 30_000 });
 
     const controls = await page
       .locator("input:not([type=hidden]):not([type=submit]):not([type=button]):not([type=checkbox]):not([type=radio]), textarea, select")
@@ -115,7 +119,7 @@ export async function runApplyAutomation(
     if (blockedCount > 0) {
       await browser.close();
       return {
-        status: "failed",
+        status: "blocked",
         error: "CAPTCHA or bot-check detected — stopping without attempting to bypass it.",
         formAnswersSnapshot: answers,
       };
@@ -133,17 +137,27 @@ export async function runApplyAutomation(
     // Replaces a fixed 3s waitForTimeout that was a review window in name
     // only — this is after locating the submit button so the user sees
     // exactly what's about to be clicked, and can edit any filled field.
+    // Phase 2 safeguard: this code never invokes the site's Submit control.
+    // Resume only after the user has reviewed or acted in the visible browser.
     await page.pause();
 
     // The Inspector doesn't lock the page from interaction — the user could
     // have clicked the site's real submit button themselves while paused.
     // Guard against clicking it a second time.
-    if (await submitButton.isVisible().catch(() => false)) {
-      await submitButton.click();
-      await page.waitForTimeout(2000);
+    const pageText = await page.locator("body").innerText().catch(() => "");
+    const signal = hasSubmissionConfirmation(pageText);
+    if (signal) {
+      return {
+        status: "submitted",
+        formAnswersSnapshot: answers,
+        submissionEvidence: { kind: "detected_confirmation", recordedAt: new Date().toISOString(), finalUrl: page.url(), signal },
+      };
     }
-
-    return { status: "submitted", formAnswersSnapshot: answers };
+    return {
+      status: "review_required",
+      error: "No confirmation page was detected. The application was not marked submitted.",
+      formAnswersSnapshot: answers,
+    };
   } catch (err) {
     return { status: "failed", error: err instanceof Error ? err.message : String(err), formAnswersSnapshot: answers };
   } finally {

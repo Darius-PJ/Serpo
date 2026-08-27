@@ -12,7 +12,7 @@ export interface OsintRunResult {
 }
 
 export async function researchAllTools(domain: string): Promise<OsintRunResult[]> {
-  const configured = CONNECTORS.filter((c) => c.isConfigured());
+  const configured = configuredOsintConnectors();
 
   return Promise.all(
     configured.map(async (connector): Promise<OsintRunResult> => {
@@ -29,6 +29,10 @@ export async function researchAllTools(domain: string): Promise<OsintRunResult[]
       }
     })
   );
+}
+
+export function configuredOsintConnectors() {
+  return CONNECTORS.filter((connector) => connector.isConfigured());
 }
 
 export { CONNECTORS as osintConnectors };

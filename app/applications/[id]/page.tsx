@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
 import { requireUserIdForPage } from "@/lib/auth/session";
 import { StatusSelect } from "@/components/StatusSelect";
 import { DecisionMakerPanel } from "@/components/DecisionMakerPanel";
 import { MessagePanel } from "@/components/MessagePanel";
 import { ApplyPanel } from "@/components/ApplyPanel";
+import { isFollowUpDue } from "@/lib/scheduler/followUpCheck";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +30,9 @@ export default async function ApplicationDetailPage({
 
   return (
     <div>
+      <Link href="/dashboard" className="mb-3 inline-flex text-sm text-primary-dark underline">
+        Back to applications
+      </Link>
       <div className="card-soft mb-6 p-4">
         <h1 className="text-xl font-extrabold text-foreground">
           {application.role} <span className="font-medium text-foreground-muted">at {application.company}</span>
@@ -60,7 +65,12 @@ export default async function ApplicationDetailPage({
         hasResumeTemplate={Boolean(resumeTemplate)}
         runs={applyRuns}
       />
-      <MessagePanel applicationId={application.id} messages={application.messages} />
+      <MessagePanel
+        applicationId={application.id}
+        messages={application.messages}
+        submissionConfirmed={application.submissionState === "confirmed"}
+        followUpDue={isFollowUpDue(application)}
+      />
     </div>
   );
 }

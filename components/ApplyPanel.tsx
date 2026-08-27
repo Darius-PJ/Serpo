@@ -23,16 +23,24 @@ export function ApplyPanel({
   const [uploading, setUploading] = useState(false);
   const [applying, setApplying] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [attestationOpen, setAttestationOpen] = useState(false);
   const [missingValue, setMissingValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const latestRun = runs[0];
 
   async function uploadResume(file: File) {
     setUploading(true);
+    setError(null);
     try {
       const formData = new FormData();
       formData.append("file", file);
-      await fetch("/api/resume-template", { method: "POST", body: formData });
+      const res = await fetch("/api/resume-template", { method: "POST", body: formData });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "The resume template could not be uploaded.");
+        return;
+      }
       router.refresh();
     } finally {
       setUploading(false);
@@ -41,13 +49,41 @@ export function ApplyPanel({
 
   async function startApply() {
     setApplying(true);
+    setError(null);
     try {
-      await fetch(`/api/applications/${applicationId}/apply`, {
+      const res = await fetch(`/api/applications/${applicationId}/apply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ confirm: "APPLY" }),
+        body: JSON.stringify({ confirm: "APPLY", idempotencyKey: crypto.randomUUID() }),
       });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "Application assistance could not start.");
+        return;
+      }
       setConfirmOpen(false);
+      router.refresh();
+    } finally {
+      setApplying(false);
+    }
+  }
+
+  async function attestSubmission() {
+    if (!latestRun) return;
+    setApplying(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/applications/${applicationId}/apply/${latestRun.id}/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm: "SUBMITTED" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "Could not confirm the submission.");
+        return;
+      }
+      setAttestationOpen(false);
       router.refresh();
     } finally {
       setApplying(false);
@@ -56,28 +92,36 @@ export function ApplyPanel({
 
   async function submitMissingFieldAndRetry() {
     if (!latestRun?.missingFieldKey || !missingValue.trim()) return;
-    await fetch("/api/profile-fields", {
+    setError(null);
+    const res = await fetch("/api/profile-fields", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ key: latestRun.missingFieldKey, label: latestRun.missingFieldLabel, value: missingValue }),
     });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(data.error ?? "The missing answer could not be saved.");
+      return;
+    }
     setMissingValue("");
-    // Continuation of an already-confirmed submission, not a new one — no re-prompt.
+    // This resumes an already-confirmed workflow action; it still will not submit the site form.
     await startApply();
   }
 
   return (
     <section className="card-soft mb-6 p-4">
-      <h2 className="mb-2 font-bold text-foreground">Auto-apply</h2>
+      <h2 className="mb-2 font-bold text-foreground">Application assistant</h2>
       <p className="mb-3 text-xs text-foreground-muted">
-        Tailors your resume to this posting, then opens a visible browser window and fills the
-        application. It pauses for your review right before the final submit click — nothing is
-        sent until you resume it in that window.
+        Tailor a resume for this posting, open a visible browser, and fill supported fields from your saved profile.
+        You review every form and choose whether to submit it.
+      </p>
+      <p className="mb-3 text-xs font-medium text-foreground">
+        The assistant never clicks Submit or reports an application as sent without an employer confirmation or your explicit attestation.
       </p>
 
       {!hasResumeTemplate && (
         <div className="mb-3 rounded-xl border border-amber-300 bg-amber-50 p-2 text-sm text-amber-900">
-          Upload a resume template (.md or .docx) before you can auto-apply.
+          Upload a resume template (.md or .docx) before you can use the application assistant.
         </div>
       )}
 
@@ -90,7 +134,7 @@ export function ApplyPanel({
           onChange={(e) => e.target.files?.[0] && uploadResume(e.target.files[0])}
         />
         <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="btn-secondary px-3 py-1.5 text-sm">
-          {uploading ? "Uploading…" : hasResumeTemplate ? "Replace resume" : "Upload resume"}
+          {uploading ? "Uploading..." : hasResumeTemplate ? "Replace resume" : "Upload resume"}
         </button>
 
         <button
@@ -98,19 +142,31 @@ export function ApplyPanel({
           disabled={!hasResumeTemplate || applying}
           className="btn-primary px-3 py-1.5 text-sm"
         >
-          {applying ? "Running…" : "Tailor & Apply"}
+          {applying ? "Working..." : "Tailor & fill form"}
         </button>
       </div>
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Start auto-apply?"
-        description={`This opens a real browser, tailors your resume, and fills out the application for ${role} at ${company}. You'll get a chance to review the filled form before it's actually submitted.`}
+        title="Start application assistance?"
+        description={`This opens a real browser, tailors your resume, and fills out the application for ${role} at ${company}. You review it and decide whether to submit; automation will not click Submit.`}
         confirmLabel="Start"
         busy={applying}
         onConfirm={startApply}
         onCancel={() => setConfirmOpen(false)}
       />
+
+      <ConfirmDialog
+        open={attestationOpen}
+        title="Confirm your submission?"
+        description="Only choose this if you personally submitted the application in the browser. This updates the tracker and enables follow-up reminders."
+        confirmLabel="I submitted it"
+        busy={applying}
+        onConfirm={attestSubmission}
+        onCancel={() => setAttestationOpen(false)}
+      />
+
+      {error && <p role="alert" className="mb-3 text-sm text-danger-dark">{error}</p>}
 
       {latestRun && (
         <div className="rounded-xl border border-border-soft p-3 text-sm">
@@ -133,13 +189,26 @@ export function ApplyPanel({
             </div>
           )}
 
-          {latestRun.status === "failed" && latestRun.error && (
-            <p className="text-danger-dark">{latestRun.error}</p>
+          {latestRun.status === "failed" && latestRun.error && <p className="text-danger-dark">{latestRun.error}</p>}
+
+          {latestRun.status === "blocked" && latestRun.error && <p className="text-amber-800">{latestRun.error}</p>}
+
+          {(latestRun.status === "review_required" || latestRun.status === "unknown") && (
+            <div className="mt-2">
+              <p className="mb-2 text-foreground-muted">
+                {latestRun.status === "review_required"
+                  ? "Review the browser window. If you submitted it, confirm that action here."
+                  : "The site did not provide a reliable submission result. Confirm only if you submitted it."}
+              </p>
+              <button onClick={() => setAttestationOpen(true)} disabled={applying} className="btn-primary px-3 py-1.5 text-sm">
+                Confirm I submitted it
+              </button>
+            </div>
           )}
 
           {latestRun.status === "submitted" && (
             <p className="text-foreground-muted">
-              Submitted {latestRun.submittedAt?.toLocaleString()} —{" "}
+              Confirmed submitted {latestRun.submittedAt?.toLocaleString()} -{" "}
               <a href={`/api/applications/${applicationId}/resume`} className="text-primary-dark underline">
                 download the resume that was used
               </a>

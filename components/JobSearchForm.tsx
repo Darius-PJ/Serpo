@@ -36,7 +36,9 @@ export function JobSearchForm() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [tracked, setTracked] = useState<Set<string>>(new Set());
+  const [tracking, setTracking] = useState<string | null>(null);
   const [generatingResumeFor, setGeneratingResumeFor] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Restores the search that led here when arriving via the Resume tab's
   // Back button (?keywords=...&location=...&remoteOnly=...), instead of
@@ -51,17 +53,26 @@ export function JobSearchForm() {
 
   async function runSearch(kw: string, loc: string, remote: boolean) {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/jobs/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ keywords: kw, location: loc, remoteOnly: remote }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "Search could not be completed. Please try again.");
+        return;
+      }
       setResults(data.results ?? []);
       setSuggestedTitles(data.suggestedTitles ?? []);
       setPageBySource({});
       setSearched(true);
+      const params = new URLSearchParams({ keywords: kw, location: loc, remoteOnly: String(remote) });
+      router.replace(`/sourcing?${params.toString()}`, { scroll: false });
+    } catch {
+      setError("Search could not be completed. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -78,20 +89,33 @@ export function JobSearchForm() {
   }
 
   async function track(listing: Listing) {
-    await fetch("/api/applications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        company: listing.company,
-        role: listing.role,
-        source: listing.source,
-        url: listing.url,
-        description: listing.description,
-        status: "Sourced",
-      }),
-    });
-    setTracked((prev) => new Set(prev).add(listing.id));
-    router.refresh();
+    setTracking(listing.id);
+    setError(null);
+    try {
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company: listing.company,
+          role: listing.role,
+          source: listing.source,
+          url: listing.url,
+          description: listing.description,
+          status: "Sourced",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "This job could not be added to your applications.");
+        return;
+      }
+      setTracked((prev) => new Set(prev).add(listing.id));
+      router.refresh();
+    } catch {
+      setError("This job could not be added. Check your connection and try again.");
+    } finally {
+      setTracking(null);
+    }
   }
 
   function setPage(source: string, page: number) {
@@ -100,6 +124,7 @@ export function JobSearchForm() {
 
   async function openResume(listing: Listing) {
     setGeneratingResumeFor(listing.id);
+    setError(null);
     try {
       const originSearchQuery = new URLSearchParams({ keywords, location, remoteOnly: String(remoteOnly) }).toString();
       const res = await fetch("/api/resume", {
@@ -113,10 +138,16 @@ export function JobSearchForm() {
           originSearchQuery,
         }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "A resume workspace could not be created.");
+        return;
+      }
       if (data.workspace?.id) {
         router.push(`/resume/${data.workspace.id}`);
       }
+    } catch {
+      setError("A resume workspace could not be created. Check your connection and try again.");
     } finally {
       setGeneratingResumeFor(null);
     }
@@ -161,6 +192,8 @@ export function JobSearchForm() {
           {loading ? "Searching…" : "Search"}
         </button>
       </form>
+
+      {error && <p role="alert" className="mb-4 text-sm text-danger-dark">{error}</p>}
 
       <p className="mb-4 text-xs text-foreground-muted">
         Showing exact title matches only (entry/mid-level, US-based or remote). Titles containing
@@ -208,10 +241,10 @@ export function JobSearchForm() {
                         </a>
                         <button
                           onClick={() => track(listing)}
-                          disabled={tracked.has(listing.id)}
+                          disabled={tracked.has(listing.id) || tracking === listing.id}
                           className="btn-primary px-2.5 py-1 text-xs"
                         >
-                          {tracked.has(listing.id) ? "Tracked" : "Track"}
+                          {tracked.has(listing.id) ? "Tracked" : tracking === listing.id ? "Tracking..." : "Track"}
                         </button>
                         <button
                           onClick={() => openResume(listing)}

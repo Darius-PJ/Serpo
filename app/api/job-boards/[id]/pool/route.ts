@@ -4,6 +4,7 @@ import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 import { listEnumerateTargetAdapters } from "@/lib/jobAdapters/registry";
 import { runAdapterSearch } from "@/lib/jobAdapters/runSearch";
+import { fetchSafeExternalUrl } from "@/lib/security/externalUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +61,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
   } else {
     try {
-      const res = await fetch(board.url, { method: "GET" });
+      const res = await fetchSafeExternalUrl(board.url, { method: "GET", signal: AbortSignal.timeout(10_000) });
       poolStatus = res.ok ? "browse-only" : "failed";
     } catch {
       poolStatus = "failed";

@@ -43,6 +43,7 @@ yarn-error.log*
 # local database — this app's entire dataset; never goes to git
 /data/*.db
 /data/*.db-journal
+/data/*.backup-*
 /data/resumes/
 /data/raekwon-archive/
 

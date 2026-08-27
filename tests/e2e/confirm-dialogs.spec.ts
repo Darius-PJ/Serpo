@@ -58,14 +58,14 @@ test("auto-apply only fires after confirming the dialog", async ({ page }) => {
   });
 
   await page.goto(`/applications/${application.id}`);
-  await page.getByRole("button", { name: "Tailor & Apply" }).click();
+  await page.getByRole("button", { name: "Tailor & fill form" }).click();
   await expect(page.locator("dialog[open]")).toBeVisible();
   expect(applyCalls).toBe(0);
 
   await page.getByRole("button", { name: "Cancel" }).click();
   expect(applyCalls).toBe(0);
 
-  await page.getByRole("button", { name: "Tailor & Apply" }).click();
+  await page.getByRole("button", { name: "Tailor & fill form" }).click();
   await page.getByRole("button", { name: "Start" }).click();
   await expect.poll(() => applyCalls).toBe(1);
 });
@@ -87,7 +87,7 @@ test("decision-maker research shows an editable, pre-filled domain guess and onl
   });
 
   await page.goto(`/applications/${application.id}`);
-  await page.getByRole("button", { name: "Find decision maker" }).click();
+  await page.getByRole("button", { name: "Research contacts" }).click();
   await expect(page.locator("dialog[open]")).toBeVisible();
 
   const domainInput = page.locator("dialog input");

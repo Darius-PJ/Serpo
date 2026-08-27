@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
+import { parseExternalHttpsUrl, UnsafeExternalUrlError } from "@/lib/security/externalUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -45,12 +46,9 @@ export async function POST(request: Request) {
 
   let url: URL;
   try {
-    url = new URL(body.url);
-  } catch {
-    return NextResponse.json({ error: "invalid url" }, { status: 400 });
-  }
-  if (url.protocol !== "https:" && url.protocol !== "http:") {
-    return NextResponse.json({ error: "url must be http(s)" }, { status: 400 });
+    url = parseExternalHttpsUrl(body.url);
+  } catch (err) {
+    return NextResponse.json({ error: err instanceof UnsafeExternalUrlError ? err.message : "invalid URL" }, { status: 400 });
   }
 
   const board = await prisma.jobBoard.create({

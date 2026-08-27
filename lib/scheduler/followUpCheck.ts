@@ -1,30 +1,28 @@
 import "server-only";
 import { prisma } from "@/lib/db/prisma";
-import { generateMessage } from "@/lib/ai/generateMessage";
-
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
-/** Generates a FOLLOW_UP draft for any of this user's applications 7+ days past submission with no status change and no prior follow-up. */
-export async function runFollowUpCheck(userId: string) {
+/** Lists follow-ups that need the user's review; it never calls an AI provider or mutates data. */
+export async function listFollowUpDue(userId: string) {
   const cutoff = new Date(Date.now() - SEVEN_DAYS_MS);
 
-  const due = await prisma.application.findMany({
+  return prisma.application.findMany({
     where: {
       userId,
       status: "Submitted",
+      submissionState: "confirmed",
       appliedAt: { lte: cutoff },
       followUpGeneratedAt: null,
     },
+    select: { id: true },
   });
+}
 
-  const generated = [];
-  for (const application of due) {
-    const message = await generateMessage(application.id, "FOLLOW_UP");
-    await prisma.application.update({
-      where: { id: application.id },
-      data: { followUpGeneratedAt: new Date() },
-    });
-    generated.push(message);
-  }
-  return generated;
+/** Whether an application's 7-day follow-up window is open. Keeps the time math out of component render bodies (React's purity rule rejects Date.now() during render). */
+export function isFollowUpDue(
+  application: { appliedAt: Date | null; followUpGeneratedAt: Date | null },
+  now: number = Date.now(),
+): boolean {
+  if (!application.appliedAt || application.followUpGeneratedAt) return false;
+  return application.appliedAt.getTime() <= now - SEVEN_DAYS_MS;
 }

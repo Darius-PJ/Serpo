@@ -1,5 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/db/prisma";
+import { legacyResumeArtifactPath, removeResumeArtifacts } from "@/lib/apply/resumeArtifacts";
+import { purgeAccountArchive, purgeLegacyArchivedReports } from "@/lib/raekwon/archive";
 
 /** Stale-review "Keep": clears the flag. `lastStatusChangeAt` auto-bumps via @updatedAt, resetting the 3-month clock. Throws if the application isn't owned by this user. */
 export async function keepApplication(applicationId: string, userId: string) {
@@ -34,17 +36,53 @@ export async function purgeDecisionMakers(applicationId: string, userId: string)
  * expects gone.
  */
 export async function wipeAllData(userId: string) {
-  return prisma.$transaction(async (tx) => {
-    const applications = await tx.application.deleteMany({ where: { userId } });
+  const [applyRuns, applications, reports] = await Promise.all([
+    prisma.applyRun.findMany({ where: { application: { userId } }, select: { tailoredResumePath: true } }),
+    prisma.application.findMany({ where: { userId }, select: { id: true } }),
+    prisma.raekwonReport.findMany({ where: { userId }, select: { id: true } }),
+  ]);
+  const artifactPaths = [
+    ...applyRuns.map((run) => run.tailoredResumePath).filter((value): value is string => Boolean(value)),
+    ...applications.map((application) => legacyResumeArtifactPath(application.id)),
+  ];
+
+  const result = await prisma.$transaction(async (tx) => {
+    const deletedApplications = await tx.application.deleteMany({ where: { userId } });
     const resumeTemplates = await tx.resumeTemplate.deleteMany({ where: { userId } });
+    const resumeWorkspaces = await tx.resumeWorkspace.deleteMany({ where: { userId } });
+    const raekwonReports = await tx.raekwonReport.deleteMany({ where: { userId } });
     const profileFields = await tx.profileField.deleteMany({ where: { userId } });
+    const jobBoardPins = await tx.jobBoardPin.deleteMany({ where: { userId } });
     // Private (non-curated) job boards this account added are its own data too.
     const jobBoards = await tx.jobBoard.deleteMany({ where: { userId } });
     return {
-      applications: applications.count,
+      applications: deletedApplications.count,
       resumeTemplates: resumeTemplates.count,
+      resumeWorkspaces: resumeWorkspaces.count,
+      raekwonReports: raekwonReports.count,
       profileFields: profileFields.count,
+      jobBoardPins: jobBoardPins.count,
       jobBoards: jobBoards.count,
     };
   });
+
+  const cleanup = await Promise.allSettled([
+    removeResumeArtifacts(artifactPaths),
+    purgeAccountArchive(userId),
+    purgeLegacyArchivedReports(reports.map((report) => report.id)),
+  ]);
+  const artifactResult = cleanup[0];
+  const accountArchiveResult = cleanup[1];
+  const legacyArchiveResult = cleanup[2];
+  const artifactFailures = artifactResult.status === "fulfilled" ? artifactResult.value.failures.length : artifactPaths.length;
+  const archiveFailures =
+    (accountArchiveResult.status === "rejected" ? 1 : 0) +
+    (legacyArchiveResult.status === "rejected" ? 1 : legacyArchiveResult.value);
+
+  return {
+    ...result,
+    resumeArtifacts: artifactResult.status === "fulfilled" ? artifactResult.value.removed : 0,
+    artifactCleanupFailures: artifactFailures,
+    archiveCleanupFailures: archiveFailures,
+  };
 }

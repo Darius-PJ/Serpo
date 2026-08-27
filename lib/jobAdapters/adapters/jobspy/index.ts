@@ -79,7 +79,7 @@ export const jobSpyAdapter: Adapter<JobSpyRawResult> = {
   async *search(query, ctx): AsyncGenerator<AdapterPage<JobSpyRawResult>> {
     if (query.kind !== "keywords") throw new Error("jobspy requires a keyword query");
 
-    const scriptPath = path.join(/* turbopackIgnore: true */ process.cwd(), "scripts", "jobspy_search.py");
+    const scriptPath = path.join(process.cwd(), "scripts", "jobspy_search.py");
     const args = ["--keywords", query.keywords];
     if (query.location) args.push("--location", query.location);
     if (query.remoteOnly) args.push("--remote-only");

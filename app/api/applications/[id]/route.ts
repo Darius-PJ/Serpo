@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { generateMessage } from "@/lib/ai/generateMessage";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 import { isApplicationStatus } from "@/lib/applicationStatus";
 
 export const dynamic = "force-dynamic";
+const MAX_FIELD_LENGTH = 200;
+const MAX_NOTES_LENGTH = 10_000;
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const userId = await requireApiUserId();
@@ -30,17 +31,21 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (userId instanceof NextResponse) return userId;
 
   const { id } = await params;
-  const body = await request.json();
+  const body = await request.json().catch(() => ({}));
 
   if (body.status !== undefined && !isApplicationStatus(body.status)) {
     return NextResponse.json({ error: "invalid status" }, { status: 400 });
   }
-  if (body.company !== undefined && !body.company?.trim()) {
+  const company = body.company === undefined ? undefined : typeof body.company === "string" ? body.company.trim().slice(0, MAX_FIELD_LENGTH) : "";
+  const role = body.role === undefined ? undefined : typeof body.role === "string" ? body.role.trim().slice(0, MAX_FIELD_LENGTH) : "";
+  const notes = body.notes === undefined ? undefined : typeof body.notes === "string" ? body.notes.slice(0, MAX_NOTES_LENGTH) : "";
+  if (company !== undefined && !company) {
     return NextResponse.json({ error: "company cannot be empty" }, { status: 400 });
   }
-  if (body.role !== undefined && !body.role?.trim()) {
+  if (role !== undefined && !role) {
     return NextResponse.json({ error: "role cannot be empty" }, { status: 400 });
   }
+  if (notes !== undefined && typeof body.notes !== "string") return NextResponse.json({ error: "notes must be text" }, { status: 400 });
 
   const existing = await prisma.application.findUnique({ where: { id_userId: { id, userId } } });
   if (!existing) {
@@ -52,22 +57,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const application = await prisma.application.update({
     where: { id },
     data: {
-      ...(body.company !== undefined ? { company: body.company } : {}),
-      ...(body.role !== undefined ? { role: body.role } : {}),
-      ...(body.notes !== undefined ? { notes: body.notes } : {}),
+      ...(company !== undefined ? { company } : {}),
+      ...(role !== undefined ? { role } : {}),
+      ...(notes !== undefined ? { notes } : {}),
       ...(body.status !== undefined ? { status: body.status } : {}),
       ...(isNewlySubmitted && !existing.appliedAt ? { appliedAt: new Date() } : {}),
+      ...(isNewlySubmitted ? { submissionState: "confirmed", submissionConfirmedAt: existing.submissionConfirmedAt ?? new Date() } : {}),
     },
   });
-
-  if (isNewlySubmitted) {
-    const alreadyHasImmediate = await prisma.message.findFirst({
-      where: { applicationId: id, type: "IMMEDIATE" },
-    });
-    if (!alreadyHasImmediate) {
-      await generateMessage(id, "IMMEDIATE");
-    }
-  }
 
   return NextResponse.json({ application });
 }

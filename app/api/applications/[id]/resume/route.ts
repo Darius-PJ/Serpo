@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { prisma } from "@/lib/db/prisma";
 import { requireApiUserId } from "@/lib/auth/session";
+import { isStoredResumeArtifactPath } from "@/lib/apply/resumeArtifacts";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,15 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "no tailored resume found for this application" }, { status: 404 });
   }
 
-  const filePath = path.resolve(process.cwd(), "data", "resumes", `${id}.docx`);
+  const latestRun = await prisma.applyRun.findFirst({
+    where: { applicationId: id, tailoredResumePath: { not: null } },
+    orderBy: { startedAt: "desc" },
+    select: { tailoredResumePath: true },
+  });
+  const filePath = latestRun?.tailoredResumePath;
+  if (!filePath || !isStoredResumeArtifactPath(filePath)) {
+    return NextResponse.json({ error: "no tailored resume found for this application" }, { status: 404 });
+  }
   try {
     const buffer = await readFile(filePath);
     return new NextResponse(buffer, {

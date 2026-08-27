@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
 import { requireUserIdForPage } from "@/lib/auth/session";
-import { runFollowUpCheck } from "@/lib/scheduler/followUpCheck";
+import { listFollowUpDue } from "@/lib/scheduler/followUpCheck";
 import { listStaleApplications, runStaleCheck } from "@/lib/scheduler/staleCheck";
 import { StatusSelect } from "@/components/StatusSelect";
 import { StaleReviewPanel } from "@/components/StaleReviewPanel";
@@ -14,17 +14,15 @@ const COLUMNS = APPLICATION_STATUSES;
 export default async function DashboardPage() {
   const userId = await requireUserIdForPage();
 
-  // Runs on every dashboard load — no OS scheduler needed for a local app.
-  // Scoped to this account only, otherwise loading the dashboard would
-  // trigger real Claude API calls and stale-flag mutations against every
-  // other account's applications too.
-  await runFollowUpCheck(userId);
+  // Reading the dashboard must never call an AI provider or create outreach.
   await runStaleCheck(userId);
 
-  const [applications, staleApplications] = await Promise.all([
+  const [applications, staleApplications, followUpsDue] = await Promise.all([
     prisma.application.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
     listStaleApplications(userId),
+    listFollowUpDue(userId),
   ]);
+  const followUpDueIds = new Set(followUpsDue.map((application) => application.id));
 
   return (
     <div>
@@ -39,21 +37,22 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {COLUMNS.map((column) => {
-          const items = applications.filter((a) => a.status === column);
+          const items = applications.filter((application) => application.status === column);
           return (
             <div key={column} className="card-soft p-3">
               <h2 className="mb-2 text-sm font-bold text-primary-dark">
                 {column} ({items.length})
               </h2>
               <ul className="space-y-2">
-                {items.map((app) => (
-                  <li key={app.id} className="rounded-xl border border-border-soft p-2 text-sm">
-                    <Link href={`/applications/${app.id}`} className="font-semibold text-foreground hover:text-primary-dark hover:underline">
-                      {app.company}
+                {items.map((application) => (
+                  <li key={application.id} className="rounded-xl border border-border-soft p-2 text-sm">
+                    <Link href={`/applications/${application.id}`} className="font-semibold text-foreground hover:text-primary-dark hover:underline">
+                      {application.company}
                     </Link>
-                    <div className="text-foreground-muted">{app.role}</div>
+                    <div className="text-foreground-muted">{application.role}</div>
+                    {followUpDueIds.has(application.id) && <div className="mt-1 text-xs text-amber-800">Follow-up draft due</div>}
                     <div className="mt-2">
-                      <StatusSelect applicationId={app.id} status={app.status} />
+                      <StatusSelect applicationId={application.id} status={application.status} />
                     </div>
                   </li>
                 ))}

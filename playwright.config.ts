@@ -14,7 +14,7 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    // One combined command so DB reset -> migrate -> build -> serve always
+    // One combined command so DB reset -> verify schema -> build -> serve always
     // runs in that order, rather than relying on Playwright's
     // globalSetup/webServer startup ordering (which isn't guaranteed
     // relative to a separate script). Uses `next build && next start`
@@ -24,7 +24,7 @@ export default defineConfig({
     // running locally — `next start` isn't part of that lock, and testing
     // against a production build is more representative anyway.
     command:
-      "node -e \"require('fs').rmSync('data/e2e.db',{force:true})\" && npx prisma migrate deploy && npx next build && npx next start -H 127.0.0.1 -p 3100",
+      "node scripts/prepareE2eDatabase.mjs data/e2e.db --reset && npx next build && npx next start -H 127.0.0.1 -p 3100",
     url: baseURL,
     reuseExistingServer: false,
     timeout: 180_000,

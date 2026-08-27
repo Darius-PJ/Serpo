@@ -3,7 +3,6 @@ import { searchAllAdapters, searchPoolBoardAdapters } from "@/lib/jobAdapters/se
 import { dedupeListings } from "@/lib/jobSources/dedupe";
 import { matchesExactTitle, isSeniorTitle } from "@/lib/jobSources/titleMatch";
 import { isUsOrRemoteListing, isRemoteListing } from "@/lib/jobSources/locationFilter";
-import { suggestJobTitles } from "@/lib/ai/suggestJobTitles";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 
@@ -18,7 +17,7 @@ export async function POST(request: Request) {
   const userId = await requireApiUserId();
   if (userId instanceof NextResponse) return userId;
 
-  const body = await request.json();
+  const body = await request.json().catch(() => ({}));
   const keywords = typeof body.keywords === "string" ? body.keywords.slice(0, MAX_FIELD_LENGTH) : "";
   if (!keywords.trim()) {
     return NextResponse.json({ error: "keywords is required" }, { status: 400 });
@@ -60,12 +59,7 @@ export async function POST(request: Request) {
     listings: group.listings.filter((listing) => survivingIds.has(listing.id)),
   }));
 
-  let suggestedTitles: string[] | undefined;
-  try {
-    suggestedTitles = await suggestJobTitles(criteria.keywords);
-  } catch {
-    // Fail soft — results above are already complete and useful without this.
-  }
-
-  return NextResponse.json({ results, suggestedTitles });
+  // AI title suggestions are disabled by default; return an empty list so the
+  // client renders a stable "no suggestions" state without an AI call.
+  return NextResponse.json({ results, suggestedTitles: [] });
 }

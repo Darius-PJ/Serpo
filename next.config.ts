@@ -1,6 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    // lib/db/prisma.ts (SQLite path) and lib/jobAdapters/adapters/jobspy/index.ts
+    // (Python script path) resolve paths from process.cwd() at runtime — a
+    // necessary pattern for this local app. Turbopack's file tracer can't follow
+    // process.cwd() statically, so it warns that the "whole project was traced"
+    // into the NFT manifest. That manifest only matters for output:'standalone'
+    // /serverless bundles, which this app doesn't use (it runs via `next start`),
+    // so the warning is benign here. A `turbopackIgnore` comment does NOT apply to
+    // this warning (that's for dynamic-import bundling); turbopack.ignoreIssue is
+    // the documented mechanism. Scoped by title so only this known warning is
+    // hidden — real issues from next.config.ts still surface.
+    ignoreIssue: [{ path: /next\.config\.ts$/, title: "Encountered unexpected file in NFT list" }],
+  },
   async headers() {
     return [
       {

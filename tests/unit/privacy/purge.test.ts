@@ -49,6 +49,37 @@ describe("lib/privacy/purge", () => {
     expect(curated).toHaveLength(1);
   });
 
+  it("wipeAllData also deletes account-scoped resume workspaces, reports, and saved board pins", async () => {
+    const a = await seedUserWithData("purge-user-artifacts");
+    const board = await prisma.jobBoard.create({
+      data: { userId: null, name: "Shared board", url: "https://example.com", jurisdiction: "other", source: "curated" },
+    });
+    await prisma.jobBoardPin.create({ data: { userId: a.user.id, jobBoardId: board.id, pinned: true } });
+    await prisma.resumeWorkspace.create({ data: { userId: a.user.id, benchmarkStatus: "not_started" } });
+    const report = await prisma.raekwonReport.create({ data: { userId: a.user.id, batchSize: 5, keyword: "engineer" } });
+    await prisma.raekwonLead.create({
+      data: {
+        reportId: report.id,
+        company: "Acme",
+        roleTitle: "Engineer",
+        jobType: "Unknown",
+        keyword: "engineer",
+        rank: 1,
+        explanation: "test",
+        sourceUrl: "https://example.com/jobs/1",
+      },
+    });
+
+    const result = await wipeAllData(a.user.id);
+
+    expect(result.resumeWorkspaces).toBe(1);
+    expect(result.raekwonReports).toBe(1);
+    expect(result.jobBoardPins).toBe(1);
+    await expect(prisma.resumeWorkspace.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
+    await expect(prisma.raekwonReport.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
+    await expect(prisma.jobBoardPin.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
+  });
+
   it("keepApplication rejects (throws) when the application belongs to a different account", async () => {
     const a = await seedUserWithData("purge-user-d");
     const b = await seedUserWithData("purge-user-e");

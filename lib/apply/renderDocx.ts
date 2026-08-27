@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
 import type { TailoredResume } from "./resumeSchema";
+import { resumeArtifactPath } from "./resumeArtifacts";
 
 function heading(text: string) {
   return new Paragraph({ text, heading: HeadingLevel.HEADING_2 });
@@ -12,7 +13,7 @@ function bullet(text: string) {
   return new Paragraph({ text, bullet: { level: 0 } });
 }
 
-export async function renderResumeDocx(resume: TailoredResume, applicationId: string): Promise<string> {
+export async function renderResumeDocx(resume: TailoredResume, applicationId: string, applyRunId: string): Promise<string> {
   const children: Paragraph[] = [
     new Paragraph({ children: [new TextRun({ text: resume.contactHeader, bold: true })] }),
     new Paragraph({ text: "" }),
@@ -40,9 +41,9 @@ export async function renderResumeDocx(resume: TailoredResume, applicationId: st
   const doc = new Document({ sections: [{ children }] });
   const buffer = await Packer.toBuffer(doc);
 
-  const dir = path.resolve(process.cwd(), "data", "resumes");
+  const filePath = resumeArtifactPath(applicationId, applyRunId);
+  const dir = path.dirname(filePath);
   await mkdir(dir, { recursive: true });
-  const filePath = path.join(dir, `${applicationId}.docx`);
   await writeFile(filePath, buffer);
 
   return filePath;

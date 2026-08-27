@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     leads.sort((a, b) => a.rank - b.rank);
 
     try {
-      await appendToArchive({ id: report.id, keyword }, result);
+      await appendToArchive({ id: report.id, userId, keyword }, result);
     } catch {
       // Best-effort local export — the database rows above are what the UI
       // actually relies on, so a file-write failure shouldn't fail the request.

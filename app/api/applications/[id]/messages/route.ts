@@ -38,7 +38,22 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!application) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
+  if (application.submissionState !== "confirmed") {
+    return NextResponse.json({ error: "confirm the application submission before generating outreach" }, { status: 409 });
+  }
+  if (type === "FOLLOW_UP") {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    if (!application.appliedAt || application.appliedAt > sevenDaysAgo) {
+      return NextResponse.json({ error: "a follow-up draft is available seven days after confirmed submission" }, { status: 409 });
+    }
+    if (application.followUpGeneratedAt) {
+      return NextResponse.json({ error: "a follow-up draft has already been generated for this application" }, { status: 409 });
+    }
+  }
 
   const message = await generateMessage(id, type);
+  if (type === "FOLLOW_UP") {
+    await prisma.application.update({ where: { id }, data: { followUpGeneratedAt: new Date() } });
+  }
   return NextResponse.json({ message }, { status: 201 });
 }

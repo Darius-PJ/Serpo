@@ -8,16 +8,27 @@ export function DangerZone() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [cleanupWarning, setCleanupWarning] = useState<string | null>(null);
 
   async function wipeAll() {
     setBusy(true);
+    setCleanupWarning(null);
     try {
-      await fetch("/api/privacy/purge", {
+      const res = await fetch("/api/privacy/purge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "wipe-all", confirm: "WIPE" }),
       });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setCleanupWarning(data.error ?? "The account data could not be deleted. Please try again.");
+        return;
+      }
       setOpen(false);
+      const failures = Number(data.result?.artifactCleanupFailures ?? 0) + Number(data.result?.archiveCleanupFailures ?? 0);
+      if (failures > 0) {
+        setCleanupWarning("Your database records were deleted, but some local files could not be removed. Close the app and retry the wipe to finish cleanup.");
+      }
       router.refresh();
     } finally {
       setBusy(false);
@@ -35,6 +46,7 @@ export function DangerZone() {
       <button onClick={() => setOpen(true)} className="btn-danger-outline px-3 py-1.5 text-sm">
         Wipe all my data
       </button>
+      {cleanupWarning && <p className="mt-3 text-sm text-danger-dark">{cleanupWarning}</p>}
 
       <ConfirmDialog
         open={open}

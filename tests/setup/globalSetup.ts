@@ -1,6 +1,6 @@
 import { existsSync, rmSync } from "node:fs";
 import path from "node:path";
-import { execSync } from "node:child_process";
+import { migrateTestDatabase } from "./migrateTestDatabase";
 
 const ROOT = path.resolve(__dirname, "..", "..");
 const TEST_DB_PATH = path.resolve(ROOT, "data", "test.db");
@@ -11,9 +11,10 @@ export default async function globalSetup() {
     if (existsSync(p)) rmSync(p);
   }
 
-  execSync("npx prisma migrate deploy", {
-    cwd: ROOT,
-    env: { ...process.env, DATABASE_URL: "file:./data/test.db" },
-    stdio: "inherit",
-  });
+  // Prisma's schema engine currently fails without diagnostic output in this
+  // Windows/Node environment. Apply the version-controlled SQL through the
+  // same SQLite driver used at runtime so DB-backed tests can still validate
+  // the real schema and each migration. See migrateTestDatabase for errors
+  // that identify the exact migration when SQL is invalid.
+  migrateTestDatabase(ROOT, TEST_DB_PATH);
 }

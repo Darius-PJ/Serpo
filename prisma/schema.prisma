@@ -20,6 +20,21 @@ model User {
   jobBoardPins    JobBoardPin[]
   resumeWorkspaces ResumeWorkspace[]
   raekwonReports  RaekwonReport[]
+  auditEvents     AuditEvent[]
+}
+
+model AuditEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String
+  entityType String
+  entityId  String
+  details   String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([entityType, entityId])
 }
 
 model Application {
@@ -36,6 +51,8 @@ model Application {
   description         String? // job posting text captured at track time — feeds resume tailoring
   status              String    @default("Sourced") // Sourced | Submitted | Interviewing | Offer | Rejected | Withdrawn
   appliedAt           DateTime?
+  submissionState     String    @default("not_started") // not_started | review_required | needs_input | blocked | failed | confirmed | unknown
+  submissionConfirmedAt DateTime?
   lastStatusChangeAt  DateTime  @updatedAt
   followUpGeneratedAt DateTime? // guards the "only one 7-day follow-up" rule
   staleFlaggedAt      DateTime? // set when the 3-month no-update check first flags this row
@@ -47,6 +64,7 @@ model Application {
 
   @@unique([id, userId])
   @@index([userId])
+  @@index([userId, createdAt])
 }
 
 model DecisionMaker {
@@ -230,13 +248,16 @@ model ApplyRun {
   id                  String      @id @default(cuid())
   applicationId       String
   application         Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  status              String      @default("pending") // pending | needs_input | submitted | failed
-  tailoredResumePath  String? // data/resumes/<id>.docx — git-ignored, local only
+  status              String      @default("pending") // pending | review_required | needs_input | blocked | submitted | unknown | failed
+  idempotencyKey      String?     @unique
+  tailoredResumePath  String? // data/resumes/<applicationId>/<applyRunId>.docx — git-ignored, local only
   formAnswersSnapshot String? // JSON: what was actually filled, for after-the-fact audit
+  submissionEvidence  String? // JSON: minimal confirmation signal or explicit user attestation
   missingFieldKey     String? // set while status = needs_input — the ProfileField.key to save the answer under
   missingFieldLabel   String? // set while status = needs_input — human-readable question to show
   error               String?
   startedAt           DateTime  @default(now())
+  reviewedAt          DateTime?
   submittedAt         DateTime?
 }
 
