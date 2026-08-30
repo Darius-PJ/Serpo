@@ -1,7 +1,7 @@
 # CRM Dashboard Plan
 
 **Date:** 2026-08-30
-**Status:** Approved design; implementation not started.
+**Status:** Approved design. Phase 0 (JobSpy repair) and Phase 1 (attention-first dashboard, board at /pipeline) are implemented; Phase 2 is next.
 **Goal:** Evolve the app from a job list with tools attached into a CRM for one job seeker: the home screen answers "what needs my attention today?", and every entity — application, contact, task, message — hangs off the pipeline.
 
 The app stays local and privacy-minded. Every dependency below is a vendored npm/pip package; nothing calls an external service at runtime beyond the existing job-source adapters.
