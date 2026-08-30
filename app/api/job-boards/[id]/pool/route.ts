@@ -5,6 +5,7 @@ import { requireApiUserId } from "@/lib/auth/session";
 import { listEnumerateTargetAdapters } from "@/lib/jobAdapters/registry";
 import { runAdapterSearch } from "@/lib/jobAdapters/runSearch";
 import { fetchSafeExternalUrl } from "@/lib/security/externalUrl";
+import { verifyBoardForPool } from "@/lib/jobBoards/poolVerification";
 
 export const dynamic = "force-dynamic";
 
@@ -33,40 +34,17 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   // Every enumerate-target adapter declares its own detectTarget() — no shared,
-  // closed-union detector to keep in sync as new ATS platforms are added.
-  let matched: { adapterId: string; token: string } | null = null;
-  for (const adapter of listEnumerateTargetAdapters()) {
-    const token = adapter.detectTarget?.(board.url);
-    if (token) {
-      matched = { adapterId: adapter.metadata.id, token };
-      break;
-    }
-  }
-
-  let poolStatus: "live" | "browse-only" | "failed";
-  let integrationType: string | null = null;
-  let integrationToken: string | null = null;
-
-  if (matched) {
-    try {
-      const correlationId = crypto.randomUUID();
-      const adapter = listEnumerateTargetAdapters().find((a) => a.metadata.id === matched!.adapterId)!;
-      const envelope = await runAdapterSearch({ kind: "target", target: matched.token }, [adapter], correlationId);
-      if (envelope.errors.length > 0) throw new Error(envelope.errors[0].message);
-      poolStatus = "live";
-      integrationType = matched.adapterId;
-      integrationToken = matched.token;
-    } catch {
-      poolStatus = "failed";
-    }
-  } else {
-    try {
-      const res = await fetchSafeExternalUrl(board.url, { method: "GET", signal: AbortSignal.timeout(10_000) });
-      poolStatus = res.ok ? "browse-only" : "failed";
-    } catch {
-      poolStatus = "failed";
-    }
-  }
+  // closed-union detector to keep in sync as new ATS platforms are added. The
+  // live/browse-only/failed decision itself lives in lib/jobBoards/poolVerification.
+  const { poolStatus, integrationType, integrationToken } = await verifyBoardForPool(
+    board.url,
+    listEnumerateTargetAdapters(),
+    {
+      searchTarget: (adapter, token) =>
+        runAdapterSearch({ kind: "target", target: token }, [adapter], crypto.randomUUID()),
+      fetchUrl: (url) => fetchSafeExternalUrl(url, { method: "GET", signal: AbortSignal.timeout(10_000) }),
+    },
+  );
 
   const pin = await prisma.jobBoardPin.upsert({
     where: { userId_jobBoardId: { userId, jobBoardId: id } },

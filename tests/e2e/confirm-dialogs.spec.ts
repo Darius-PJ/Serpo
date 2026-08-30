@@ -94,6 +94,7 @@ test("decision-maker research shows an editable, pre-filled domain guess and onl
   await expect(domainInput).toHaveValue("acmecorp.com");
   expect(dmCalls).toBe(0);
 
-  await page.getByRole("button", { name: "Research" }).click();
+  // exact: the page's "Research contacts" button also substring-matches "Research".
+  await page.getByRole("button", { name: "Research", exact: true }).click();
   await expect.poll(() => dmCalls).toBe(1);
 });

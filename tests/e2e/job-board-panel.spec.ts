@@ -28,26 +28,35 @@ test("state jurisdiction group starts collapsed and expands via the chevron", as
   await expect(page.getByText("Test State Board")).toBeVisible();
 });
 
-test("adding a non-ATS board to the pool marks it browse-only (not a false live checkmark)", async ({ page, baseURL }) => {
+test("pool verification is honest: private-host boards are rejected and unverifiable boards never show live", async ({ page, baseURL }) => {
   await registerViaUi(page, randomUsername("boardpool"));
 
-  // The pool route's Greenhouse/Lever verification is a real server-side
-  // fetch that Playwright's page.route() can't intercept (it only sees
-  // browser-originated requests) — mocking either that or a real 3rd-party
-  // API would be unreliable. Pointing this board at the app's own always-up
-  // /login page exercises the real, unmocked "browse-only" code path
-  // end-to-end instead: detectBoardIntegration correctly finds no known ATS
-  // platform, so it falls through to the honest reachability check.
+  // The SSRF guard rejects http/loopback URLs at creation, so the old
+  // browse-only fixture (pointing a board at the app's own /login) is
+  // impossible by design. The browse-only decision is unit-tested with
+  // injected deps in tests/unit/jobBoards/poolVerification.test.ts; here we
+  // pin the guard itself plus the honest failure path end-to-end.
+  const loopback = await page.context().request.post("/api/job-boards", {
+    headers: { "Content-Type": "application/json" },
+    data: { name: "Loopback Board", url: `${baseURL}/login`, jurisdiction: "other" },
+  });
+  expect(loopback.status()).toBe(400);
+
+  // A well-formed URL on the reserved .invalid TLD (RFC 2606) can never
+  // resolve, so the real, unmocked pool verification must land on the honest
+  // "failed" state — never a false live checkmark.
   const created = await page.context().request.post("/api/job-boards", {
     headers: { "Content-Type": "application/json" },
-    data: { name: "Self-hosted Test Board", url: `${baseURL}/login`, jurisdiction: "other" },
+    data: { name: "Unresolvable Board", url: "https://pool-test-board.invalid", jurisdiction: "other" },
   });
   expect(created.ok()).toBe(true);
 
   await page.goto("/sourcing");
-  await expect(page.getByText("Self-hosted Test Board")).toBeVisible();
+  const row = page.locator("li", { hasText: "Unresolvable Board" });
+  await expect(row).toBeVisible();
 
-  await page.getByTitle("Add to search pool").click();
-  await expect(page.getByTitle("Saved — link verified, but not live-searchable")).toBeVisible();
-  await expect(page.getByTitle("Live in your search pool")).not.toBeVisible();
+  await row.getByTitle("Add to search pool").click();
+  await expect(row.getByTitle("Verification failed — click to retry")).toBeVisible();
+  await expect(row.getByTitle("Live in your search pool")).not.toBeVisible();
+  await expect(row.getByTitle("Saved — link verified, but not live-searchable")).not.toBeVisible();
 });

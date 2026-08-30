@@ -38,6 +38,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   // The browser workflow prepares a form for user review; it never clicks Submit.
 
+  // Ownership before request validation: a cross-account request must see the
+  // same 404 as a nonexistent id, not this endpoint's parameter contract.
+  const application = await prisma.application.findUnique({ where: { id_userId: { id, userId } } });
+  if (!application) {
+    return NextResponse.json({ error: "not found" }, { status: 404 });
+  }
+
   // Second factor beyond the CSRF/content-type guard + auth + the confirm
   // dialog UI (see components/ConfirmDialog.tsx / ApplyPanel.tsx) — this
   // endpoint fires a real, browser-driven submission.
@@ -46,11 +53,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
   if (typeof body.idempotencyKey !== "string" || !/^[a-z0-9-]{16,100}$/i.test(body.idempotencyKey)) {
     return NextResponse.json({ error: "a valid idempotencyKey is required" }, { status: 400 });
-  }
-
-  const application = await prisma.application.findUnique({ where: { id_userId: { id, userId } } });
-  if (!application) {
-    return NextResponse.json({ error: "not found" }, { status: 404 });
   }
   if (!application.url) {
     return NextResponse.json({ error: "application has no URL to apply through" }, { status: 400 });
