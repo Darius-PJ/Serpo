@@ -22,6 +22,29 @@ model User {
   raekwonReports  RaekwonReport[]
   auditEvents     AuditEvent[]
   titleAliases    TitleAlias[]
+  tasks           Task[]
+}
+
+// A user-created next action — the only persisted kind of "to do". System
+// signals (follow-ups due, stale checks, stuck apply runs) stay derived;
+// only explicit user intent gets a row here.
+model Task {
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Optional link: a task can hang off one application ("prep for the Acme
+  // phone screen") or stand alone ("update resume").
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  title         String
+  dueAt         DateTime?
+  completedAt   DateTime?
+  snoozedUntil  DateTime? // hides the task from the attention queue until then
+  createdAt     DateTime     @default(now())
+
+  @@unique([id, userId])
+  @@index([userId, completedAt])
+  @@index([applicationId])
 }
 
 // User-curated "this title means my target role" equivalences, keyed by the
@@ -76,6 +99,7 @@ model Application {
   decisionMakers      DecisionMaker[]
   messages            Message[]
   applyRuns           ApplyRun[]
+  tasks               Task[]
   createdAt           DateTime  @default(now())
 
   @@unique([id, userId])

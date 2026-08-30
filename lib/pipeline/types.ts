@@ -9,4 +9,6 @@ export interface PipelineCard {
   stageAgeLabel: string;
   stageAgeStale: boolean;
   followUpDue: boolean;
+  /** Title of the soonest-due open, unsnoozed task linked to this application. */
+  nextAction: string | null;
 }

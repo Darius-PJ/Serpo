@@ -1,14 +1,18 @@
 import "server-only";
 import { prisma } from "@/lib/db/prisma";
 import { listFollowUpDue } from "@/lib/scheduler/followUpCheck";
+import { listDueTasks } from "@/lib/tasks/tasks";
 
-export type AttentionKind = "apply_run" | "message_draft" | "follow_up_due";
+export type AttentionKind = "task" | "apply_run" | "message_draft" | "follow_up_due";
 
 export interface AttentionItem {
   kind: AttentionKind;
-  applicationId: string;
-  company: string;
-  role: string;
+  /** Set only for kind "task" — lets the dashboard act on it (done/snooze). */
+  taskId?: string;
+  // Null for standalone tasks; every other kind always carries an application.
+  applicationId: string | null;
+  company: string | null;
+  role: string | null;
   detail: string;
   since: Date;
 }
@@ -17,8 +21,9 @@ export interface AttentionItem {
 // their own resolution paths on the application detail page.
 const STUCK_APPLY_RUN_STATUSES = ["needs_input", "review_required", "blocked", "failed"];
 
-// Apply runs block automation, drafts block outreach, follow-ups are hygiene.
-const KIND_PRIORITY: Record<AttentionKind, number> = { apply_run: 0, message_draft: 1, follow_up_due: 2 };
+// User-created tasks are explicit intent and outrank every derived signal;
+// then apply runs block automation, drafts block outreach, follow-ups are hygiene.
+const KIND_PRIORITY: Record<AttentionKind, number> = { task: 0, apply_run: 1, message_draft: 2, follow_up_due: 3 };
 
 function describeApplyRun(run: { status: string; missingFieldLabel: string | null }): string {
   switch (run.status) {
@@ -39,7 +44,8 @@ function describeApplyRun(run: { status: string; missingFieldLabel: string | nul
  * priority, then oldest first (most overdue at the top). Read-only.
  */
 export async function listAttentionItems(userId: string): Promise<AttentionItem[]> {
-  const [stuckRuns, drafts, followUpsDue] = await Promise.all([
+  const [dueTasks, stuckRuns, drafts, followUpsDue] = await Promise.all([
+    listDueTasks(userId, new Date()),
     prisma.applyRun.findMany({
       where: { status: { in: STUCK_APPLY_RUN_STATUSES }, application: { userId } },
       include: { application: { select: { id: true, company: true, role: true } } },
@@ -52,6 +58,17 @@ export async function listAttentionItems(userId: string): Promise<AttentionItem[
   ]);
 
   const items: AttentionItem[] = [
+    ...dueTasks.map((task) => ({
+      kind: "task" as const,
+      taskId: task.id,
+      applicationId: task.application?.id ?? null,
+      company: task.application?.company ?? null,
+      role: task.application?.role ?? null,
+      detail: task.title,
+      // A dated task starts needing attention when it comes due; an undated
+      // one, the moment it was created.
+      since: task.dueAt ?? task.createdAt,
+    })),
     ...stuckRuns.map((run) => ({
       kind: "apply_run" as const,
       applicationId: run.application.id,

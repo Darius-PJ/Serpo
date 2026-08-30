@@ -35,4 +35,32 @@ describe("listPipelineCards", () => {
     const beta = cards.find((card) => card.id === followUpDue.id);
     expect(beta).toMatchObject({ status: "Submitted", source: "usajobs", followUpDue: true });
   });
+
+  it("surfaces each card's next open task, ignoring snoozed and completed ones", async () => {
+    const user = await prisma.user.create({ data: { username: "board-next-action-user", passwordHash: "unused" } });
+    const busy = await prisma.application.create({
+      data: { userId: user.id, company: "Acme", role: "Engineer", source: "manual" },
+    });
+    const quiet = await prisma.application.create({
+      data: { userId: user.id, company: "Beta", role: "Analyst", source: "manual" },
+    });
+
+    await prisma.task.create({
+      data: { userId: user.id, applicationId: busy.id, title: "Due later", dueAt: new Date(Date.now() + 2 * DAY_MS) },
+    });
+    await prisma.task.create({
+      data: { userId: user.id, applicationId: busy.id, title: "Due sooner", dueAt: new Date(Date.now() + DAY_MS) },
+    });
+    await prisma.task.create({
+      data: { userId: user.id, applicationId: quiet.id, title: "Snoozed", snoozedUntil: new Date(Date.now() + DAY_MS) },
+    });
+    await prisma.task.create({
+      data: { userId: user.id, applicationId: quiet.id, title: "Done", completedAt: new Date() },
+    });
+
+    const cards = await listPipelineCards(user.id);
+
+    expect(cards.find((card) => card.id === busy.id)?.nextAction).toBe("Due sooner");
+    expect(cards.find((card) => card.id === quiet.id)?.nextAction).toBeNull();
+  });
 });

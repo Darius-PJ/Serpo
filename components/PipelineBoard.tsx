@@ -209,6 +209,7 @@ function BoardCard({ card }: { card: PipelineCard }) {
         </span>
         <span className="text-foreground-muted">{card.source}</span>
       </div>
+      {card.nextAction && <div className="mt-1 text-xs text-foreground-muted">Next: {card.nextAction}</div>}
       {card.followUpDue && <div className="mt-1 text-xs text-amber-800">Follow-up draft due</div>}
       <div className="mt-2">
         <StatusSelect

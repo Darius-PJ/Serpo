@@ -17,6 +17,25 @@ export async function listPipelineCards(userId: string): Promise<PipelineCard[]>
   const followUpDueIds = new Set(followUpsDue.map((application) => application.id));
 
   const now = Date.now();
+  // Soonest-due first, so the first task seen per application is its next
+  // action. Snoozed tasks stay off the card the same way they stay out of the
+  // attention queue.
+  const openTasks = await prisma.task.findMany({
+    where: {
+      userId,
+      completedAt: null,
+      applicationId: { not: null },
+      OR: [{ snoozedUntil: null }, { snoozedUntil: { lte: new Date(now) } }],
+    },
+    orderBy: [{ dueAt: { sort: "asc", nulls: "last" } }, { createdAt: "asc" }],
+    select: { applicationId: true, title: true },
+  });
+  const nextActionByApplication = new Map<string, string>();
+  for (const task of openTasks) {
+    if (task.applicationId && !nextActionByApplication.has(task.applicationId)) {
+      nextActionByApplication.set(task.applicationId, task.title);
+    }
+  }
   return applications.map((application) => {
     const age = describeStageAge(application.lastStatusChangeAt, now);
     return {
@@ -28,6 +47,7 @@ export async function listPipelineCards(userId: string): Promise<PipelineCard[]>
       stageAgeLabel: age.label,
       stageAgeStale: age.stale,
       followUpDue: followUpDueIds.has(application.id),
+      nextAction: nextActionByApplication.get(application.id) ?? null,
     };
   });
 }

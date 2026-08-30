@@ -56,6 +56,35 @@ describe("attention queue", () => {
     expect(items.at(-1)?.since).toEqual(appliedAt);
   });
 
+  it("puts due user tasks first, with application context when linked, skipping future-dated and snoozed ones", async () => {
+    const user = await prisma.user.create({ data: { username: "attention-task-user", passwordHash: "unused" } });
+    const application = await prisma.application.create({
+      data: { userId: user.id, company: "Acme", role: "Engineer", source: "manual" },
+    });
+
+    const dueAt = new Date(Date.now() - 2 * DAY_MS);
+    const linked = await prisma.task.create({
+      data: { userId: user.id, title: "Prep phone screen", dueAt, applicationId: application.id },
+    });
+    const standalone = await prisma.task.create({ data: { userId: user.id, title: "Update resume" } });
+    await prisma.task.create({ data: { userId: user.id, title: "Future", dueAt: new Date(Date.now() + DAY_MS) } });
+    await prisma.task.create({ data: { userId: user.id, title: "Snoozed", snoozedUntil: new Date(Date.now() + DAY_MS) } });
+    await prisma.message.create({
+      data: { applicationId: application.id, type: "IMMEDIATE", draftText: "draft", status: "DRAFT" },
+    });
+
+    const items = await listAttentionItems(user.id);
+
+    expect(items.map((item) => [item.kind, item.detail])).toEqual([
+      ["task", "Prep phone screen"],
+      ["task", "Update resume"],
+      ["message_draft", "Outreach draft awaiting approval"],
+    ]);
+    expect(items[0]).toMatchObject({ taskId: linked.id, applicationId: application.id, company: "Acme", role: "Engineer" });
+    expect(items[0].since).toEqual(dueAt);
+    expect(items[1]).toMatchObject({ taskId: standalone.id, applicationId: null, company: null, role: null });
+  });
+
   it("excludes healthy apply runs, approved and sent messages, and other users' data", async () => {
     const quietUser = await prisma.user.create({ data: { username: "attention-quiet-user", passwordHash: "unused" } });
     const quietApp = await prisma.application.create({
