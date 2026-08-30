@@ -30,15 +30,19 @@ export default async function ApplicationDetailPage({
 
   return (
     <div>
-      <Link href="/dashboard" className="mb-3 inline-flex text-sm text-primary-dark underline">
-        Back to applications
+      <Link href="/pipeline" className="mb-3 inline-flex text-sm text-primary-dark underline">
+        Back to pipeline
       </Link>
       <div className="card-soft mb-6 p-4">
         <h1 className="text-xl font-extrabold text-foreground">
           {application.role} <span className="font-medium text-foreground-muted">at {application.company}</span>
         </h1>
         <div className="mt-2 flex items-center gap-3 text-sm text-foreground-muted">
-          <StatusSelect applicationId={application.id} status={application.status} />
+          <StatusSelect
+            applicationId={application.id}
+            status={application.status}
+            label={`Status for ${application.company} — ${application.role}`}
+          />
           {application.url && (
             <a href={application.url} target="_blank" rel="noopener noreferrer" className="text-primary-dark underline">
               Original posting

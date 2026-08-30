@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { APPLICATION_STATUSES } from "@/lib/applicationStatus";
 
-export function StatusSelect({ applicationId, status }: { applicationId: string; status: string }) {
+export function StatusSelect({ applicationId, status, label }: { applicationId: string; status: string; label: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -19,6 +19,7 @@ export function StatusSelect({ applicationId, status }: { applicationId: string;
 
   return (
     <select
+      aria-label={label}
       value={status}
       disabled={isPending}
       onChange={(e) => onChange(e.target.value)}

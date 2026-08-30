@@ -14,7 +14,7 @@ export async function listFollowUpDue(userId: string) {
       appliedAt: { lte: cutoff },
       followUpGeneratedAt: null,
     },
-    select: { id: true },
+    select: { id: true, company: true, role: true, appliedAt: true },
   });
 }
 

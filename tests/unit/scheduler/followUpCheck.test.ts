@@ -41,7 +41,9 @@ describe("follow-up review queue", () => {
       },
     });
 
-    await expect(listFollowUpDue(user.id)).resolves.toEqual([{ id: eligible.id }]);
+    await expect(listFollowUpDue(user.id)).resolves.toEqual([
+      { id: eligible.id, company: "Eligible Co", role: "Engineer", appliedAt },
+    ]);
     await expect(prisma.message.findMany({ where: { application: { userId: user.id } } })).resolves.toHaveLength(0);
   });
 });
