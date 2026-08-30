@@ -1,8 +1,8 @@
-// Migrated from lib/jobSources/jobSpy.ts (kept, untouched, as the legacy path).
-// Second source migrated, per the task's own migration order: the worst outlier
-// (Python subprocess, ~90s latency, per-board partial failure) deliberately migrated
-// second, not last, so the interface gets stress-tested early.
-import { spawn } from "node:child_process";
+// Spawns scripts/jobspy_search.py (python-jobspy) and parses its JSON stdout.
+// The worst outlier among the migrated sources (Python subprocess, ~90s latency,
+// per-board partial failure); the legacy lib/jobSources/jobSpy.ts path it
+// replaced was removed in Phase 5.
+import { spawn, spawnSync } from "node:child_process";
 import path from "node:path";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
@@ -18,6 +18,30 @@ interface JobSpyRawResult {
 }
 
 const REQUESTED_SITES = ["indeed", "linkedin", "zip_recruiter", "glassdoor", "google"];
+
+// python-jobspy is a runtime dependency package.json can't see — probe for it so
+// a missing package reads as "unconfigured" (excluded from search, like an adapter
+// missing its API key) instead of failing every search and tripping the circuit
+// breaker. find_spec avoids importing jobspy (and its pandas chain), so the probe
+// costs one ~100ms interpreter start, cached for the life of the server process —
+// installing the package mid-flight needs a restart to be noticed.
+let probeResult: boolean | null = null;
+function isPythonJobSpyInstalled(): boolean {
+  if (probeResult === null) {
+    const python = process.env.JOBSPY_PYTHON || "python";
+    const probe = spawnSync(python, ["-c", "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('jobspy') else 1)"], {
+      timeout: 15_000,
+      windowsHide: true,
+    });
+    probeResult = probe.status === 0;
+  }
+  return probeResult;
+}
+
+// Test-only: clears the cached probe between test cases.
+export function resetJobSpyProbeForTests(): void {
+  probeResult = null;
+}
 
 function runPythonScript(scriptPath: string, args: string[], signal: AbortSignal): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -46,7 +70,7 @@ export const jobSpyAdapter: Adapter<JobSpyRawResult> = {
     displayName: "JobSpy (LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google)",
     homepage: "https://github.com/speedyapply/JobSpy",
     tosNotes:
-      "Scrapes sites (LinkedIn, Indeed, Glassdoor, ZipRecruiter, Google) whose Terms of Service restrict automated access. Always-on, no separate opt-in flag — a call the person running this tool has already made (see lib/jobSources/jobSpy.ts's identical comment).",
+      "Scrapes sites (LinkedIn, Indeed, Glassdoor, ZipRecruiter, Google) whose Terms of Service restrict automated access. Always-on, no separate opt-in flag — a call the person running this tool has already made (see scripts/jobspy_search.py's docstring).",
     sourceKind: "scraped-board",
   },
   capabilities: {
@@ -67,13 +91,16 @@ export const jobSpyAdapter: Adapter<JobSpyRawResult> = {
     maxConcurrency: 1,
   },
   configSchema: [],
-  isConfigured: () => true,
+  isConfigured: () => isPythonJobSpyInstalled(),
 
   async healthCheck() {
-    // A real check would spawn the script — too expensive for a "cheap liveness
-    // probe" on a subprocess-backed, very-slow adapter. isConfigured() (always true)
-    // is the only meaningful signal available without paying the full search cost.
-    return { ok: true };
+    // A real check would spawn the full script — too expensive for a "cheap
+    // liveness probe" on a subprocess-backed, very-slow adapter. The cached
+    // dependency probe is the only meaningful signal available without paying
+    // the full search cost.
+    return isPythonJobSpyInstalled()
+      ? { ok: true }
+      : { ok: false, detail: "python-jobspy is not installed for the probed interpreter — pip install python-jobspy, or point JOBSPY_PYTHON at an interpreter that has it" };
   },
 
   async *search(query, ctx): AsyncGenerator<AdapterPage<JobSpyRawResult>> {

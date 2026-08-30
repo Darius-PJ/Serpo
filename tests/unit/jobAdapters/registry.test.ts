@@ -47,8 +47,10 @@ describe("job adapter registry", () => {
     // sources are always configured. Not asserting on usajobs/jooble/adzuna's exact
     // configured-ness here since that depends on this environment's real env vars
     // (set in .env.local, not test-controlled) — just that every keyless source is
-    // unconditionally present.
-    for (const id of ["arbeitnow", "jobspy", "remoteok", "remotive", "himalayas", "jobicy", "greenhouse", "lever"]) {
+    // unconditionally present. jobspy is environment-dependent too: its
+    // isConfigured() probes for the python-jobspy package (jobspyAdapter.test.ts
+    // covers both probe outcomes deterministically).
+    for (const id of ["arbeitnow", "remoteok", "remotive", "himalayas", "jobicy", "greenhouse", "lever"]) {
       expect(configuredIds).toContain(id);
     }
   });

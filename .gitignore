@@ -3,6 +3,10 @@
 # dependencies
 /node_modules
 
+# local Python venv for the JobSpy adapter (see .env.example's JOBSPY_PYTHON)
+/.venv-jobspy/
+__pycache__/
+
 # generated Prisma client (regenerated via `npx prisma generate`)
 /generated
 /.pnp

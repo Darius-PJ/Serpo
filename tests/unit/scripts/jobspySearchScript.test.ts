@@ -1,0 +1,62 @@
+// Tests the pure functions in scripts/jobspy_search.py by importing it as a
+// module in a real Python subprocess. The module must be importable WITHOUT
+// python-jobspy installed (the scrape import lives inside main()) — that is
+// itself part of the contract under test, since CI runners lack the package.
+import { spawnSync } from "node:child_process";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+
+const PYTHON = process.env.JOBSPY_PYTHON || "python";
+const SCRIPTS_DIR = path.resolve(__dirname, "../../../scripts");
+
+const pythonAvailable = spawnSync(PYTHON, ["--version"], { timeout: 10_000 }).status === 0;
+
+/** Runs `python -c` with jobspy_search importable as `m`; returns parsed stdout JSON. */
+function runPy(lines: string[]): unknown {
+  const code = [`import sys, json`, `sys.path.insert(0, ${JSON.stringify(SCRIPTS_DIR)})`, `import jobspy_search as m`, ...lines].join("\n");
+  const result = spawnSync(PYTHON, ["-c", code], { encoding: "utf8", timeout: 30_000 });
+  if (result.status !== 0) {
+    throw new Error(`python exited ${result.status}: ${result.stderr}`);
+  }
+  // JSON.parse is the real consumer contract — the Node adapter does exactly this.
+  return JSON.parse(result.stdout);
+}
+
+describe.skipIf(!pythonAvailable)("scripts/jobspy_search.py", () => {
+  it("sanitize_records nulls NaN-like values and keeps real ones", () => {
+    const records = runPy([
+      `records = m.sanitize_records([{`,
+      `  'site': 'indeed', 'id': '1', 'company': float('nan'), 'title': 'Engineer',`,
+      `  'location': None, 'job_url': 'https://example.com/j/1',`,
+      `  'date_posted': float('nan'), 'description': 'text'`,
+      `}])`,
+      `print(json.dumps(records))`,
+    ]) as Array<Record<string, unknown>>;
+    expect(records[0].company).toBeNull();
+    expect(records[0].date_posted).toBeNull();
+    expect(records[0].title).toBe("Engineer");
+    expect(records[0].description).toBe("text");
+  });
+
+  it("sanitize_records keeps only the fields the Node adapter consumes", () => {
+    const records = runPy([
+      `records = m.sanitize_records([{`,
+      `  'site': 'indeed', 'id': '1', 'title': 'Engineer', 'job_url': 'https://example.com/j/1',`,
+      `  'min_amount': float('nan'), 'max_amount': 120000.0, 'emails': ['a@b.c'], 'is_remote': True`,
+      `}])`,
+      `print(json.dumps(records))`,
+    ]) as Array<Record<string, unknown>>;
+    expect(Object.keys(records[0]).sort()).toEqual(["company", "date_posted", "description", "id", "job_url", "location", "site", "title"]);
+  });
+
+  it("build_google_search_term composes keywords, location, and remote", () => {
+    const terms = runPy([
+      `print(json.dumps([`,
+      `  m.build_google_search_term('python developer', None, False),`,
+      `  m.build_google_search_term('python developer', 'Atlanta, GA', False),`,
+      `  m.build_google_search_term('python developer', None, True),`,
+      `]))`,
+    ]);
+    expect(terms).toEqual(["python developer jobs", "python developer jobs near Atlanta, GA", "python developer jobs remote"]);
+  });
+});
