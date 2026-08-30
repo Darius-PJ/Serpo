@@ -3,10 +3,19 @@ import { prisma } from "@/lib/db/prisma";
 
 const ACTION_LABELS: Record<string, string> = {
   "application.submission_confirmed": "Submission confirmed",
+  "application.status_changed": "Status changed",
 };
 
 /** Human label for an AuditEvent action; unknown actions render as recorded. */
-export function describeAuditAction(action: string): string {
+export function describeAuditAction(action: string, details?: string | null): string {
+  if (action === "application.status_changed" && details) {
+    try {
+      const { from, to } = JSON.parse(details) as { from?: unknown; to?: unknown };
+      if (typeof from === "string" && typeof to === "string") return `Status changed: ${from} → ${to}`;
+    } catch {
+      // fall through to the plain label
+    }
+  }
   return ACTION_LABELS[action] ?? action;
 }
 
@@ -40,7 +49,7 @@ export async function listRecentActivity(userId: string, limit = 10): Promise<Ac
 
   return events.map((event) => ({
     id: event.id,
-    label: describeAuditAction(event.action),
+    label: describeAuditAction(event.action, event.details),
     subject: event.entityType === "Application" ? (subjectById.get(event.entityId) ?? null) : null,
     createdAt: event.createdAt,
   }));

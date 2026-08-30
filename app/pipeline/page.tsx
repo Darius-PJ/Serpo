@@ -1,22 +1,13 @@
 import Link from "next/link";
-import { prisma } from "@/lib/db/prisma";
 import { requireUserIdForPage } from "@/lib/auth/session";
-import { listFollowUpDue } from "@/lib/scheduler/followUpCheck";
-import { StatusSelect } from "@/components/StatusSelect";
-import { APPLICATION_STATUSES } from "@/lib/applicationStatus";
+import { listPipelineCards } from "@/lib/pipeline/boardData";
+import { PipelineBoard } from "@/components/PipelineBoard";
 
 export const dynamic = "force-dynamic";
 
-const COLUMNS = APPLICATION_STATUSES;
-
 export default async function PipelinePage() {
   const userId = await requireUserIdForPage();
-
-  const [applications, followUpsDue] = await Promise.all([
-    prisma.application.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
-    listFollowUpDue(userId),
-  ]);
-  const followUpDueIds = new Set(followUpsDue.map((application) => application.id));
+  const cards = await listPipelineCards(userId);
 
   return (
     <div>
@@ -27,37 +18,7 @@ export default async function PipelinePage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {COLUMNS.map((column) => {
-          const items = applications.filter((application) => application.status === column);
-          return (
-            <div key={column} className="card-soft p-3">
-              <h2 className="mb-2 text-sm font-bold text-primary-dark">
-                {column} ({items.length})
-              </h2>
-              <ul className="space-y-2">
-                {items.map((application) => (
-                  <li key={application.id} className="rounded-xl border border-border-soft p-2 text-sm">
-                    <Link href={`/applications/${application.id}`} className="font-semibold text-foreground hover:text-primary-dark hover:underline">
-                      {application.company}
-                    </Link>
-                    <div className="text-foreground-muted">{application.role}</div>
-                    {followUpDueIds.has(application.id) && <div className="mt-1 text-xs text-amber-800">Follow-up draft due</div>}
-                    <div className="mt-2">
-                      <StatusSelect
-                        applicationId={application.id}
-                        status={application.status}
-                        label={`Status for ${application.company} — ${application.role}`}
-                      />
-                    </div>
-                  </li>
-                ))}
-                {items.length === 0 && <li className="text-xs text-foreground-muted">None</li>}
-              </ul>
-            </div>
-          );
-        })}
-      </div>
+      <PipelineBoard cards={cards} />
     </div>
   );
 }

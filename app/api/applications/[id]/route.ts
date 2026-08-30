@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 import { isApplicationStatus } from "@/lib/applicationStatus";
+import { changeApplicationStatus } from "@/lib/applications/changeStatus";
 
 export const dynamic = "force-dynamic";
 const MAX_FIELD_LENGTH = 200;
@@ -52,19 +53,28 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
 
-  const isNewlySubmitted = body.status === "Submitted" && existing.status !== "Submitted";
+  let application = existing;
+  if (company !== undefined || role !== undefined || notes !== undefined) {
+    application = await prisma.application.update({
+      where: { id },
+      data: {
+        ...(company !== undefined ? { company } : {}),
+        ...(role !== undefined ? { role } : {}),
+        ...(notes !== undefined ? { notes } : {}),
+      },
+    });
+  }
 
-  const application = await prisma.application.update({
-    where: { id },
-    data: {
-      ...(company !== undefined ? { company } : {}),
-      ...(role !== undefined ? { role } : {}),
-      ...(notes !== undefined ? { notes } : {}),
-      ...(body.status !== undefined ? { status: body.status } : {}),
-      ...(isNewlySubmitted && !existing.appliedAt ? { appliedAt: new Date() } : {}),
-      ...(isNewlySubmitted ? { submissionState: "confirmed", submissionConfirmedAt: existing.submissionConfirmedAt ?? new Date() } : {}),
-    },
-  });
+  // Status moves go through the one shared path so every change — dropdown or
+  // kanban drag — applies the Submitted side effects and records the
+  // status_changed AuditEvent that funnel metrics depend on.
+  if (body.status !== undefined) {
+    const changed = await changeApplicationStatus(userId, id, body.status);
+    if (!changed) {
+      return NextResponse.json({ error: "not found" }, { status: 404 });
+    }
+    application = changed;
+  }
 
   return NextResponse.json({ application });
 }

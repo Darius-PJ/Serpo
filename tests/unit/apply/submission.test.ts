@@ -24,6 +24,45 @@ describe("confirmed submission workflow", () => {
     expect(result.application.submissionConfirmedAt).not.toBeNull();
   });
 
+  it("records a status_changed audit event only when confirmation actually moves the application", async () => {
+    const user = await prisma.user.create({ data: { username: "submission-status-audit", passwordHash: "unused" } });
+    const moved = await prisma.application.create({
+      data: { userId: user.id, company: "Acme", role: "Engineer", source: "manual", submissionState: "review_required" },
+    });
+    const movedRun = await prisma.applyRun.create({ data: { applicationId: moved.id, status: "review_required" } });
+    await confirmApplicationSubmission({
+      applicationId: moved.id,
+      userId: user.id,
+      applyRunId: movedRun.id,
+      evidence: makeUserAttestationEvidence(),
+    });
+
+    const alreadySubmitted = await prisma.application.create({
+      data: {
+        userId: user.id,
+        company: "Beta",
+        role: "Engineer",
+        source: "manual",
+        status: "Submitted",
+        submissionState: "review_required",
+      },
+    });
+    const secondRun = await prisma.applyRun.create({ data: { applicationId: alreadySubmitted.id, status: "review_required" } });
+    await confirmApplicationSubmission({
+      applicationId: alreadySubmitted.id,
+      userId: user.id,
+      applyRunId: secondRun.id,
+      evidence: makeUserAttestationEvidence(),
+    });
+
+    const events = await prisma.auditEvent.findMany({
+      where: { userId: user.id, action: "application.status_changed" },
+    });
+    expect(events).toHaveLength(1);
+    expect(events[0].entityId).toBe(moved.id);
+    expect(JSON.parse(events[0].details ?? "{}")).toEqual({ from: "Sourced", to: "Submitted" });
+  });
+
   it("does not let one account confirm another account's apply run", async () => {
     const owner = await prisma.user.create({ data: { username: "submission-owner-a", passwordHash: "unused" } });
     const other = await prisma.user.create({ data: { username: "submission-owner-b", passwordHash: "unused" } });

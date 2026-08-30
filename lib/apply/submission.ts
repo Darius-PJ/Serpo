@@ -67,6 +67,19 @@ export async function confirmApplicationSubmission({
         details: JSON.stringify({ applyRunId, evidenceKind: evidence.kind }),
       },
     });
+    // Confirmation is also a pipeline stage move when it changes the status —
+    // funnel metrics read status_changed events, whichever path caused them.
+    if (application.status !== "Submitted") {
+      await tx.auditEvent.create({
+        data: {
+          userId,
+          action: "application.status_changed",
+          entityType: "Application",
+          entityId: applicationId,
+          details: JSON.stringify({ from: application.status, to: "Submitted" }),
+        },
+      });
+    }
     return { run: updatedRun, application: updatedApplication };
   });
 }

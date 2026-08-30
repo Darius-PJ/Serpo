@@ -7,6 +7,14 @@ describe("describeAuditAction", () => {
     expect(describeAuditAction("application.submission_confirmed")).toBe("Submission confirmed");
     expect(describeAuditAction("some.future_action")).toBe("some.future_action");
   });
+
+  it("enriches status_changed with the transition when details carry it", () => {
+    expect(describeAuditAction("application.status_changed", JSON.stringify({ from: "Sourced", to: "Submitted" }))).toBe(
+      "Status changed: Sourced → Submitted",
+    );
+    expect(describeAuditAction("application.status_changed", "not json")).toBe("Status changed");
+    expect(describeAuditAction("application.status_changed")).toBe("Status changed");
+  });
 });
 
 describe("listRecentActivity", () => {
@@ -50,6 +58,23 @@ describe("listRecentActivity", () => {
     expect(entries).toHaveLength(2);
     expect(entries[0]).toMatchObject({ label: "Submission confirmed", subject: null, createdAt: newer });
     expect(entries[1]).toMatchObject({ label: "Submission confirmed", subject: "Acme — Engineer", createdAt: older });
+  });
+
+  it("shows the status transition for status_changed events", async () => {
+    const user = await prisma.user.create({ data: { username: "activity-status-user", passwordHash: "unused" } });
+    await prisma.auditEvent.create({
+      data: {
+        userId: user.id,
+        action: "application.status_changed",
+        entityType: "Application",
+        entityId: "gone",
+        details: JSON.stringify({ from: "Sourced", to: "Interviewing" }),
+      },
+    });
+
+    const entries = await listRecentActivity(user.id);
+    expect(entries).toHaveLength(1);
+    expect(entries[0].label).toBe("Status changed: Sourced → Interviewing");
   });
 
   it("honors the limit", async () => {
