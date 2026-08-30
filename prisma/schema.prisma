@@ -21,6 +21,22 @@ model User {
   resumeWorkspaces ResumeWorkspace[]
   raekwonReports  RaekwonReport[]
   auditEvents     AuditEvent[]
+  titleAliases    TitleAlias[]
+}
+
+// User-curated "this title means my target role" equivalences, keyed by the
+// normalized search keyword they apply to. Matching a user alias outranks an
+// O*NET family match in search relevance (lib/jobSources/titleMatch.ts).
+model TitleAlias {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  keyword   String // normalized (lowercase, punctuation stripped) search keyword
+  alias     String // normalized alias title
+  createdAt DateTime @default(now())
+
+  @@unique([userId, keyword, alias])
+  @@index([userId, keyword])
 }
 
 model AuditEvent {

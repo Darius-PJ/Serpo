@@ -36,9 +36,15 @@ try {
   if (checkpoint < 0) throw new Error("FAIL CLOSED: database schema does not match any committed migration checkpoint (drift or schema-ahead state).");
   const hasPrismaLedger = db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='_prisma_migrations'").get();
   if (hasPrismaLedger) {
-    const claimed = db.prepare("SELECT migration_name FROM _prisma_migrations WHERE finished_at IS NOT NULL ORDER BY finished_at").all().map((row) => row.migration_name);
+    // A previously-upgraded database records this script's own applications in
+    // __app_migrations, not _prisma_migrations — the cross-check must count
+    // both ledgers or every second upgrade fails closed.
+    const claimedPrisma = db.prepare("SELECT migration_name FROM _prisma_migrations WHERE finished_at IS NOT NULL").all().map((row) => row.migration_name);
+    const hasAppLedger = db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='__app_migrations'").get();
+    const claimedApp = hasAppLedger ? db.prepare("SELECT name FROM __app_migrations").all().map((row) => row.name) : [];
+    const claimed = [...new Set([...claimedPrisma, ...claimedApp])].sort((a, b) => a.localeCompare(b));
     const expected = migrations.slice(0, checkpoint).map((migration) => migration.name);
-    if (JSON.stringify(claimed) !== JSON.stringify(expected)) throw new Error("FAIL CLOSED: Prisma migration ledger disagrees with the schema-inferred checkpoint.");
+    if (JSON.stringify(claimed) !== JSON.stringify(expected)) throw new Error("FAIL CLOSED: migration ledgers disagree with the schema-inferred checkpoint.");
   }
   if (checkpoint === migrations.length) { console.log("Database schema verified; no upgrade required."); process.exit(0); }
   const backup = `${targetPath}.backup-${new Date().toISOString().replace(/[:.]/g, "-")}`;

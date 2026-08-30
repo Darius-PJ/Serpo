@@ -12,6 +12,8 @@ interface Listing {
   url: string;
   postedAt?: string;
   description?: string;
+  /** Tier from the search route; "family" listings group under "related titles". */
+  relevance?: "exact" | "strong" | "alias" | "family";
 }
 
 interface SearchResult {
@@ -19,6 +21,11 @@ interface SearchResult {
   label: string;
   listings: Listing[];
   error?: string;
+}
+
+interface TitleAlias {
+  id: string;
+  alias: string;
 }
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50];
@@ -32,6 +39,11 @@ export function JobSearchForm() {
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
+  const [titleAliases, setTitleAliases] = useState<TitleAlias[]>([]);
+  // The criteria the visible results came from — alias add/remove re-runs this
+  // search even if the form inputs have been edited since.
+  const [activeQuery, setActiveQuery] = useState<{ kw: string; loc: string; remote: boolean } | null>(null);
+  const [savingAlias, setSavingAlias] = useState<string | null>(null);
   const [pageBySource, setPageBySource] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -67,6 +79,8 @@ export function JobSearchForm() {
       }
       setResults(data.results ?? []);
       setSuggestedTitles(data.suggestedTitles ?? []);
+      setTitleAliases(data.titleAliases ?? []);
+      setActiveQuery({ kw, loc, remote });
       setPageBySource({});
       setSearched(true);
       const params = new URLSearchParams({ keywords: kw, location: loc, remoteOnly: String(remote) });
@@ -122,6 +136,45 @@ export function JobSearchForm() {
     setPageBySource((prev) => ({ ...prev, [source]: page }));
   }
 
+  async function addAlias(listing: Listing) {
+    if (!activeQuery) return;
+    setSavingAlias(listing.id);
+    setError(null);
+    try {
+      const res = await fetch("/api/title-aliases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ keyword: activeQuery.kw, alias: listing.role }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "The alias could not be saved.");
+        return;
+      }
+      await runSearch(activeQuery.kw, activeQuery.loc, activeQuery.remote);
+    } catch {
+      setError("The alias could not be saved. Check your connection and try again.");
+    } finally {
+      setSavingAlias(null);
+    }
+  }
+
+  async function removeAlias(id: string) {
+    if (!activeQuery) return;
+    setError(null);
+    try {
+      const res = await fetch(`/api/title-aliases/${id}`, { method: "DELETE", headers: { "Content-Type": "application/json" } });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "The alias could not be removed.");
+        return;
+      }
+      await runSearch(activeQuery.kw, activeQuery.loc, activeQuery.remote);
+    } catch {
+      setError("The alias could not be removed. Check your connection and try again.");
+    }
+  }
+
   async function openResume(listing: Listing) {
     setGeneratingResumeFor(listing.id);
     setError(null);
@@ -151,6 +204,48 @@ export function JobSearchForm() {
     } finally {
       setGeneratingResumeFor(null);
     }
+  }
+
+  function renderListing(listing: Listing, showAddAlias: boolean) {
+    return (
+      <li key={listing.id} className="rounded-2xl border border-border-soft bg-surface p-3 text-sm">
+        <div className="font-semibold text-foreground">{listing.role}</div>
+        <div className="mb-2 text-foreground-muted">
+          {listing.company}
+          {listing.location ? ` · ${listing.location}` : ""}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <a href={listing.url} target="_blank" rel="noopener noreferrer" className="btn-secondary px-2.5 py-1 text-xs">
+            Open
+          </a>
+          <button
+            onClick={() => track(listing)}
+            disabled={tracked.has(listing.id) || tracking === listing.id}
+            className="btn-primary px-2.5 py-1 text-xs"
+          >
+            {tracked.has(listing.id) ? "Tracked" : tracking === listing.id ? "Tracking..." : "Track"}
+          </button>
+          <button
+            onClick={() => openResume(listing)}
+            disabled={generatingResumeFor === listing.id}
+            className="btn-secondary px-2.5 py-1 text-xs"
+            title="See a competitive benchmark and an improved version of your own resume for this role"
+          >
+            {generatingResumeFor === listing.id ? "Generating…" : "Resume"}
+          </button>
+          {showAddAlias && (
+            <button
+              onClick={() => addAlias(listing)}
+              disabled={savingAlias === listing.id}
+              className="btn-secondary px-2.5 py-1 text-xs"
+              title="Treat this title as a primary match for this search from now on"
+            >
+              {savingAlias === listing.id ? "Saving…" : "Add alias"}
+            </button>
+          )}
+        </div>
+      </li>
+    );
   }
 
   return (
@@ -196,9 +291,21 @@ export function JobSearchForm() {
       {error && <p role="alert" className="mb-4 text-sm text-danger-dark">{error}</p>}
 
       <p className="mb-4 text-xs text-foreground-muted">
-        Showing exact title matches only (entry/mid-level, US-based or remote). Titles containing
-        &quot;senior&quot; are excluded.
+        Showing exact and same-responsibility title matches (entry/mid-level, US-based or remote). Senior,
+        lead, and management titles are excluded. Related titles from the role&#39;s O*NET family are grouped
+        separately — add one as an alias to always treat it as a primary match.
       </p>
+
+      {titleAliases.length > 0 && (
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          <span className="text-xs font-medium text-foreground-muted">Your aliases for &quot;{activeQuery?.kw}&quot;:</span>
+          {titleAliases.map((entry) => (
+            <button key={entry.id} onClick={() => removeAlias(entry.id)} className="chip" title="Remove this alias">
+              {entry.alias} ✕
+            </button>
+          ))}
+        </div>
+      )}
 
       {suggestedTitles.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
@@ -214,51 +321,25 @@ export function JobSearchForm() {
       {results.length > 0 && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {results.map((group) => {
+            const primary = group.listings.filter((listing) => listing.relevance !== "family");
+            const related = group.listings.filter((listing) => listing.relevance === "family");
             const page = pageBySource[group.source] ?? 1;
-            const totalPages = Math.max(1, Math.ceil(group.listings.length / pageSize));
-            const pageItems = group.listings.slice((page - 1) * pageSize, page * pageSize);
+            const totalPages = Math.max(1, Math.ceil(primary.length / pageSize));
+            const pageItems = primary.slice((page - 1) * pageSize, page * pageSize);
 
             return (
               <div key={group.source} className="cloud-cell p-4">
                 <div className="mb-2 flex items-center justify-between">
                   <h2 className="text-sm font-bold text-primary-dark">
-                    {group.label} <span className="font-normal text-foreground-muted">({group.listings.length})</span>
+                    {group.label} <span className="font-normal text-foreground-muted">({primary.length})</span>
                   </h2>
                 </div>
                 {group.error && <p className="mb-2 text-xs text-danger-dark">{group.error}</p>}
 
                 <ul className="max-h-96 space-y-2 overflow-y-auto pr-1">
-                  {pageItems.map((listing) => (
-                    <li key={listing.id} className="rounded-2xl border border-border-soft bg-surface p-3 text-sm">
-                      <div className="font-semibold text-foreground">{listing.role}</div>
-                      <div className="mb-2 text-foreground-muted">
-                        {listing.company}
-                        {listing.location ? ` · ${listing.location}` : ""}
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <a href={listing.url} target="_blank" rel="noopener noreferrer" className="btn-secondary px-2.5 py-1 text-xs">
-                          Open
-                        </a>
-                        <button
-                          onClick={() => track(listing)}
-                          disabled={tracked.has(listing.id) || tracking === listing.id}
-                          className="btn-primary px-2.5 py-1 text-xs"
-                        >
-                          {tracked.has(listing.id) ? "Tracked" : tracking === listing.id ? "Tracking..." : "Track"}
-                        </button>
-                        <button
-                          onClick={() => openResume(listing)}
-                          disabled={generatingResumeFor === listing.id}
-                          className="btn-secondary px-2.5 py-1 text-xs"
-                          title="See a competitive benchmark and an improved version of your own resume for this role"
-                        >
-                          {generatingResumeFor === listing.id ? "Generating…" : "Resume"}
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                  {group.listings.length === 0 && !group.error && (
-                    <li className="text-xs text-foreground-muted">No exact-title matches</li>
+                  {pageItems.map((listing) => renderListing(listing, false))}
+                  {primary.length === 0 && related.length === 0 && !group.error && (
+                    <li className="text-xs text-foreground-muted">No matching titles</li>
                   )}
                 </ul>
 
@@ -282,6 +363,17 @@ export function JobSearchForm() {
                       Next
                     </button>
                   </div>
+                )}
+
+                {related.length > 0 && (
+                  <details className="mt-3">
+                    <summary className="cursor-pointer text-xs font-medium text-foreground-muted">
+                      {related.length} related title{related.length === 1 ? "" : "s"} from this role&#39;s family
+                    </summary>
+                    <ul className="mt-2 max-h-64 space-y-2 overflow-y-auto pr-1">
+                      {related.map((listing) => renderListing(listing, true))}
+                    </ul>
+                  </details>
                 )}
               </div>
             );

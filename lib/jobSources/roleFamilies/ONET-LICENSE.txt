@@ -1,0 +1,12 @@
+onetTitleFamilies.json.gz is derived from the O*NET 31.0 Database's
+"Job Titles", "Occupation Data", and "Related Occupations" files.
+
+This product includes information from the O*NET 31.0 Database by the U.S.
+Department of Labor, Employment and Training Administration (USDOL/ETA). Used
+under the CC BY 4.0 license (https://creativecommons.org/licenses/by/4.0/).
+O*NET(R) is a trademark of USDOL/ETA. This application derives a compact
+title-family index from the O*NET database; it is not endorsed by USDOL/ETA,
+and any errors introduced by the derivation are this application's own.
+
+Unmodified originals: https://www.onetcenter.org/database.html
+Regeneration: node scripts/buildOnetTitleFamilies.mjs <extracted-db-dir>

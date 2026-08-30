@@ -91,3 +91,50 @@ test("results-per-page selector and pagination controls work", async ({ page }) 
   await expect(page.getByText("Backend Engineer 11", { exact: true })).toBeVisible();
   await expect(page.getByText("Page 2 of 2")).toBeVisible();
 });
+
+test("family-tier matches collapse under related titles and can be promoted to an alias", async ({ page }) => {
+  await registerViaUi(page, randomUsername("jobsearchfam"));
+
+  let searchCalls = 0;
+  await page.route("**/api/jobs/search", async (route) => {
+    searchCalls++;
+    await route.fulfill({
+      json: {
+        results: [
+          {
+            source: "remotive",
+            label: "Remotive",
+            listings: [
+              { ...listing(1), relevance: "exact" },
+              { ...listing(2), role: "Network Administrator", relevance: "family" },
+            ],
+          },
+        ],
+        suggestedTitles: [],
+        titleAliases: [],
+      },
+    });
+  });
+
+  let aliasPost: { keyword?: string; alias?: string } | undefined;
+  await page.route("**/api/title-aliases", async (route) => {
+    aliasPost = route.request().postDataJSON() as { keyword?: string; alias?: string };
+    await route.fulfill({ json: { alias: { id: "alias-1", alias: "network administrator" } } });
+  });
+
+  await page.goto("/sourcing");
+  await page.locator('input[placeholder^="Job title"]').fill("network engineer");
+  await page.getByRole("button", { name: "Search" }).click();
+
+  // The family match stays out of the primary list until expanded.
+  await expect(page.getByText("Backend Engineer 1", { exact: true })).toBeVisible();
+  await expect(page.getByText("Network Administrator", { exact: true })).not.toBeVisible();
+
+  await page.getByText("1 related title").click();
+  await expect(page.getByText("Network Administrator", { exact: true })).toBeVisible();
+
+  // Promoting it to an alias posts the pair and re-runs the search.
+  await page.getByRole("button", { name: "Add alias" }).click();
+  await expect.poll(() => searchCalls).toBe(2);
+  expect(aliasPost).toEqual({ keyword: "network engineer", alias: "Network Administrator" });
+});

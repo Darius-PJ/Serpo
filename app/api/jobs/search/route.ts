@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { searchAllAdapters, searchPoolBoardAdapters } from "@/lib/jobAdapters/search";
 import { dedupeListings } from "@/lib/jobSources/dedupe";
-import { matchesExactTitle, isSeniorTitle } from "@/lib/jobSources/titleMatch";
+import { scoreTitleRelevance, isSeniorTitle } from "@/lib/jobSources/titleMatch";
+import { familyAliasesFor } from "@/lib/jobSources/roleFamilies";
+import { listTitleAliases } from "@/lib/jobSources/titleAliases";
 import { isUsOrRemoteListing, isRemoteListing } from "@/lib/jobSources/locationFilter";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
@@ -30,23 +32,37 @@ export async function POST(request: Request) {
   };
 
   const correlationId = crypto.randomUUID();
-  const [staticResults, poolResults] = await Promise.all([
+  const [staticResults, poolResults, userAliases] = await Promise.all([
     searchAllAdapters(criteria, correlationId),
     searchPoolBoardAdapters(userId, criteria, correlationId),
+    listTitleAliases(userId, criteria.keywords),
   ]);
 
   // Uniform post-fetch filtering regardless of how fuzzy each upstream API's
-  // own "search" param happened to be: exact title-phrase match, entry/mid
+  // own "search" param happened to be: tiered title relevance (exact phrase >
+  // all-tokens > user alias > O*NET role family — see titleMatch.ts), entry/mid
   // level only, and US-or-remote (stricter remote-only on top when asked).
+  // Family-tier listings survive with relevance="family" so the client can
+  // group them under a collapsed "related titles" section instead of the old
+  // silent drop.
+  const relevanceOptions = {
+    familyAliases: familyAliasesFor(criteria.keywords),
+    userAliases: userAliases.map((entry) => entry.alias),
+  };
   const filteredGroups = [...staticResults, ...poolResults].map((group) => ({
     ...group,
-    listings: group.listings.filter(
-      (listing) =>
-        matchesExactTitle(listing.role, criteria.keywords) &&
-        !isSeniorTitle(listing.role) &&
-        isUsOrRemoteListing(listing) &&
-        (!criteria.remoteOnly || isRemoteListing(listing))
-    ),
+    listings: group.listings.flatMap((listing) => {
+      const relevance = scoreTitleRelevance(listing.role, criteria.keywords, relevanceOptions);
+      if (
+        relevance === "none" ||
+        isSeniorTitle(listing.role, criteria.keywords) ||
+        !isUsOrRemoteListing(listing) ||
+        (criteria.remoteOnly && !isRemoteListing(listing))
+      ) {
+        return [];
+      }
+      return [{ ...listing, relevance }];
+    }),
   }));
 
   // Dedupe across sources, then drop cross-posted duplicates from whichever
@@ -61,5 +77,7 @@ export async function POST(request: Request) {
 
   // AI title suggestions are disabled by default; return an empty list so the
   // client renders a stable "no suggestions" state without an AI call.
-  return NextResponse.json({ results, suggestedTitles: [] });
+  // titleAliases: the user's curated aliases for this keyword, so the client
+  // can render them as removable chips without a second request.
+  return NextResponse.json({ results, suggestedTitles: [], titleAliases: userAliases });
 }

@@ -15,6 +15,10 @@ export interface NormalizedJobListing {
   url: string;
   postedAt?: string;
   description?: string;
+  /** Search-relevance tier (lib/jobSources/titleMatch.ts) — set by the search
+   * route so the UI can group family matches separately. Absent tiers render
+   * as primary matches. */
+  relevance?: "exact" | "strong" | "alias" | "family";
 }
 
 export interface JobSearchResult {
