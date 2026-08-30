@@ -11,6 +11,7 @@ import { TaskActions } from "@/components/TaskActions";
 import { isFollowUpDue } from "@/lib/scheduler/followUpCheck";
 import { listOpenTasks } from "@/lib/tasks/tasks";
 import { listContactsForApplication } from "@/lib/contacts/contacts";
+import { listApplicationTimeline } from "@/lib/applications/timeline";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,10 @@ export default async function ApplicationDetailPage({
     prisma.applyRun.findMany({ where: { applicationId: id }, orderBy: { startedAt: "desc" } }),
     listContactsForApplication(userId, id),
   ]);
-  const tasks = await listOpenTasks(userId, id);
+  const [tasks, timeline] = await Promise.all([
+    listOpenTasks(userId, id),
+    listApplicationTimeline(userId, id),
+  ]);
 
   if (!application) notFound();
 
@@ -101,6 +105,21 @@ export default async function ApplicationDetailPage({
         submissionConfirmed={application.submissionState === "confirmed"}
         followUpDue={isFollowUpDue(application)}
       />
+
+      <section aria-labelledby="application-timeline" className="card-soft mb-6 p-4">
+        <h2 id="application-timeline" className="mb-2 font-bold text-foreground">
+          Timeline
+        </h2>
+        <ul className="space-y-1.5 border-l-2 border-border-soft pl-3 text-sm">
+          {(timeline ?? []).map((entry) => (
+            <li key={entry.id}>
+              <span className="font-medium text-foreground">{entry.label}</span>
+              {entry.detail && <span className="text-foreground-muted"> — {entry.detail}</span>}
+              <span className="ml-2 text-xs text-foreground-muted">{entry.at.toLocaleDateString()}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }
