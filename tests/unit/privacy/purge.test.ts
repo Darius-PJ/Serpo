@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { prisma } from "@/lib/db/prisma";
-import { keepApplication, removeApplication, wipeAllData } from "@/lib/privacy/purge";
+import { keepApplication, purgeContactResearch, removeApplication, wipeAllData } from "@/lib/privacy/purge";
+import { findOrCreateContact, linkContactToApplication, logInteraction } from "@/lib/contacts/contacts";
 
 async function seedUserWithData(username: string) {
   const user = await prisma.user.create({ data: { username, passwordHash: "unused-in-this-test" } });
@@ -78,6 +79,53 @@ describe("lib/privacy/purge", () => {
     await expect(prisma.resumeWorkspace.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
     await expect(prisma.raekwonReport.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
     await expect(prisma.jobBoardPin.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
+  });
+
+  it("wipeAllData also deletes the account's contacts and interactions", async () => {
+    const a = await seedUserWithData("purge-user-contacts-a");
+    const b = await seedUserWithData("purge-user-contacts-b");
+    const aContact = await findOrCreateContact(a.user.id, "Acme", { name: "Rina Patel" });
+    await logInteraction(a.user.id, { contactId: aContact.id, kind: "email", direction: "outbound" });
+    const bContact = await findOrCreateContact(b.user.id, "Acme", { name: "Sam Ruiz" });
+
+    const result = await wipeAllData(a.user.id);
+
+    expect(result.contacts).toBe(1);
+    expect(result.interactions).toBe(1);
+    await expect(prisma.contact.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
+    await expect(prisma.contact.findUnique({ where: { id: bContact.id } })).resolves.not.toBeNull();
+  });
+
+  it("purgeContactResearch removes this application's links but deletes only fully-orphaned contacts", async () => {
+    const a = await seedUserWithData("purge-research-user");
+    const second = await prisma.application.create({
+      data: { userId: a.user.id, company: "Acme", role: "Analyst", source: "manual" },
+    });
+
+    const shared = await findOrCreateContact(a.user.id, "Acme", { name: "Shared Person" });
+    await linkContactToApplication(shared.id, a.application.id, { sourceTool: "theharvester", confidence: null });
+    await linkContactToApplication(shared.id, second.id, { sourceTool: "theharvester", confidence: null });
+    const orphan = await findOrCreateContact(a.user.id, "Acme", { name: "Only Here" });
+    await linkContactToApplication(orphan.id, a.application.id, { sourceTool: "theharvester", confidence: null });
+    const withHistory = await findOrCreateContact(a.user.id, "Acme", { name: "Has History" });
+    await linkContactToApplication(withHistory.id, a.application.id, { sourceTool: "theharvester", confidence: null });
+    await logInteraction(a.user.id, { contactId: withHistory.id, kind: "note", direction: "outbound" });
+
+    const result = await purgeContactResearch(a.application.id, a.user.id);
+
+    expect(result.count).toBe(3);
+    await expect(prisma.contactApplication.findMany({ where: { applicationId: a.application.id } })).resolves.toHaveLength(0);
+    // Still linked elsewhere → survives; has logged history → survives; orphaned discovery → gone.
+    await expect(prisma.contact.findUnique({ where: { id: shared.id } })).resolves.not.toBeNull();
+    await expect(prisma.contact.findUnique({ where: { id: withHistory.id } })).resolves.not.toBeNull();
+    await expect(prisma.contact.findUnique({ where: { id: orphan.id } })).resolves.toBeNull();
+  });
+
+  it("purgeContactResearch rejects a foreign application", async () => {
+    const a = await seedUserWithData("purge-research-foreign-a");
+    const b = await seedUserWithData("purge-research-foreign-b");
+
+    await expect(purgeContactResearch(b.application.id, a.user.id)).rejects.toThrow("not found");
   });
 
   it("keepApplication rejects (throws) when the application belongs to a different account", async () => {

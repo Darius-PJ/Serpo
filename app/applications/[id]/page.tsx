@@ -3,13 +3,14 @@ import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
 import { requireUserIdForPage } from "@/lib/auth/session";
 import { StatusSelect } from "@/components/StatusSelect";
-import { DecisionMakerPanel } from "@/components/DecisionMakerPanel";
+import { ContactPanel } from "@/components/ContactPanel";
 import { MessagePanel } from "@/components/MessagePanel";
 import { ApplyPanel } from "@/components/ApplyPanel";
 import { TaskQuickAdd } from "@/components/TaskQuickAdd";
 import { TaskActions } from "@/components/TaskActions";
 import { isFollowUpDue } from "@/lib/scheduler/followUpCheck";
 import { listOpenTasks } from "@/lib/tasks/tasks";
+import { listContactsForApplication } from "@/lib/contacts/contacts";
 
 export const dynamic = "force-dynamic";
 
@@ -20,13 +21,14 @@ export default async function ApplicationDetailPage({
 }) {
   const userId = await requireUserIdForPage();
   const { id } = await params;
-  const [application, resumeTemplate, applyRuns] = await Promise.all([
+  const [application, resumeTemplate, applyRuns, contactLinks] = await Promise.all([
     prisma.application.findUnique({
       where: { id_userId: { id, userId } },
-      include: { decisionMakers: true, messages: { orderBy: { createdAt: "desc" } } },
+      include: { messages: { orderBy: { createdAt: "desc" } } },
     }),
     prisma.resumeTemplate.findFirst({ where: { userId }, orderBy: { createdAt: "desc" } }),
     prisma.applyRun.findMany({ where: { applicationId: id }, orderBy: { startedAt: "desc" } }),
+    listContactsForApplication(userId, id),
   ]);
   const tasks = await listOpenTasks(userId, id);
 
@@ -85,11 +87,7 @@ export default async function ApplicationDetailPage({
         <TaskQuickAdd applicationId={application.id} />
       </section>
 
-      <DecisionMakerPanel
-        applicationId={application.id}
-        company={application.company}
-        decisionMakers={application.decisionMakers}
-      />
+      <ContactPanel applicationId={application.id} company={application.company} links={contactLinks} />
       <ApplyPanel
         applicationId={application.id}
         company={application.company}

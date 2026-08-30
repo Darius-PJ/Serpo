@@ -16,8 +16,15 @@ export async function removeApplication(applicationId: string, userId: string) {
   return prisma.application.delete({ where: { id_userId: { id: applicationId, userId } } });
 }
 
-/** Per-record OSINT purge without touching the application itself. Scoped through the parent application's ownership. */
-export async function purgeDecisionMakers(applicationId: string, userId: string) {
+/**
+ * Per-application OSINT purge without touching the application itself, scoped
+ * through the parent application's ownership. Removes this application's
+ * contact links, then deletes only contacts left with nothing at all — no
+ * other application links, no logged interactions, no message drafts. A
+ * contact the user has a history with is their data, not this application's
+ * research, and survives.
+ */
+export async function purgeContactResearch(applicationId: string, userId: string) {
   const application = await prisma.application.findUnique({
     where: { id_userId: { id: applicationId, userId } },
     select: { id: true },
@@ -25,7 +32,21 @@ export async function purgeDecisionMakers(applicationId: string, userId: string)
   if (!application) {
     throw new Error("not found");
   }
-  return prisma.decisionMaker.deleteMany({ where: { applicationId } });
+  return prisma.$transaction(async (tx) => {
+    const links = await tx.contactApplication.findMany({ where: { applicationId }, select: { contactId: true } });
+    const contactIds = [...new Set(links.map((link) => link.contactId))];
+    const removed = await tx.contactApplication.deleteMany({ where: { applicationId } });
+    await tx.contact.deleteMany({
+      where: {
+        id: { in: contactIds },
+        userId,
+        applications: { none: {} },
+        interactions: { none: {} },
+        messages: { none: {} },
+      },
+    });
+    return { count: removed.count };
+  });
 }
 
 /**
@@ -47,6 +68,8 @@ export async function wipeAllData(userId: string) {
   ];
 
   const result = await prisma.$transaction(async (tx) => {
+    const interactions = await tx.interaction.deleteMany({ where: { userId } });
+    const contacts = await tx.contact.deleteMany({ where: { userId } });
     const deletedApplications = await tx.application.deleteMany({ where: { userId } });
     const resumeTemplates = await tx.resumeTemplate.deleteMany({ where: { userId } });
     const resumeWorkspaces = await tx.resumeWorkspace.deleteMany({ where: { userId } });
@@ -57,6 +80,8 @@ export async function wipeAllData(userId: string) {
     const jobBoards = await tx.jobBoard.deleteMany({ where: { userId } });
     return {
       applications: deletedApplications.count,
+      contacts: contacts.count,
+      interactions: interactions.count,
       resumeTemplates: resumeTemplates.count,
       resumeWorkspaces: resumeWorkspaces.count,
       raekwonReports: raekwonReports.count,

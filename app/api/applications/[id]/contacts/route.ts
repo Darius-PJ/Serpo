@@ -4,11 +4,15 @@ import { configuredOsintConnectors, researchAllTools } from "@/lib/osint";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 import { isValidDomain } from "@/lib/validators";
+import { findOrCreateContact, linkContactToApplication, listContactsForApplication } from "@/lib/contacts/contacts";
 
 export const dynamic = "force-dynamic";
 
 const MAX_CONTACTS_PER_RESEARCH = 50;
 
+// Per-application dedup of discovery results — distinct from the contact
+// merge policy: this stops the same finding being re-saved to one
+// application, while findOrCreateContact decides person identity.
 function contactKey(contact: { email?: string | null; name?: string | null; title?: string | null }) {
   if (contact.email) return `email:${contact.email.trim().toLowerCase()}`;
   return `person:${(contact.name ?? "").trim().toLowerCase()}|${(contact.title ?? "").trim().toLowerCase()}`;
@@ -24,8 +28,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
 
-  const decisionMakers = await prisma.decisionMaker.findMany({ where: { applicationId: id }, orderBy: { foundAt: "desc" } });
-  return NextResponse.json({ decisionMakers });
+  const contacts = await listContactsForApplication(userId, id);
+  return NextResponse.json({ contacts });
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -52,22 +56,22 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
   const configured = configuredOsintConnectors();
   if (configured.length === 0) {
-    return NextResponse.json({ error: "Decision-maker research is not configured. No research was sent." }, { status: 503 });
+    return NextResponse.json({ error: "Contact research is not configured. No research was sent." }, { status: 503 });
   }
 
   const runs = await researchAllTools(domain);
-  const existing = await prisma.decisionMaker.findMany({ where: { applicationId: id }, select: { email: true, name: true, title: true } });
-  const seen = new Set(existing.map(contactKey));
+  const existingLinks = await listContactsForApplication(userId, id);
+  const seen = new Set(existingLinks.map((link) => contactKey(link.contact)));
   const created = [];
   let duplicatesSkipped = 0;
   let limitReached = false;
   for (const run of runs) {
     for (const result of run.results) {
-      const key = contactKey(result);
       if (!result.email && !result.name) {
         duplicatesSkipped++;
         continue;
       }
+      const key = contactKey(result);
       if (seen.has(key)) {
         duplicatesSkipped++;
         continue;
@@ -77,18 +81,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         break;
       }
       seen.add(key);
-      created.push(
-        await prisma.decisionMaker.create({
-          data: {
-            applicationId: id,
-            name: result.name,
-            title: result.title,
-            email: result.email,
-            sourceTool: result.sourceTool,
-            confidence: result.confidence,
-          },
-        })
-      );
+      const contact = await findOrCreateContact(userId, application.company, result);
+      await linkContactToApplication(contact.id, id, {
+        sourceTool: result.sourceTool,
+        confidence: result.confidence ?? null,
+      });
+      created.push(contact);
     }
     if (limitReached) break;
   }

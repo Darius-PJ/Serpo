@@ -16,7 +16,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const { id } = await params;
   const application = await prisma.application.findUnique({
     where: { id_userId: { id, userId } },
-    include: { decisionMakers: true, messages: true },
+    include: { contactLinks: { include: { contact: true } }, messages: true },
   });
   if (!application) {
     return NextResponse.json({ error: "not found" }, { status: 404 });

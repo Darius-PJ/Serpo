@@ -54,6 +54,19 @@ test("account B cannot read, modify, or act on account A's data", async ({ baseU
     });
     expect(deleteFieldAsB.status()).toBe(404);
 
+    // Log an interaction against another account's contact.
+    const contactCreated = await ctxA.post("/api/contacts", {
+      headers: { "Content-Type": "application/json" },
+      data: { name: "Rina Patel", company: "Acme" },
+    });
+    expect(contactCreated.ok()).toBe(true);
+    const { contact } = await contactCreated.json();
+    const interactionAsB = await ctxB.post(`/api/contacts/${contact.id}/interactions`, {
+      headers: { "Content-Type": "application/json" },
+      data: { kind: "email", direction: "outbound" },
+    });
+    expect(interactionAsB.status()).toBe(404);
+
     // Sanity: account A can still do all of the above on its own data.
     const getAsA = await ctxA.get(`/api/applications/${application.id}`);
     expect(getAsA.ok()).toBe(true);

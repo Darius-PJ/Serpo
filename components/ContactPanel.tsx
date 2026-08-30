@@ -1,19 +1,28 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { DecisionMaker } from "@/generated/prisma";
+import type { Contact } from "@/generated/prisma";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { guessDomainFromCompany } from "@/lib/osint/guessDomain";
 
-export function DecisionMakerPanel({
+export interface ContactLinkView {
+  id: string;
+  sourceTool: string;
+  confidence: string | null;
+  foundAt: Date;
+  contact: Contact;
+}
+
+export function ContactPanel({
   applicationId,
   company,
-  decisionMakers,
+  links,
 }: {
   applicationId: string;
   company: string;
-  decisionMakers: DecisionMaker[];
+  links: ContactLinkView[];
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -29,14 +38,14 @@ export function DecisionMakerPanel({
     setError(null);
     setResearchNotice(null);
     try {
-      const res = await fetch(`/api/applications/${applicationId}/decision-makers`, {
+      const res = await fetch(`/api/applications/${applicationId}/contacts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error ?? "Decision-maker research could not be completed.");
+        setError(data.error ?? "Contact research could not be completed.");
         return;
       }
       const toolError = data.runs?.find((run: { error?: string }) => run.error)?.error;
@@ -60,7 +69,7 @@ export function DecisionMakerPanel({
       const res = await fetch("/api/privacy/purge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "purge-decision-makers", applicationId }),
+        body: JSON.stringify({ action: "purge-contact-research", applicationId }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -68,7 +77,7 @@ export function DecisionMakerPanel({
         return;
       }
       setPurgeOpen(false);
-      setResearchNotice(`Deleted ${data.result?.count ?? 0} saved contacts.`);
+      setResearchNotice(`Removed ${data.result?.count ?? 0} saved research links.`);
       router.refresh();
     } finally {
       setLoading(false);
@@ -78,9 +87,9 @@ export function DecisionMakerPanel({
   return (
     <section className="card-soft mb-6 p-4">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h2 className="font-bold text-foreground">Decision-maker research</h2>
+        <h2 className="font-bold text-foreground">Contacts</h2>
         <div className="flex gap-2">
-          {decisionMakers.length > 0 && (
+          {links.length > 0 && (
             <button onClick={() => setPurgeOpen(true)} disabled={loading} className="btn-secondary px-3 py-1.5 text-xs">
               Delete research
             </button>
@@ -91,27 +100,33 @@ export function DecisionMakerPanel({
         </div>
       </div>
       <p className="mb-3 text-xs text-foreground-muted">
-        Research may send the domain you approve to configured public-source tools. Results are saved only to this application. No message is sent automatically.
+        Research may send the domain you approve to configured public-source tools. Discovered people are saved as
+        contacts linked to this application. No message is sent automatically.
       </p>
       {error && <p role="alert" className="mb-2 text-xs text-danger-dark">{error}</p>}
       {researchNotice && <p className="mb-2 text-xs text-foreground-muted">{researchNotice}</p>}
 
-      {decisionMakers.length === 0 ? (
-        <p className="text-sm text-foreground-muted">No saved contacts yet.</p>
+      {links.length === 0 ? (
+        <p className="text-sm text-foreground-muted">No linked contacts yet.</p>
       ) : (
         <ul className="space-y-2 text-sm">
-          {decisionMakers.map((decisionMaker) => (
-            <li key={decisionMaker.id} className="rounded-lg border border-border-soft p-2">
-              <div className="font-medium text-foreground">{decisionMaker.name ?? "Name not provided"}</div>
-              {decisionMaker.title && <div className="text-foreground-muted">{decisionMaker.title}</div>}
-              {decisionMaker.email && <div className="break-all text-foreground-muted">{decisionMaker.email}</div>}
+          {links.map((link) => (
+            <li key={link.id} className="rounded-lg border border-border-soft p-2">
+              <div className="font-medium text-foreground">{link.contact.name ?? "Name not provided"}</div>
+              {link.contact.title && <div className="text-foreground-muted">{link.contact.title}</div>}
+              {link.contact.email && <div className="break-all text-foreground-muted">{link.contact.email}</div>}
               <div className="mt-1 text-xs text-foreground-muted">
-                Source: {decisionMaker.sourceTool}{decisionMaker.confidence ? ` (${decisionMaker.confidence})` : ""}
+                Source: {link.sourceTool}{link.confidence ? ` (${link.confidence})` : ""}
               </div>
             </li>
           ))}
         </ul>
       )}
+      <p className="mt-3 text-xs">
+        <Link href="/contacts" className="text-primary-dark underline">
+          All contacts →
+        </Link>
+      </p>
 
       <ConfirmDialog
         open={confirmOpen}
@@ -135,7 +150,7 @@ export function DecisionMakerPanel({
         open={purgeOpen}
         tone="danger"
         title="Delete saved contact research?"
-        description="This permanently removes all decision-maker contacts saved for this application. It does not change the application or its message drafts."
+        description="This removes this application's research links, and deletes discovered contacts that have no other links, logged interactions, or drafts. It does not change the application or its message drafts."
         confirmLabel="Delete research"
         busy={loading}
         onConfirm={purgeResearch}

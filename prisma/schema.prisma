@@ -23,6 +23,71 @@ model User {
   auditEvents     AuditEvent[]
   titleAliases    TitleAlias[]
   tasks           Task[]
+  contacts        Contact[]
+  interactions    Interaction[]
+}
+
+// A person in the job search — recruiter, hiring manager, referral. Promoted
+// from the old per-application DecisionMaker: user-scoped and reusable, so
+// the same recruiter discovered on three applications is one record with one
+// history. Merged on exact name+company within an account (user-approved);
+// nameless discoveries never merge.
+model Contact {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String? // discovery tools sometimes return an email with no name
+  title     String?
+  email     String?
+  company   String
+  createdAt DateTime @default(now())
+
+  applications ContactApplication[]
+  interactions Interaction[]
+  messages     Message[]
+
+  @@unique([id, userId])
+  @@index([userId, company])
+}
+
+// Which applications a contact was discovered on (or attached to), with the
+// per-application provenance the old DecisionMaker row carried — kept here so
+// merging contacts loses nothing.
+model ContactApplication {
+  id            String      @id @default(cuid())
+  contactId     String
+  contact       Contact     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  sourceTool    String // "theharvester" | "manual" | ...
+  confidence    String? // raw tool signal, not a fabricated score
+  foundAt       DateTime    @default(now())
+
+  @@unique([contactId, applicationId])
+  @@index([applicationId])
+}
+
+// One touch with a contact — the relationship history a CRM exists to keep.
+model Interaction {
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contactId     String
+  contact       Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  // Optional: ties the touch to one application for the Phase 5 timeline. The
+  // interaction is history with the person, so it outlives the application.
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  kind          String // "email" | "call" | "linkedin" | "meeting" | "note"
+  direction     String // "outbound" | "inbound"
+  occurredAt    DateTime     @default(now())
+  notes         String?
+  createdAt     DateTime     @default(now())
+
+  @@unique([id, userId])
+  @@index([userId])
+  @@index([contactId, occurredAt])
+  @@index([applicationId])
 }
 
 // A user-created next action — the only persisted kind of "to do". System
@@ -96,7 +161,8 @@ model Application {
   followUpGeneratedAt DateTime? // guards the "only one 7-day follow-up" rule
   staleFlaggedAt      DateTime? // set when the 3-month no-update check first flags this row
   notes               String?
-  decisionMakers      DecisionMaker[]
+  contactLinks        ContactApplication[]
+  interactions        Interaction[]
   messages            Message[]
   applyRuns           ApplyRun[]
   tasks               Task[]
@@ -107,22 +173,14 @@ model Application {
   @@index([userId, createdAt])
 }
 
-model DecisionMaker {
-  id            String      @id @default(cuid())
-  applicationId String
-  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  name          String?
-  title         String?
-  email         String?
-  sourceTool    String // "theharvester" etc.
-  confidence    String? // raw tool signal, not a fabricated score
-  foundAt       DateTime    @default(now())
-}
-
 model Message {
   id            String      @id @default(cuid())
   applicationId String
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  // The contact this draft addresses, when one was chosen. The draft outlives
+  // the contact record.
+  contactId     String?
+  contact       Contact?    @relation(fields: [contactId], references: [id], onDelete: SetNull)
   type          String // "IMMEDIATE" | "FOLLOW_UP"
   draftText     String
   status        String      @default("DRAFT") // "DRAFT" | "APPROVED" | "SENT"

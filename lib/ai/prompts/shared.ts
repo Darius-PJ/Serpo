@@ -1,4 +1,4 @@
-import type { Application, DecisionMaker } from "@/generated/prisma";
+import type { Application, Contact } from "@/generated/prisma";
 
 export const SYSTEM_PROMPT =
   "You draft short, specific outreach messages for a job seeker to send to a hiring " +
@@ -7,8 +7,13 @@ export const SYSTEM_PROMPT =
   "emoji. Keep it to 3-5 sentences. Never invent facts about the seeker's background " +
   "that weren't provided.";
 
-export function describeApplication(application: Application, decisionMakers: DecisionMaker[]) {
-  const contact = decisionMakers.find((d) => d.name || d.email);
+/** The contact a draft addresses: the first one with a usable identity. */
+export function pickPrimaryContact(contacts: Contact[]): Contact | null {
+  return contacts.find((contact) => contact.name || contact.email) ?? null;
+}
+
+export function describeApplication(application: Application, contacts: Contact[]) {
+  const contact = pickPrimaryContact(contacts);
   const lines = [
     `Company: ${application.company}`,
     `Role: ${application.role}`,

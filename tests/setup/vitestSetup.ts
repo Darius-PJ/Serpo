@@ -12,7 +12,10 @@ afterEach(async () => {
   await prisma.jobSourceCache.deleteMany();
   // FK-safe order: children before parents.
   await prisma.message.deleteMany();
-  await prisma.decisionMaker.deleteMany();
+  await prisma.interaction.deleteMany();
+  await prisma.contactApplication.deleteMany();
+  await prisma.contact.deleteMany();
+  await prisma.task.deleteMany();
   await prisma.applyRun.deleteMany();
   await prisma.application.deleteMany();
   await prisma.jobBoardPin.deleteMany();

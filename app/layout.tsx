@@ -54,6 +54,9 @@ export default async function RootLayout({
                 <Link href="/pipeline" className="text-sm font-medium text-foreground-muted transition-colors hover:text-primary-dark">
                   Pipeline
                 </Link>
+                <Link href="/contacts" className="text-sm font-medium text-foreground-muted transition-colors hover:text-primary-dark">
+                  Contacts
+                </Link>
                 <Link href="/sourcing" className="text-sm font-medium text-foreground-muted transition-colors hover:text-primary-dark">
                   Source Jobs
                 </Link>

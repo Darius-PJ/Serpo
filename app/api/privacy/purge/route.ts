@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@/generated/prisma";
-import { keepApplication, purgeDecisionMakers, removeApplication, wipeAllData } from "@/lib/privacy/purge";
+import { keepApplication, purgeContactResearch, removeApplication, wipeAllData } from "@/lib/privacy/purge";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 
@@ -25,8 +25,8 @@ export async function POST(request: Request) {
         return NextResponse.json({ application: await keepApplication(body.applicationId, userId) });
       case "remove":
         return NextResponse.json({ application: await removeApplication(body.applicationId, userId) });
-      case "purge-decision-makers":
-        return NextResponse.json({ result: await purgeDecisionMakers(body.applicationId, userId) });
+      case "purge-contact-research":
+        return NextResponse.json({ result: await purgeContactResearch(body.applicationId, userId) });
       case "wipe-all":
         // Second factor beyond the CSRF/content-type guard + auth + the confirm dialog UI.
         if (body.confirm !== "WIPE") {

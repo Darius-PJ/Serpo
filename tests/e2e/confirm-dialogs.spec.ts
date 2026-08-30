@@ -81,7 +81,7 @@ test("decision-maker research shows an editable, pre-filled domain guess and onl
   const { application } = await created.json();
 
   let dmCalls = 0;
-  await page.route(`**/api/applications/${application.id}/decision-makers`, async (route) => {
+  await page.route(`**/api/applications/${application.id}/contacts`, async (route) => {
     dmCalls++;
     await route.fulfill({ json: { created: [], runs: [] } });
   });

@@ -1,7 +1,7 @@
 # CRM Dashboard Plan
 
 **Date:** 2026-08-30
-**Status:** Approved design. Phases 0–3 are implemented (JobSpy repair; attention-first dashboard with the board at /pipeline; drag-and-drop kanban recording status_changed audit events; user tasks with due/snooze joining the attention queue and pipeline cards); Phase 4 (contacts) is next.
+**Status:** Approved design. Phases 0–4 are implemented (JobSpy repair; attention-first dashboard with the board at /pipeline; drag-and-drop kanban recording status_changed audit events; user tasks with due/snooze joining the attention queue and pipeline cards; DecisionMaker promoted to reusable Contact records with an Interaction log and /contacts page — merge decided: auto-merge on exact name+company). Phase 5 (unified timeline) is next.
 **Goal:** Evolve the app from a job list with tools attached into a CRM for one job seeker: the home screen answers "what needs my attention today?", and every entity — application, contact, task, message — hangs off the pipeline.
 
 The app stays local and privacy-minded. Every dependency below is a vendored npm/pip package; nothing calls an external service at runtime beyond the existing job-source adapters.

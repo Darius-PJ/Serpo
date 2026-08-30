@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   const limit = Number.isInteger(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 100) : 50;
   const applications = await prisma.application.findMany({
     where: { userId },
-    include: { decisionMakers: true, messages: true },
+    include: { messages: true },
     orderBy: { createdAt: "desc" },
     take: limit,
   });
