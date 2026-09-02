@@ -43,6 +43,13 @@ test("board filters cards, and both the dropdown and keyboard drag move cards wh
   await page.getByRole("button", { name: "Move Beta — Analyst" }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("status")).toContainText("was moved over droppable area Sourced");
+  // dnd-kit's KeyboardSensor attaches its keydown listener one macrotask AFTER
+  // activation (setTimeout in KeyboardSensor.attach, so the activating keypress
+  // can't drive the drag) — a key pressed inside that window is silently
+  // dropped. No human types that fast, but this test can beat the timer on a
+  // busy event loop. Flushing one page macrotask (queued behind the sensor's)
+  // guarantees by queue order that the listener exists before ArrowRight.
+  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve)));
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("status")).toContainText("was moved over droppable area Submitted");
   await page.keyboard.press("Enter");
