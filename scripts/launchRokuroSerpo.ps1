@@ -8,8 +8,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$runnerPath = Join-Path $PSScriptRoot "startJobTrackerServer.ps1"
-$stateRoot = Join-Path $env:LOCALAPPDATA "JobTracker"
+$runnerPath = Join-Path $PSScriptRoot "startRokuroSerpoServer.ps1"
+$stateRoot = Join-Path $env:LOCALAPPDATA "RokuroSerpo"
 $statePath = Join-Path $stateRoot "launcher-state.json"
 $maxPort = [Math]::Min(65535, $PreferredPort + 99)
 
@@ -28,10 +28,10 @@ function Test-PortInUse([int]$Port) {
   }
 }
 
-function Test-JobTracker([int]$Port) {
+function Test-RokuroSerpo([int]$Port) {
   try {
     $response = Invoke-WebRequest -Uri "http://127.0.0.1:$Port/dashboard" -UseBasicParsing -TimeoutSec 2
-    return $response.StatusCode -eq 200 -and $response.Content -match "Job Tracker"
+    return $response.StatusCode -eq 200 -and $response.Content -match "RokuroSerpo"
   } catch {
     return $false
   }
@@ -45,7 +45,7 @@ function Open-Workspace([int]$Port) {
   if (-not $SkipBrowser) {
     Start-Process $url
   }
-  Write-Host "Job Tracker is ready at $url" -ForegroundColor Green
+  Write-Host "RokuroSerpo is ready at $url" -ForegroundColor Green
 }
 
 # Reuse the server created by an earlier shortcut launch when it is still healthy.
@@ -53,8 +53,8 @@ if (Test-Path $statePath) {
   try {
     $state = Get-Content -Raw $statePath | ConvertFrom-Json
     $statePort = [int]$state.port
-    if ($statePort -gt 0 -and (Test-JobTracker $statePort)) {
-      Write-Host "Reusing the existing Job Tracker server on port $statePort." -ForegroundColor Cyan
+    if ($statePort -gt 0 -and (Test-RokuroSerpo $statePort)) {
+      Write-Host "Reusing the existing RokuroSerpo server on port $statePort." -ForegroundColor Cyan
       Open-Workspace $statePort
       exit 0
     }
@@ -64,8 +64,8 @@ if (Test-Path $statePath) {
 }
 
 # A manually started copy on the preferred port is safe to reuse.
-if ((Test-PortInUse $PreferredPort) -and (Test-JobTracker $PreferredPort)) {
-  Write-Host "Job Tracker is already running on port $PreferredPort." -ForegroundColor Cyan
+if ((Test-PortInUse $PreferredPort) -and (Test-RokuroSerpo $PreferredPort)) {
+  Write-Host "RokuroSerpo is already running on port $PreferredPort." -ForegroundColor Cyan
   Open-Workspace $PreferredPort
   exit 0
 }
@@ -104,9 +104,9 @@ do {
     throw "The server exited before becoming ready. See $logPath"
   }
   Start-Sleep -Milliseconds 500
-} until ((Test-JobTracker $selectedPort) -or (Get-Date) -ge $deadline)
+} until ((Test-RokuroSerpo $selectedPort) -or (Get-Date) -ge $deadline)
 
-if (-not (Test-JobTracker $selectedPort)) {
+if (-not (Test-RokuroSerpo $selectedPort)) {
   throw "The server did not become ready within 120 seconds. It is still running on port $selectedPort; inspect its window or log."
 }
 

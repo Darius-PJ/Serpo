@@ -48,7 +48,7 @@ export const remoteOkAdapter: Adapter<RemoteOkItem> = {
     try {
       const res = await fetchWithRetry(
         "https://remoteok.com/api",
-        { maxRetries: 0, headers: { "User-Agent": "job-tracker/1.0 (personal use, local-only)" } },
+        { maxRetries: 0, headers: { "User-Agent": "rokuroserpo/1.0 (personal use, local-only)" } },
         ctx
       );
       return res.ok ? { ok: true } : { ok: false, detail: `HTTP ${res.status}` };
@@ -58,7 +58,7 @@ export const remoteOkAdapter: Adapter<RemoteOkItem> = {
   },
 
   async *search(_query, ctx): AsyncGenerator<AdapterPage<RemoteOkItem>> {
-    const res = await fetchWithRetry("https://remoteok.com/api", { headers: { "User-Agent": "job-tracker/1.0 (personal use, local-only)" } }, ctx);
+    const res = await fetchWithRetry("https://remoteok.com/api", { headers: { "User-Agent": "rokuroserpo/1.0 (personal use, local-only)" } }, ctx);
     if (!res.ok) throw new Error(`HTTP ${res.status}: RemoteOK search failed`);
     const data = (await res.json()) as RemoteOkItem[];
 
