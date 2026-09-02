@@ -133,9 +133,7 @@ export function SideNav() {
     >
       <Link
         href="/dashboard"
-        className={`mx-2 mt-3 flex items-center gap-2.5 rounded-xl px-3 py-2 ${
-          collapsed ? "justify-center" : "justify-center md:justify-start"
-        }`}
+        className="mx-2 mt-3 flex flex-col items-center gap-1.5 rounded-xl px-3 py-2"
         aria-label="RokuroSerpo home"
       >
         <Image
@@ -143,7 +141,7 @@ export function SideNav() {
           alt=""
           width={600}
           height={669}
-          className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-border-soft"
+          className="h-[45px] w-[45px] shrink-0 rounded-full object-cover ring-1 ring-border-soft"
         />
         <span
           className={`truncate bg-gradient-to-r from-primary to-primary-light bg-clip-text text-lg font-extrabold text-transparent ${

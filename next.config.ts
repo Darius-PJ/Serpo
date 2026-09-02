@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The dev-tools badge defaults to bottom-left, where it sits on top of the
+  // sidebar's collapse button; bottom-right is empty page margin.
+  devIndicators: { position: "bottom-right" },
   turbopack: {
     // lib/db/prisma.ts (SQLite path) and lib/jobAdapters/adapters/jobspy/index.ts
     // (Python script path) resolve paths from process.cwd() at runtime — a
