@@ -111,7 +111,7 @@ export function ApplyPanel({
       </p>
 
       {!hasResumeTemplate && (
-        <div className="mb-3 rounded-xl border border-amber-300 bg-amber-50 p-2 text-sm text-amber-900">
+        <div className="mb-3 rounded-xl border border-accent/40 bg-accent/10 p-2 text-sm text-accent-light">
           Upload a resume template (.md or .docx) before you can use the application assistant.
         </div>
       )}
@@ -182,7 +182,7 @@ export function ApplyPanel({
 
           {latestRun.status === "failed" && latestRun.error && <p className="text-danger-dark">{latestRun.error}</p>}
 
-          {latestRun.status === "blocked" && latestRun.error && <p className="text-amber-800">{latestRun.error}</p>}
+          {latestRun.status === "blocked" && latestRun.error && <p className="text-accent-light">{latestRun.error}</p>}
 
           {(latestRun.status === "review_required" || latestRun.status === "unknown") && (
             <div className="mt-2">

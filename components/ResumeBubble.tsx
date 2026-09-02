@@ -214,7 +214,7 @@ export function ResumeBubble({
           <h2 className="font-bold text-foreground">{label}</h2>
           {savedAt && <span className="text-xs text-foreground-muted">Saved {savedAt.toLocaleTimeString()}</span>}
         </div>
-        <p className="mb-3 rounded-xl border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900">{disclaimer}</p>
+        <p className="mb-3 rounded-xl border border-accent/40 bg-accent/10 p-2 text-xs text-accent-light">{disclaimer}</p>
         <div className="flex gap-2">
           <button onClick={save} disabled={busy} className="btn-primary px-3 py-1.5 text-sm">
             {busy ? "Working…" : "Save"}

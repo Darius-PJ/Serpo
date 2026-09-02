@@ -38,6 +38,12 @@ const columnKeyboardCoordinates: KeyboardCoordinateGetter = (event, { context })
   let best: { x: number; y: number; distance: number } | null = null;
 
   for (const rect of droppableRects.values()) {
+    // The card's own column nearly ties with it on center-x, and subpixel
+    // layout rounding can push that tie past the 1px direction epsilon below —
+    // a column already containing the card's center is never a move target.
+    const containsCard =
+      centerX >= rect.left && centerX <= rect.right && centerY >= rect.top && centerY <= rect.bottom;
+    if (containsCard) continue;
     const targetX = rect.left + rect.width / 2;
     const targetY = rect.top + rect.height / 2;
     const inDirection =
@@ -211,7 +217,7 @@ function BoardCard({ card }: { card: PipelineCard }) {
         <span
           className={
             card.stageAgeStale
-              ? "rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-800"
+              ? "rounded-full bg-accent/15 px-2 py-0.5 font-semibold text-accent-light"
               : "rounded-full bg-primary/10 px-2 py-0.5 text-foreground-muted"
           }
         >
@@ -220,7 +226,7 @@ function BoardCard({ card }: { card: PipelineCard }) {
         <span className="text-foreground-muted">{card.source}</span>
       </div>
       {card.nextAction && <div className="mt-1 text-xs text-foreground-muted">Next: {card.nextAction}</div>}
-      {card.followUpDue && <div className="mt-1 text-xs text-amber-800">Follow-up draft due</div>}
+      {card.followUpDue && <div className="mt-1 text-xs text-accent-light">Follow-up draft due</div>}
       <div className="mt-2">
         <StatusSelect
           applicationId={card.id}
