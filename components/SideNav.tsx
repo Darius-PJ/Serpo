@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
 
-const STORAGE_KEY = "job-tracker-nav-collapsed";
+const STORAGE_KEY = "rokuroserpo-nav-collapsed";
 
 // The collapse preference lives in localStorage (an external store), read via
 // useSyncExternalStore: the server snapshot renders expanded, and React
@@ -135,10 +135,10 @@ export function SideNav() {
         className={`mx-2 mt-3 flex items-center rounded-xl px-3 py-2 bg-gradient-to-r from-primary to-primary-light bg-clip-text text-lg font-extrabold text-transparent ${
           collapsed ? "justify-center" : "justify-center md:justify-start"
         }`}
-        aria-label="Job Tracker home"
+        aria-label="RokuroSerpo home"
       >
-        <span className={collapsed ? "" : "md:hidden"}>JT</span>
-        <span className={collapsed ? "hidden" : "hidden md:inline"}>Job Tracker</span>
+        <span className={collapsed ? "" : "md:hidden"}>RS</span>
+        <span className={collapsed ? "hidden" : "hidden md:inline"}>RokuroSerpo</span>
       </Link>
       <nav aria-label="Primary navigation" className="mt-2 flex w-full flex-1 flex-col gap-1 px-2 py-1">
         {NAV_ITEMS.map((item) => {

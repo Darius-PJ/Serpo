@@ -2,7 +2,7 @@
   <img src="public/RokuroSerpo.avif" alt="RokuroSerpo" width="720">
 </p>
 
-# Job Tracker
+# RokuroSerpo
 
 A local-first, single-user CRM for a job search. Track applications through a
 pipeline, keep contacts and interaction history, queue follow-ups and tasks,
@@ -52,7 +52,7 @@ npm run dev
 
 Open http://127.0.0.1:3000/dashboard.
 
-On Windows, `scripts/launchJobTracker.ps1` does all of the above server-side
+On Windows, `scripts/launchRokuroSerpo.ps1` does all of the above server-side
 work for you: it finds a free port, upgrades the database if needed (with an
 automatic backup), starts the server, and opens the dashboard — suitable as a
 desktop shortcut target.
