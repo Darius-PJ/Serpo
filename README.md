@@ -42,24 +42,37 @@ all on your own machine.
 
 ## Getting started
 
-The only prerequisite is [Node.js](https://nodejs.org) 20.9 or newer. Then:
+The only prerequisite is [Node.js](https://nodejs.org) 20.9 or newer — the
+one thing setup cannot install for you (it will tell you if it's missing).
+Clone or download this repository, then pick either path below. Both run the
+same first-run setup: it installs npm packages, generates the Prisma client,
+copies `.env.example` to `.env.local` (every key in it is optional), and
+creates the SQLite database — or fail-closed verifies and upgrades an
+existing one, with an automatic backup. Setup only does the missing work, so
+it is safe to run again any time, e.g. after `git pull`.
+
+### Windows: a desktop shortcut
+
+The launcher is `scripts\launchRokuroSerpo.ps1` inside this repository. To
+turn it into a shortcut: right-click the desktop → New → Shortcut, and enter
+as the location (substituting where you put the repository):
+
+```text
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\path\to\RokuroSerpo\scripts\launchRokuroSerpo.ps1"
+```
+
+Name it whatever you like. Double-clicking it installs anything missing,
+finds a free port, starts the server, and opens the dashboard — after
+creating the shortcut you're done.
+
+### Any platform: the command line
 
 ```bash
 npm run setup
 npm run dev
 ```
 
-Open http://127.0.0.1:3000/dashboard.
-
-`npm run setup` checks each prerequisite and does only the missing work:
-installs npm packages, generates the Prisma client, copies `.env.example` to
-`.env.local` (every key in it is optional), and creates the SQLite database —
-or fail-closed verifies and upgrades an existing one, with an automatic
-backup. It is safe to run again any time, e.g. after `git pull`.
-
-On Windows, `scripts/launchRokuroSerpo.ps1` is a double-clickable alternative
-suitable as a desktop shortcut target: it runs the same setup check, finds a
-free port, starts the server, and opens the dashboard.
+Then open http://127.0.0.1:3000/dashboard.
 
 ## Development
 
