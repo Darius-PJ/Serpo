@@ -16,6 +16,7 @@ export async function runStaleCheck(userId: string) {
       userId,
       lastStatusChangeAt: { lte: cutoff },
       staleFlaggedAt: null,
+      OR: [{ staleReviewedAt: null }, { staleReviewedAt: { lte: cutoff } }],
     },
     data: { staleFlaggedAt: new Date() },
   });

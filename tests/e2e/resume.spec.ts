@@ -1,19 +1,18 @@
 import path from "node:path";
 import { test, expect } from "@playwright/test";
-import { randomUsername, E2E_PASSWORD } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
 // better-sqlite3 has no bundled types; require() avoids adding a
 // devDependency just for this one test-only seed helper.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const Database = require("better-sqlite3");
 
-async function registerViaUi(page: import("@playwright/test").Page, username: string) {
-  await page.goto("/login");
-  await page.getByRole("button", { name: "Create account" }).click();
-  await page.locator('input[autocomplete="username"]').fill(username);
-  await page.locator('input[autocomplete="new-password"]').fill(E2E_PASSWORD);
-  await page.locator('button[type="submit"]').click();
-  await page.waitForURL("**/dashboard");
+async function prepareWorkspace(page: import("@playwright/test").Page): Promise<string> {
+  await resetWorkspace(page.context().request);
+  const db = new Database(path.resolve(process.cwd(), "data", "e2e.db"));
+  const row = db.prepare(`SELECT "id" FROM "User" ORDER BY "createdAt", "id" LIMIT 1`).get() as { id: string };
+  db.close();
+  return row.id;
 }
 
 const FAKE_RESUME_JSON = JSON.stringify({
@@ -48,7 +47,7 @@ function seedJobTargetedWorkspace(userId: string, id: string) {
 // and the navigation itself is the right boundary here, same reasoning
 // this codebase already used for the old /api/editor flow.
 test("Resume button snapshots the current search and navigates to the workspace", async ({ page }) => {
-  await registerViaUi(page, randomUsername("resumeflow"));
+  await prepareWorkspace(page);
 
   await page.route("**/api/jobs/search", async (route) => {
     await route.fulfill({
@@ -111,7 +110,7 @@ test("Resume button snapshots the current search and navigates to the workspace"
 // search, so a workspace's stored originSearchQuery genuinely restores
 // results instead of landing on a blank form.
 test("landing on /sourcing with a search querystring restores results automatically", async ({ page }) => {
-  await registerViaUi(page, randomUsername("resumeback"));
+  await prepareWorkspace(page);
 
   let searchCalls = 0;
   let lastBody: Record<string, unknown> | undefined;
@@ -154,7 +153,7 @@ test("landing on /sourcing with a search querystring restores results automatica
 // database write — no Claude call involved — so this is tested for real
 // against the live rendered page rather than mocked.
 test("visiting the Resume tab with no job posting loaded shows only the Improved workflow", async ({ page }) => {
-  await registerViaUi(page, randomUsername("resumefresh"));
+  await prepareWorkspace(page);
 
   await page.goto("/resume");
 
@@ -179,15 +178,8 @@ test("visiting the Resume tab with no job posting loaded shows only the Improved
 // button click is mocked, since clicking it would otherwise hit the real
 // regenerate endpoint.
 test("job-targeted workspace shows Reference, Improved, Benchmark, then Meld with mutually exclusive dropdowns", async ({ page }) => {
-  const username = randomUsername("resumemeld");
   const apiCtx = page.context().request;
-
-  const registerRes = await apiCtx.post("/api/auth/register", {
-    headers: { "Content-Type": "application/json" },
-    data: { username, password: E2E_PASSWORD },
-  });
-  expect(registerRes.ok()).toBe(true);
-  const { user } = await registerRes.json();
+  const userId = await prepareWorkspace(page);
 
   const uploaded = await apiCtx.post("/api/resume-template", {
     multipart: { file: { name: "resume.md", mimeType: "text/markdown", buffer: Buffer.from("# Test Person\nReference resume text.") } },
@@ -195,7 +187,7 @@ test("job-targeted workspace shows Reference, Improved, Benchmark, then Meld wit
   expect(uploaded.ok()).toBe(true);
 
   const workspaceId = "e2e-meld-workspace-1";
-  seedJobTargetedWorkspace(user.id, workspaceId);
+  seedJobTargetedWorkspace(userId, workspaceId);
 
   await page.goto(`/resume/${workspaceId}`);
 

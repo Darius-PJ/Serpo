@@ -12,6 +12,7 @@ interface Listing {
   url: string;
   postedAt?: string;
   description?: string;
+  tracked?: boolean;
   /** Tier from the search route; "family" listings group under "related titles". */
   relevance?: "exact" | "strong" | "alias" | "family";
 }
@@ -220,10 +221,10 @@ export function JobSearchForm() {
           </a>
           <button
             onClick={() => track(listing)}
-            disabled={tracked.has(listing.id) || tracking === listing.id}
+            disabled={listing.tracked || tracked.has(listing.id) || tracking === listing.id}
             className="btn-primary px-2.5 py-1 text-xs"
           >
-            {tracked.has(listing.id) ? "Tracked" : tracking === listing.id ? "Tracking..." : "Track"}
+            {listing.tracked || tracked.has(listing.id) ? "Tracked" : tracking === listing.id ? "Tracking..." : "Track"}
           </button>
           <button
             onClick={() => openResume(listing)}

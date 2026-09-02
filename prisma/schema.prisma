@@ -157,9 +157,11 @@ model Application {
   appliedAt           DateTime?
   submissionState     String    @default("not_started") // not_started | review_required | needs_input | blocked | failed | confirmed | unknown
   submissionConfirmedAt DateTime?
-  lastStatusChangeAt  DateTime  @updatedAt
+  lastStatusChangeAt  DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
   followUpGeneratedAt DateTime? // guards the "only one 7-day follow-up" rule
   staleFlaggedAt      DateTime? // set when the 3-month no-update check first flags this row
+  staleReviewedAt     DateTime? // user acknowledged a stale row; re-review only after another 90 days
   notes               String?
   contactLinks        ContactApplication[]
   interactions        Interaction[]

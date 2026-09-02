@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { registerViaApi } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
 test("contacts are added, merged by name+company, and carry a logged interaction history", async ({ page }) => {
-  await registerViaApi(page.context().request);
+  await resetWorkspace(page.context().request);
 
   await page.goto("/contacts");
   await expect(page.getByText("No contacts yet.", { exact: false })).toBeVisible();

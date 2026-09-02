@@ -3,11 +3,11 @@ import { prisma } from "@/lib/db/prisma";
 import { legacyResumeArtifactPath, removeResumeArtifacts } from "@/lib/apply/resumeArtifacts";
 import { purgeAccountArchive, purgeLegacyArchivedReports } from "@/lib/raekwon/archive";
 
-/** Stale-review "Keep": clears the flag. `lastStatusChangeAt` auto-bumps via @updatedAt, resetting the 3-month clock. Throws if the application isn't owned by this user. */
+/** Stale-review "Keep": records a review without corrupting pipeline stage age. Throws if the application isn't owned by this user. */
 export async function keepApplication(applicationId: string, userId: string) {
   return prisma.application.update({
     where: { id_userId: { id: applicationId, userId } },
-    data: { staleFlaggedAt: null },
+    data: { staleFlaggedAt: null, staleReviewedAt: new Date() },
   });
 }
 
@@ -70,6 +70,9 @@ export async function wipeAllData(userId: string) {
   const result = await prisma.$transaction(async (tx) => {
     const interactions = await tx.interaction.deleteMany({ where: { userId } });
     const contacts = await tx.contact.deleteMany({ where: { userId } });
+    const tasks = await tx.task.deleteMany({ where: { userId } });
+    const titleAliases = await tx.titleAlias.deleteMany({ where: { userId } });
+    const auditEvents = await tx.auditEvent.deleteMany({ where: { userId } });
     const deletedApplications = await tx.application.deleteMany({ where: { userId } });
     const resumeTemplates = await tx.resumeTemplate.deleteMany({ where: { userId } });
     const resumeWorkspaces = await tx.resumeWorkspace.deleteMany({ where: { userId } });
@@ -82,6 +85,9 @@ export async function wipeAllData(userId: string) {
       applications: deletedApplications.count,
       contacts: contacts.count,
       interactions: interactions.count,
+      tasks: tasks.count,
+      titleAliases: titleAliases.count,
+      auditEvents: auditEvents.count,
       resumeTemplates: resumeTemplates.count,
       resumeWorkspaces: resumeWorkspaces.count,
       raekwonReports: raekwonReports.count,

@@ -96,6 +96,24 @@ describe("lib/privacy/purge", () => {
     await expect(prisma.contact.findUnique({ where: { id: bContact.id } })).resolves.not.toBeNull();
   });
 
+  it("wipeAllData removes standalone tasks, title aliases, and audit history", async () => {
+    const a = await seedUserWithData("purge-user-complete");
+    await prisma.task.create({ data: { userId: a.user.id, title: "Standalone reminder" } });
+    await prisma.titleAlias.create({ data: { userId: a.user.id, keyword: "engineer", alias: "developer" } });
+    await prisma.auditEvent.create({
+      data: { userId: a.user.id, action: "application.status_changed", entityType: "Application", entityId: a.application.id },
+    });
+
+    const result = await wipeAllData(a.user.id);
+
+    expect(result.tasks).toBe(1);
+    expect(result.titleAliases).toBe(1);
+    expect(result.auditEvents).toBe(1);
+    await expect(prisma.task.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
+    await expect(prisma.titleAlias.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
+    await expect(prisma.auditEvent.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
+  });
+
   it("purgeContactResearch removes this application's links but deletes only fully-orphaned contacts", async () => {
     const a = await seedUserWithData("purge-research-user");
     const second = await prisma.application.create({

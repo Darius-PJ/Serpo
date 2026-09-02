@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { requireUserIdForPage } from "@/lib/auth/session";
 import { JobBoardPanel } from "@/components/JobBoardPanel";
 import { JobSearchForm } from "@/components/JobSearchForm";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +33,13 @@ export default async function SourcingPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-extrabold text-foreground">Source Jobs</h1>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-extrabold text-foreground">Sourcing</h1>
+          <p className="text-sm text-foreground-muted">Search live sources, review boards, or ask the AI scout for a focused lead batch.</p>
+        </div>
+        <Link href="/raekwon" className="btn-secondary px-3 py-1.5 text-sm">Open AI Scout</Link>
+      </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
         <div className="min-w-0">
           <Suspense fallback={null}>

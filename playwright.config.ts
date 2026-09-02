@@ -12,7 +12,10 @@ export default defineConfig({
     baseURL,
     trace: "retain-on-failure",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    { name: "chromium", testIgnore: /mobile\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
+    { name: "mobile-chromium", testMatch: /mobile\.spec\.ts/, use: { ...devices["Pixel 5"] } },
+  ],
   webServer: {
     // One combined command so DB reset -> verify schema -> build -> serve always
     // runs in that order, rather than relying on Playwright's
@@ -30,8 +33,6 @@ export default defineConfig({
     timeout: 180_000,
     env: {
       DATABASE_URL: "file:./data/e2e.db",
-      AUTH_SECRET: "e2e-test-secret-do-not-use-outside-playwright-aaaaaaaaaaaaaaaa",
-      COOKIE_SECURE: "false",
     },
   },
 });

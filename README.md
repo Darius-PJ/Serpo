@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Job Tracker
 
-## Getting Started
+A local-first, single-user CRM for a job search. Track applications through a
+pipeline, keep contacts and interaction history, queue follow-ups and tasks,
+source listings from a dozen job boards, and tailor a résumé per application —
+all on your own machine.
 
-First, run the development server:
+## Privacy by design
+
+- **Everything stays local.** The entire dataset lives in one SQLite file
+  (`data/app.db`), which is git-ignored along with its backups and résumé
+  artifacts. The dev and production servers bind to `127.0.0.1` only.
+- **No accounts, no login.** This is a deliberately password-free single-user
+  workspace. Deployment validation fails closed if you try to configure it for
+  public hosting.
+- **Integrations are opt-in.** AI assistance (Claude) and keyed job-search APIs
+  activate only when you add keys to `.env.local`; every feature degrades
+  gracefully without them. Keyless sources (Remotive, Himalayas, Jobicy,
+  Arbeitnow, RemoteOK) work out of the box.
+- **Your data is yours to destroy.** Settings include a wipe-everything purge,
+  and per-application contact research can be deleted without touching
+  contacts you have a history with.
+
+## Features
+
+- **Dashboard** — a needs-attention queue (tasks, apply runs, drafts, due
+  follow-ups), pipeline metrics (funnel counts, submission/interview rates,
+  median stage age, source effectiveness), and a recent-activity feed.
+- **Pipeline board** — drag-and-drop stages; every status change writes an
+  audit event.
+- **Applications** — per-application record with tasks, contacts, message
+  drafts, apply runs, and a unified timeline of everything that ever happened.
+- **Contacts** — reusable, company-grouped contacts with an interaction log;
+  optional OSINT-based discovery per application.
+- **Sourcing** — federated job search across Adzuna, USAJobs, Jooble, the
+  keyless boards above, and optionally JobSpy, with dedup and relevance tiers.
+- **Résumé workspace** — keep a template, tailor per application, export DOCX.
+
+## Getting started
 
 ```bash
+npm install
+npx prisma generate
+cp .env.example .env.local   # then fill in any optional keys
+npx prisma migrate deploy    # creates data/app.db
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://127.0.0.1:3000/dashboard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+On Windows, `scripts/launchJobTracker.ps1` does all of the above server-side
+work for you: it finds a free port, upgrades the database if needed (with an
+automatic backup), starts the server, and opens the dashboard — suitable as a
+desktop shortcut target.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Development
 
-## Learn More
+Built with Next.js (App Router), Prisma + better-sqlite3, Tailwind CSS,
+Vitest, and Playwright.
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run verify` — the full release gate: lint, typecheck, deployment-config
+  check, production build, unit tests, e2e tests. CI runs the same steps.
+- `npm run test:unit` / `npm run test:e2e` — the test suites individually.
+- `npm run db:upgrade-and-verify` — applies pending hand-written SQL
+  migrations to the live database, fail-closed: each migration is replayed
+  against an in-memory copy and schema-fingerprinted before it touches
+  `data/app.db`, and a timestamped backup is taken first.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Migrations are hand-written SQL under `prisma/migrations/` (no
+`prisma migrate dev`); the schema in `prisma/schema.prisma` is the source of
+truth for the generated client.

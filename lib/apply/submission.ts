@@ -53,6 +53,7 @@ export async function confirmApplicationSubmission({
       where: { id: applicationId },
       data: {
         status: "Submitted",
+        ...(application.status !== "Submitted" ? { lastStatusChangeAt: now } : {}),
         appliedAt: application.appliedAt ?? now,
         submissionState: "confirmed",
         submissionConfirmedAt: application.submissionConfirmedAt ?? now,

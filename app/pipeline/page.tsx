@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireUserIdForPage } from "@/lib/auth/session";
 import { listPipelineCards } from "@/lib/pipeline/boardData";
 import { PipelineBoard } from "@/components/PipelineBoard";
+import { NewApplicationForm } from "@/components/NewApplicationForm";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,8 @@ export default async function PipelinePage() {
           Source jobs
         </Link>
       </div>
+
+      <NewApplicationForm />
 
       <PipelineBoard cards={cards} />
     </div>

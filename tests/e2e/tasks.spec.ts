@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { registerViaApi } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
 test("tasks flow from quick-add through the attention queue, pipeline cards, done, and snooze", async ({ page }) => {
-  await registerViaApi(page.context().request);
+  await resetWorkspace(page.context().request);
   const api = page.context().request;
 
   // A fresh account starts caught up; adding a standalone task changes that.

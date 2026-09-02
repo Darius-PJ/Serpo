@@ -62,6 +62,7 @@ export async function POST(request: Request) {
       source,
       url,
       description: typeof body.description === "string" ? body.description.slice(0, 20_000) : null,
+      notes: typeof body.notes === "string" ? body.notes.slice(0, 10_000) : null,
       status,
     },
   });

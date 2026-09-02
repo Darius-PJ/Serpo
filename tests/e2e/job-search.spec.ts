@@ -1,13 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { randomUsername, E2E_PASSWORD } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
-async function registerViaUi(page: import("@playwright/test").Page, username: string) {
-  await page.goto("/login");
-  await page.getByRole("button", { name: "Create account" }).click();
-  await page.locator('input[autocomplete="username"]').fill(username);
-  await page.locator('input[autocomplete="new-password"]').fill(E2E_PASSWORD);
-  await page.locator('button[type="submit"]').click();
-  await page.waitForURL("**/dashboard");
+async function prepareWorkspace(page: import("@playwright/test").Page) {
+  await resetWorkspace(page.context().request);
 }
 
 function listing(n: number) {
@@ -25,7 +20,7 @@ function listing(n: number) {
 // network call to any external job API or the Claude API — same pattern as
 // tests/e2e/confirm-dialogs.spec.ts's mocked apply/decision-maker routes.
 test("job search renders a per-source cloud cell and clickable suggested-title chips", async ({ page }) => {
-  await registerViaUi(page, randomUsername("jobsearch"));
+  await prepareWorkspace(page);
 
   let searchCalls = 0;
   let lastKeywords: string | undefined;
@@ -39,7 +34,7 @@ test("job search renders a per-source cloud cell and clickable suggested-title c
           {
             source: "remotive",
             label: "Remotive",
-            listings: [listing(1), listing(2), listing(3)],
+            listings: [{ ...listing(1), tracked: true }, listing(2), listing(3)],
           },
         ],
         suggestedTitles: ["platform engineer", "software engineer backend"],
@@ -53,6 +48,7 @@ test("job search renders a per-source cloud cell and clickable suggested-title c
 
   await expect(page.getByText("Remotive")).toBeVisible();
   await expect(page.getByText("Backend Engineer 1")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Tracked" })).toBeDisabled();
   expect(searchCalls).toBe(1);
   expect(lastKeywords).toBe("backend engineer");
 
@@ -65,7 +61,7 @@ test("job search renders a per-source cloud cell and clickable suggested-title c
 });
 
 test("results-per-page selector and pagination controls work", async ({ page }) => {
-  await registerViaUi(page, randomUsername("jobsearchpg"));
+  await prepareWorkspace(page);
 
   const listings = Array.from({ length: 12 }, (_, i) => listing(i + 1));
   await page.route("**/api/jobs/search", async (route) => {
@@ -93,7 +89,7 @@ test("results-per-page selector and pagination controls work", async ({ page }) 
 });
 
 test("family-tier matches collapse under related titles and can be promoted to an alias", async ({ page }) => {
-  await registerViaUi(page, randomUsername("jobsearchfam"));
+  await prepareWorkspace(page);
 
   let searchCalls = 0;
   await page.route("**/api/jobs/search", async (route) => {

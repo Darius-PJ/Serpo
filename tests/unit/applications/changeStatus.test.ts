@@ -3,6 +3,25 @@ import { prisma } from "@/lib/db/prisma";
 import { changeApplicationStatus } from "@/lib/applications/changeStatus";
 
 describe("changeApplicationStatus", () => {
+  it("changes stage age only for status transitions, not ordinary record edits", async () => {
+    const user = await prisma.user.create({ data: { username: "stage-clock", passwordHash: "unused" } });
+    const stageStartedAt = new Date("2026-01-01T00:00:00.000Z");
+    const application = await prisma.application.create({
+      data: { userId: user.id, company: "Acme", role: "Engineer", source: "manual", lastStatusChangeAt: stageStartedAt },
+    });
+
+    const edited = await prisma.application.update({
+      where: { id: application.id },
+      data: { notes: "A normal CRM note" },
+    });
+    expect(edited.lastStatusChangeAt).toEqual(stageStartedAt);
+
+    const moved = await changeApplicationStatus(user.id, application.id, "Interviewing");
+    expect(moved).not.toBeNull();
+    if (!moved) throw new Error("expected status change");
+    expect(moved.lastStatusChangeAt.getTime()).toBeGreaterThan(stageStartedAt.getTime());
+  });
+
   it("updates the status and records a status_changed audit event with the transition", async () => {
     const user = await prisma.user.create({ data: { username: "status-change-user", passwordHash: "unused" } });
     const application = await prisma.application.create({

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { ResumeBubble, type ResumeContent } from "./ResumeBubble";
 import { MELD_SOURCE_LABELS, type MeldSource } from "@/lib/resume/meldSource";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 function sanitizeFilename(text: string): string {
   return (
@@ -48,19 +49,20 @@ export function ResumeWorkspaceView({
   const [templateText, setTemplateText] = useState(initialTemplateText);
   const [benchmarkStatus, setBenchmarkStatus] = useState(workspace.benchmarkStatus);
   const [improvedStatus, setImprovedStatus] = useState(workspace.improvedStatus);
+  const [error, setError] = useState<string | null>(null);
 
   const templateReady = templateText !== null;
 
   async function uploadResume(file: File) {
     setUploading(true);
+    setError(null);
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch("/api/resume-template", { method: "POST", body: formData });
-      if (res.ok) {
-        const data = await res.json();
-        setTemplateText(data.template?.contentText ?? "");
-      }
+      const data = await requestJson<{ template?: { contentText?: string | null } }>("/api/resume-template", { method: "POST", body: formData });
+      setTemplateText(data.template?.contentText ?? "");
+    } catch (cause) {
+      setError(errorMessage(cause, "The resume template could not be uploaded."));
     } finally {
       setUploading(false);
     }
@@ -91,6 +93,7 @@ export function ResumeWorkspaceView({
 
   return (
     <div className="space-y-8">
+      {error && <p role="alert" className="text-sm text-danger-dark">{error}</p>}
       <div className="card-soft flex flex-wrap items-center justify-between gap-3 p-4">
         <div>
           <h1 className="text-xl font-extrabold text-foreground">Resume</h1>

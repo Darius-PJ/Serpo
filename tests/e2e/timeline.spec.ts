@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { registerViaApi } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
 test("the application page shows one merged timeline: tracked, status change, interaction, completed task", async ({ page }) => {
-  await registerViaApi(page.context().request);
+  await resetWorkspace(page.context().request);
   const api = page.context().request;
   const headers = { "Content-Type": "application/json" };
 

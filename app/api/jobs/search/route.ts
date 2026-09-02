@@ -7,6 +7,7 @@ import { listTitleAliases } from "@/lib/jobSources/titleAliases";
 import { isUsOrRemoteListing, isRemoteListing } from "@/lib/jobSources/locationFilter";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
+import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -74,10 +75,19 @@ export async function POST(request: Request) {
     ...group,
     listings: group.listings.filter((listing) => survivingIds.has(listing.id)),
   }));
+  const resultUrls = [...new Set(results.flatMap((group) => group.listings.map((listing) => listing.url)))];
+  const trackedRows = resultUrls.length === 0
+    ? []
+    : await prisma.application.findMany({ where: { userId, url: { in: resultUrls } }, select: { url: true } });
+  const trackedUrls = new Set(trackedRows.map((row) => row.url).filter((url): url is string => Boolean(url)));
+  const annotatedResults = results.map((group) => ({
+    ...group,
+    listings: group.listings.map((listing) => ({ ...listing, tracked: trackedUrls.has(listing.url) })),
+  }));
 
   // AI title suggestions are disabled by default; return an empty list so the
   // client renders a stable "no suggestions" state without an AI call.
   // titleAliases: the user's curated aliases for this keyword, so the client
   // can render them as removable chips without a second request.
-  return NextResponse.json({ results, suggestedTitles: [], titleAliases: userAliases });
+  return NextResponse.json({ results: annotatedResults, suggestedTitles: [], titleAliases: userAliases });
 }

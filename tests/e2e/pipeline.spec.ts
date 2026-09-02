@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { registerViaApi } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
 test("board filters cards, and both the dropdown and keyboard drag move cards while writing the audit trail", async ({ page }) => {
-  await registerViaApi(page.context().request);
+  await resetWorkspace(page.context().request);
   const api = page.context().request;
   for (const data of [
     { company: "Acme", role: "Engineer", source: "manual" },

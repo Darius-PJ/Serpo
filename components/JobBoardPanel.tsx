@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import type { JobBoard } from "@/generated/prisma";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 type BoardWithPool = JobBoard & { poolStatus: string | null; integrationType: string | null };
 
@@ -100,6 +101,7 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
   const [guideTarget, setGuideTarget] = useState<GathererFind | null>(null);
   const [guideLoading, setGuideLoading] = useState(false);
   const [guide, setGuide] = useState<IntegrationGuide | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const grouped = boards.reduce<Record<string, BoardWithPool[]>>((acc, b) => {
@@ -117,23 +119,31 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
   }
 
   async function togglePin(board: BoardWithPool) {
-    await fetch(`/api/job-boards/${board.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pinned: !board.pinned }),
-    });
-    router.refresh();
+    setError(null);
+    try {
+      await requestJson(`/api/job-boards/${board.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pinned: !board.pinned }),
+      });
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The board could not be updated."));
+    }
   }
 
   async function addToPool(board: BoardWithPool) {
     setPoolLoading((prev) => new Set(prev).add(board.id));
+    setError(null);
     try {
-      await fetch(`/api/job-boards/${board.id}/pool`, {
+      await requestJson(`/api/job-boards/${board.id}/pool`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
       });
       router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The board could not be verified."));
     } finally {
       setPoolLoading((prev) => {
         const next = new Set(prev);
@@ -144,27 +154,35 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
   }
 
   async function addBoard(board: { name: string; url: string; jurisdiction: string; region?: string }) {
-    await fetch("/api/job-boards", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...board, source: "manual" }),
-    });
-    setShowAddForm(false);
-    router.refresh();
+    setError(null);
+    try {
+      await requestJson("/api/job-boards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...board, source: "manual" }),
+      });
+      setShowAddForm(false);
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The board could not be saved."));
+      throw cause;
+    }
   }
 
   async function gather(e: React.FormEvent) {
     e.preventDefault();
     if (!gatherQuery.trim()) return;
     setGathering(true);
+    setError(null);
     try {
-      const res = await fetch("/api/job-boards/discover", {
+      const data = await requestJson<{ finds?: GathererFind[] }>("/api/job-boards/discover", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: gatherQuery }),
       });
-      const data = await res.json();
       setFinds(data.finds ?? []);
+    } catch (cause) {
+      setError(errorMessage(cause, "Resource discovery could not be completed."));
     } finally {
       setGathering(false);
     }
@@ -174,15 +192,17 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
     setGuideTarget(find);
     setGuide(null);
     setGuideLoading(true);
+    setError(null);
     dialogRef.current?.showModal();
     try {
-      const res = await fetch("/api/job-boards/gather/integration-guide", {
+      const data = await requestJson<{ guide?: IntegrationGuide }>("/api/job-boards/gather/integration-guide", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: find.name, url: find.url, category: find.category }),
       });
-      const data = await res.json();
       setGuide(data.guide ?? null);
+    } catch (cause) {
+      setError(errorMessage(cause, "The integration guide could not be generated."));
     } finally {
       setGuideLoading(false);
     }
@@ -199,6 +219,7 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
 
   return (
     <div className="space-y-6">
+      {error && <p role="alert" className="text-sm text-danger-dark">{error}</p>}
       <section className="card-soft p-4">
         <h2 className="mb-2 font-bold text-foreground">Job boards &amp; resources</h2>
 
@@ -252,7 +273,7 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
       </section>
 
       <section className="card-soft p-4">
-        <h2 className="mb-1 font-bold text-foreground">The Gatherer</h2>
+        <h2 className="mb-1 font-bold text-foreground">Resource discovery</h2>
         <p className="mb-3 text-xs text-foreground-muted">
           Searches the internet for new job boards, government training programs, and government IT
           opportunities. Nothing is added automatically — each find gets you a script and instructions.
@@ -280,7 +301,7 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
                       {find.name}
                     </a>
                     <button onClick={() => openGuide(find)} className="btn-primary shrink-0 px-2 py-0.5 text-xs">
-                      Add resource
+                      Integration guide
                     </button>
                   </div>
                   <p className="text-foreground-muted">{find.description}</p>
@@ -332,19 +353,27 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
   );
 }
 
-function AddBoardForm({ onAdd }: { onAdd: (b: { name: string; url: string; jurisdiction: string; region?: string }) => void }) {
+function AddBoardForm({ onAdd }: { onAdd: (b: { name: string; url: string; jurisdiction: string; region?: string }) => Promise<void> }) {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [jurisdiction, setJurisdiction] = useState("other");
+  const [saving, setSaving] = useState(false);
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         if (!name.trim() || !url.trim()) return;
-        onAdd({ name, url, jurisdiction });
-        setName("");
-        setUrl("");
+        setSaving(true);
+        try {
+          await onAdd({ name, url, jurisdiction });
+          setName("");
+          setUrl("");
+        } catch {
+          // The parent renders the server's actionable error; keep form input.
+        } finally {
+          setSaving(false);
+        }
       }}
       className="mt-2 flex flex-wrap gap-2"
     >
@@ -361,8 +390,8 @@ function AddBoardForm({ onAdd }: { onAdd: (b: { name: string; url: string; juris
         <option value="federal">Federal</option>
         <option value="other">Other</option>
       </select>
-      <button type="submit" className="btn-primary px-3 py-1 text-xs">
-        Save
+      <button type="submit" disabled={saving} className="btn-primary px-3 py-1 text-xs">
+        {saving ? "Saving…" : "Save"}
       </button>
     </form>
   );

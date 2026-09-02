@@ -1,20 +1,15 @@
 import { test, expect } from "@playwright/test";
-import { randomUsername, E2E_PASSWORD } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
-async function registerViaUi(page: import("@playwright/test").Page, username: string) {
-  await page.goto("/login");
-  await page.getByRole("button", { name: "Create account" }).click();
-  await page.locator('input[autocomplete="username"]').fill(username);
-  await page.locator('input[autocomplete="new-password"]').fill(E2E_PASSWORD);
-  await page.locator('button[type="submit"]').click();
-  await page.waitForURL("**/dashboard");
+async function prepareWorkspace(page: import("@playwright/test").Page) {
+  await resetWorkspace(page.context().request);
 }
 
 // Mocks /api/raekwon and /api/applications so this test never makes a real
 // call to the Claude API or any external job source — same pattern as
 // tests/e2e/editor.spec.ts and confirm-dialogs.spec.ts.
 test("Generate submits the form payload, renders the leads table + sources hub, and Track works", async ({ page }) => {
-  await registerViaUi(page, randomUsername("raekwonflow"));
+  await prepareWorkspace(page);
 
   let generateBody: Record<string, unknown> | undefined;
   await page.route("**/api/raekwon", async (route) => {
@@ -39,7 +34,7 @@ test("Generate submits the form payload, renders the leads table + sources hub, 
             company: "Nova Systems",
             roleTitle: "Backend Engineer",
             location: "Remote",
-            sourceUrl: "https://example.com/jobs/123",
+            sourceUrl: "https://example.com",
             jobType: "Full-time",
             keyword: "backend engineer",
             salaryOrRate: "$120k+",
@@ -57,7 +52,7 @@ test("Generate submits the form payload, renders the leads table + sources hub, 
   await page.route("**/api/applications", async (route) => {
     trackCalls++;
     trackBody = route.request().postDataJSON();
-    await route.fulfill({ status: 201, json: { application: { id: "fake-app-1" } } });
+    await route.continue();
   });
 
   await page.goto("/raekwon");
@@ -86,8 +81,14 @@ test("Generate submits the form payload, renders the leads table + sources hub, 
     company: "Nova Systems",
     role: "Backend Engineer",
     source: "example.com",
-    url: "https://example.com/jobs/123",
+    url: "https://example.com",
     status: "Sourced",
   });
   await expect(page.getByRole("button", { name: "Tracked" })).toBeVisible();
+
+  await page.reload();
+  await page.locator('input[placeholder="e.g. backend engineer"]').fill("backend engineer");
+  await page.getByRole("button", { name: "Generate" }).click();
+  await expect(page.getByRole("button", { name: "Tracked" })).toBeDisabled();
+  expect(trackCalls).toBe(1);
 });

@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Contact } from "@/generated/prisma";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { InteractionLogForm } from "./InteractionLogForm";
 import { guessDomainFromCompany } from "@/lib/osint/guessDomain";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 export interface ContactLinkView {
   id: string;
@@ -19,10 +21,12 @@ export function ContactPanel({
   applicationId,
   company,
   links,
+  availableContacts,
 }: {
   applicationId: string;
   company: string;
   links: ContactLinkView[];
+  availableContacts: Contact[];
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -31,6 +35,28 @@ export function ContactPanel({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [purgeOpen, setPurgeOpen] = useState(false);
   const [domain, setDomain] = useState(() => guessDomainFromCompany(company));
+  const unlinkedContacts = availableContacts.filter((contact) => !links.some((link) => link.contact.id === contact.id));
+  const [contactId, setContactId] = useState(unlinkedContacts[0]?.id ?? "");
+
+  async function attachContact(event: React.FormEvent) {
+    event.preventDefault();
+    if (!contactId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      await requestJson(`/api/applications/${applicationId}/contacts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contactId }),
+      });
+      setResearchNotice("Contact attached to this application.");
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The contact could not be attached."));
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function research() {
     if (!domain.trim()) return;
@@ -38,16 +64,16 @@ export function ContactPanel({
     setError(null);
     setResearchNotice(null);
     try {
-      const res = await fetch(`/api/applications/${applicationId}/contacts`, {
+      const data = await requestJson<{
+        runs?: { error?: string }[];
+        created?: unknown[];
+        duplicatesSkipped?: number;
+        limitReached?: boolean;
+      }>(`/api/applications/${applicationId}/contacts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.error ?? "Contact research could not be completed.");
-        return;
-      }
       const toolError = data.runs?.find((run: { error?: string }) => run.error)?.error;
       if (toolError) setError(toolError);
       setResearchNotice(
@@ -57,6 +83,8 @@ export function ContactPanel({
       );
       setConfirmOpen(false);
       router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "Contact research could not be completed."));
     } finally {
       setLoading(false);
     }
@@ -66,19 +94,16 @@ export function ContactPanel({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/privacy/purge", {
+      const data = await requestJson<{ result?: { count?: number } }>("/api/privacy/purge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "purge-contact-research", applicationId }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.error ?? "Saved research could not be deleted.");
-        return;
-      }
       setPurgeOpen(false);
       setResearchNotice(`Removed ${data.result?.count ?? 0} saved research links.`);
       router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "Saved research could not be deleted."));
     } finally {
       setLoading(false);
     }
@@ -106,6 +131,24 @@ export function ContactPanel({
       {error && <p role="alert" className="mb-2 text-xs text-danger-dark">{error}</p>}
       {researchNotice && <p className="mb-2 text-xs text-foreground-muted">{researchNotice}</p>}
 
+      {unlinkedContacts.length > 0 && (
+        <form onSubmit={attachContact} className="mb-3 flex flex-wrap gap-2">
+          <select
+            aria-label="Attach existing contact"
+            value={contactId}
+            onChange={(event) => setContactId(event.target.value)}
+            className="input-soft px-2.5 py-1.5 text-sm"
+          >
+            {unlinkedContacts.map((contact) => (
+              <option key={contact.id} value={contact.id}>
+                {contact.name ?? contact.email ?? "Unnamed contact"} — {contact.company}
+              </option>
+            ))}
+          </select>
+          <button type="submit" disabled={loading} className="btn-secondary px-3 py-1.5 text-xs">Attach contact</button>
+        </form>
+      )}
+
       {links.length === 0 ? (
         <p className="text-sm text-foreground-muted">No linked contacts yet.</p>
       ) : (
@@ -118,6 +161,7 @@ export function ContactPanel({
               <div className="mt-1 text-xs text-foreground-muted">
                 Source: {link.sourceTool}{link.confidence ? ` (${link.confidence})` : ""}
               </div>
+              <InteractionLogForm contactId={link.contact.id} applicationId={applicationId} />
             </li>
           ))}
         </ul>

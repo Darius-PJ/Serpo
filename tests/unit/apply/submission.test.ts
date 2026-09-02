@@ -5,8 +5,16 @@ import { confirmApplicationSubmission, makeUserAttestationEvidence } from "@/lib
 describe("confirmed submission workflow", () => {
   it("records an attested submission on both the apply run and its owning application", async () => {
     const user = await prisma.user.create({ data: { username: "submission-owner", passwordHash: "unused" } });
+    const previousStageStartedAt = new Date("2025-01-01T00:00:00.000Z");
     const application = await prisma.application.create({
-      data: { userId: user.id, company: "Acme", role: "Engineer", source: "manual", submissionState: "review_required" },
+      data: {
+        userId: user.id,
+        company: "Acme",
+        role: "Engineer",
+        source: "manual",
+        submissionState: "review_required",
+        lastStatusChangeAt: previousStageStartedAt,
+      },
     });
     const run = await prisma.applyRun.create({ data: { applicationId: application.id, status: "review_required" } });
 
@@ -22,6 +30,7 @@ describe("confirmed submission workflow", () => {
     expect(result.application.status).toBe("Submitted");
     expect(result.application.submissionState).toBe("confirmed");
     expect(result.application.submissionConfirmedAt).not.toBeNull();
+    expect(result.application.lastStatusChangeAt.getTime()).toBeGreaterThan(previousStageStartedAt.getTime());
   });
 
   it("records a status_changed audit event only when confirmation actually moves the application", async () => {

@@ -8,6 +8,8 @@ import { StaleReviewPanel } from "@/components/StaleReviewPanel";
 import { TaskQuickAdd } from "@/components/TaskQuickAdd";
 import { TaskActions } from "@/components/TaskActions";
 import { APPLICATION_STATUSES } from "@/lib/applicationStatus";
+import { NewApplicationForm } from "@/components/NewApplicationForm";
+import { listPipelineMetrics } from "@/lib/dashboard/metrics";
 
 export const dynamic = "force-dynamic";
 
@@ -24,11 +26,12 @@ export default async function DashboardPage() {
   // Reading the dashboard must never call an AI provider or create outreach.
   await runStaleCheck(userId);
 
-  const [attentionItems, staleApplications, statusCounts, activity] = await Promise.all([
+  const [attentionItems, staleApplications, statusCounts, activity, metrics] = await Promise.all([
     listAttentionItems(userId),
     listStaleApplications(userId),
     prisma.application.groupBy({ by: ["status"], where: { userId }, _count: { _all: true } }),
     listRecentActivity(userId),
+    listPipelineMetrics(userId),
   ]);
   const countByStatus = new Map(statusCounts.map((row) => [row.status, row._count._all]));
   const allCaughtUp = attentionItems.length === 0 && staleApplications.length === 0;
@@ -41,6 +44,8 @@ export default async function DashboardPage() {
           Source jobs
         </Link>
       </div>
+
+      <NewApplicationForm />
 
       <section aria-labelledby="needs-attention" className="mb-8">
         <h2 id="needs-attention" className="mb-2 text-sm font-bold text-primary-dark">
@@ -106,6 +111,40 @@ export default async function DashboardPage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section aria-labelledby="pipeline-metrics" className="mb-8">
+        <h2 id="pipeline-metrics" className="mb-2 text-sm font-bold text-primary-dark">
+          Pipeline metrics
+        </h2>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {Object.entries(metrics.funnel).map(([label, value]) => (
+            <div key={label} className="card-soft p-3">
+              <div className="text-2xl font-extrabold text-foreground">{value}</div>
+              <div className="text-xs capitalize text-foreground-muted">{label}</div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-2 grid gap-2 text-sm sm:grid-cols-4">
+          <div className="card-soft p-3"><strong>{metrics.submissionRate}%</strong><span className="block text-xs text-foreground-muted">tracked → submitted</span></div>
+          <div className="card-soft p-3"><strong>{metrics.interviewRate}%</strong><span className="block text-xs text-foreground-muted">submitted → interviewed</span></div>
+          <div className="card-soft p-3"><strong>{metrics.medianCurrentStageDays} days</strong><span className="block text-xs text-foreground-muted">median current stage</span></div>
+          <div className="card-soft p-3"><strong>{metrics.weeklyStatusChanges}</strong><span className="block text-xs text-foreground-muted">stage moves this week</span></div>
+        </div>
+        {metrics.sources.length > 0 && (
+          <div className="card-soft mt-2 overflow-x-auto p-3">
+            <table className="w-full min-w-[420px] text-left text-xs">
+              <thead className="text-foreground-muted"><tr><th className="pb-2">Source</th><th>Applications</th><th>Interviews</th><th>Interview rate</th></tr></thead>
+              <tbody>
+                {metrics.sources.slice(0, 5).map((source) => (
+                  <tr key={source.source} className="border-t border-border-soft">
+                    <td className="py-2 font-medium text-foreground">{source.source}</td><td>{source.applications}</td><td>{source.interviews}</td><td>{source.interviewRate}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="recent-activity">

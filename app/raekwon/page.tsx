@@ -7,23 +7,32 @@ export const dynamic = "force-dynamic";
 export default async function RaekwonPage() {
   const userId = await requireUserIdForPage();
 
-  const report = await prisma.raekwonReport.findFirst({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
-    include: { leads: { orderBy: { rank: "asc" } } },
-  });
+  const [report, trackedApplications] = await Promise.all([
+    prisma.raekwonReport.findFirst({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      include: { leads: { orderBy: { rank: "asc" } } },
+    }),
+    prisma.application.findMany({
+      where: { userId, url: { not: null } },
+      select: { url: true },
+    }),
+  ]);
 
   return (
     <div>
       <div className="card-soft mb-6 p-4">
-        <h1 className="text-xl font-extrabold text-foreground">Raekwon</h1>
+        <h1 className="text-xl font-extrabold text-foreground">AI Scout</h1>
         <p className="mt-1 text-sm text-foreground-muted">
-          The chef of this job tracker — cooks up fresh, verified leads by searching this app&apos;s own
-          job sources and the live internet, then reports on which sources performed best.
+          Generate a focused lead batch from configured job sources and review which sources performed best.
         </p>
       </div>
 
-      <RaekwonPanel initialReport={report} initialLeads={report?.leads ?? []} />
+      <RaekwonPanel
+        initialReport={report}
+        initialLeads={report?.leads ?? []}
+        initialTrackedUrls={trackedApplications.flatMap((application) => application.url ? [application.url] : [])}
+      />
     </div>
   );
 }

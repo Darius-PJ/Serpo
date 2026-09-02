@@ -22,11 +22,8 @@ jobs:
       - run: npx tsc --noEmit
 
       # Proves the app is configured to deploy, not just that it compiles.
-      # Dummy values satisfy the presence/length checks; DEPLOYMENT_MODE is left
-      # unset so the COOKIE_SECURE requirement is skipped for CI.
       - run: npm run verify:deployment
         env:
-          AUTH_SECRET: "00000000000000000000000000000000"
           DATABASE_URL: file:./data/ci.db
 
       # Restore Next.js's build cache so the added production build stays cheap.
@@ -41,7 +38,6 @@ jobs:
       # so the build compiles without reaching the database.
       - run: npm run build
         env:
-          AUTH_SECRET: "00000000000000000000000000000000"
           DATABASE_URL: file:./data/ci.db
 
       - run: npm run test:unit

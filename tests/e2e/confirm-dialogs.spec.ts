@@ -1,17 +1,12 @@
 import { test, expect } from "@playwright/test";
-import { randomUsername, E2E_PASSWORD } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
-async function registerViaUi(page: import("@playwright/test").Page, username: string) {
-  await page.goto("/login");
-  await page.getByRole("button", { name: "Create account" }).click();
-  await page.locator('input[autocomplete="username"]').fill(username);
-  await page.locator('input[autocomplete="new-password"]').fill(E2E_PASSWORD);
-  await page.locator('button[type="submit"]').click();
-  await page.waitForURL("**/dashboard");
+async function prepareWorkspace(page: import("@playwright/test").Page) {
+  await resetWorkspace(page.context().request);
 }
 
 test("wipe-all only fires after confirming the dialog, not on the initial click", async ({ page }) => {
-  await registerViaUi(page, randomUsername("wipeui"));
+  await prepareWorkspace(page);
 
   let purgeCalls = 0;
   await page.route("**/api/privacy/purge", async (route) => {
@@ -33,8 +28,21 @@ test("wipe-all only fires after confirming the dialog, not on the initial click"
   await expect.poll(() => purgeCalls).toBe(1);
 });
 
+test("wipe-all reports a network failure and keeps the confirmation open", async ({ page }) => {
+  await prepareWorkspace(page);
+  await page.goto("/settings");
+  await page.route("**/api/privacy/purge", (route) => route.abort("failed"));
+
+  await page.getByRole("button", { name: "Wipe all my data" }).click();
+  await page.getByRole("button", { name: "Yes, wipe everything" }).click();
+
+  await expect(page.getByRole("alert").filter({ hasText: "could not be deleted" })).toBeVisible();
+  await expect(page.getByRole("alert").filter({ hasText: "Check your connection and try again" })).toBeVisible();
+  await expect(page.locator("dialog[open]")).toBeVisible();
+});
+
 test("auto-apply only fires after confirming the dialog", async ({ page }) => {
-  await registerViaUi(page, randomUsername("applyui"));
+  await prepareWorkspace(page);
   const apiCtx = page.context().request;
 
   const created = await apiCtx.post("/api/applications", {
@@ -71,7 +79,7 @@ test("auto-apply only fires after confirming the dialog", async ({ page }) => {
 });
 
 test("decision-maker research shows an editable, pre-filled domain guess and only fires on confirm", async ({ page }) => {
-  await registerViaUi(page, randomUsername("dmui"));
+  await prepareWorkspace(page);
   const apiCtx = page.context().request;
 
   const created = await apiCtx.post("/api/applications", {

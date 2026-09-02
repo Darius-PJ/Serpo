@@ -12,6 +12,7 @@ import { isFollowUpDue } from "@/lib/scheduler/followUpCheck";
 import { listOpenTasks } from "@/lib/tasks/tasks";
 import { listContactsForApplication } from "@/lib/contacts/contacts";
 import { listApplicationTimeline } from "@/lib/applications/timeline";
+import { ApplicationDetailsForm } from "@/components/ApplicationDetailsForm";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function ApplicationDetailPage({
 }) {
   const userId = await requireUserIdForPage();
   const { id } = await params;
-  const [application, resumeTemplate, applyRuns, contactLinks] = await Promise.all([
+  const [application, resumeTemplate, applyRuns, contactLinks, allContacts] = await Promise.all([
     prisma.application.findUnique({
       where: { id_userId: { id, userId } },
       include: { messages: { orderBy: { createdAt: "desc" } } },
@@ -30,6 +31,7 @@ export default async function ApplicationDetailPage({
     prisma.resumeTemplate.findFirst({ where: { userId }, orderBy: { createdAt: "desc" } }),
     prisma.applyRun.findMany({ where: { applicationId: id }, orderBy: { startedAt: "desc" } }),
     listContactsForApplication(userId, id),
+    prisma.contact.findMany({ where: { userId }, orderBy: [{ company: "asc" }, { name: "asc" }] }),
   ]);
   const [tasks, timeline] = await Promise.all([
     listOpenTasks(userId, id),
@@ -67,6 +69,14 @@ export default async function ApplicationDetailPage({
         )}
       </div>
 
+      <ApplicationDetailsForm
+        applicationId={application.id}
+        company={application.company}
+        role={application.role}
+        notes={application.notes}
+        description={application.description}
+      />
+
       <section aria-labelledby="application-tasks" className="card-soft mb-6 p-4">
         <h2 id="application-tasks" className="mb-2 text-sm font-bold text-primary-dark">
           Tasks
@@ -91,7 +101,7 @@ export default async function ApplicationDetailPage({
         <TaskQuickAdd applicationId={application.id} />
       </section>
 
-      <ContactPanel applicationId={application.id} company={application.company} links={contactLinks} />
+      <ContactPanel applicationId={application.id} company={application.company} links={contactLinks} availableContacts={allContacts} />
       <ApplyPanel
         applicationId={application.id}
         company={application.company}

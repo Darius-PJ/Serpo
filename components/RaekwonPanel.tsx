@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MarkdownLite } from "./MarkdownLite";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 interface Lead {
   id: string;
@@ -40,6 +41,14 @@ function sourceHost(url: string): string {
   }
 }
 
+function canonicalUrl(url: string): string {
+  try {
+    return new URL(url).toString();
+  } catch {
+    return url;
+  }
+}
+
 function suppressedCount(lead: Lead): number {
   if (!lead.duplicateVariantsSuppressed) return 0;
   try {
@@ -53,9 +62,11 @@ function suppressedCount(lead: Lead): number {
 export function RaekwonPanel({
   initialReport,
   initialLeads,
+  initialTrackedUrls,
 }: {
   initialReport: Report | null;
   initialLeads: Lead[];
+  initialTrackedUrls: string[];
 }) {
   const router = useRouter();
   const [batchSize, setBatchSize] = useState(initialReport?.batchSize ?? 10);
@@ -66,7 +77,10 @@ export function RaekwonPanel({
   const [generating, setGenerating] = useState(false);
   const [report, setReport] = useState<Report | null>(initialReport);
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
-  const [tracked, setTracked] = useState<Set<string>>(new Set());
+  const [trackedUrls, setTrackedUrls] = useState<Set<string>>(
+    () => new Set(initialTrackedUrls.map(canonicalUrl))
+  );
+  const [tracking, setTracking] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(
     initialReport?.status === "failed" ? (initialReport.error ?? "Generation failed.") : null
   );
@@ -77,43 +91,46 @@ export function RaekwonPanel({
     setGenerating(true);
     setError(null);
     try {
-      const res = await fetch("/api/raekwon", {
+      const data = await requestJson<{ report?: Report; leads?: Lead[] }>("/api/raekwon", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ batchSize, keyword, location, jobType: jobType || undefined, compensationTarget }),
       });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? `Request failed with status ${res.status}`);
-      }
-      const data = await res.json();
       setReport(data.report ?? null);
       setLeads(data.leads ?? []);
       if (data.report?.status === "failed") {
         setError(data.report.error ?? "Generation failed.");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong generating leads.");
+      setError(errorMessage(err, "Something went wrong generating leads."));
     } finally {
       setGenerating(false);
     }
   }
 
   async function track(lead: Lead) {
-    await fetch("/api/applications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        company: lead.company,
-        role: lead.roleTitle,
-        source: sourceHost(lead.sourceUrl),
-        url: lead.sourceUrl,
-        description: lead.explanation,
-        status: "Sourced",
-      }),
-    });
-    setTracked((prev) => new Set(prev).add(lead.id));
-    router.refresh();
+    setTracking(lead.id);
+    setError(null);
+    try {
+      await requestJson("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company: lead.company,
+          role: lead.roleTitle,
+          source: sourceHost(lead.sourceUrl),
+          url: lead.sourceUrl,
+          description: lead.explanation,
+          status: "Sourced",
+        }),
+      });
+      setTrackedUrls((prev) => new Set(prev).add(canonicalUrl(lead.sourceUrl)));
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The lead could not be tracked."));
+    } finally {
+      setTracking(null);
+    }
   }
 
   return (
@@ -207,8 +224,8 @@ export function RaekwonPanel({
                       <a href={lead.sourceUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary px-2.5 py-1 text-xs">
                         Open
                       </a>
-                      <button onClick={() => track(lead)} disabled={tracked.has(lead.id)} className="btn-primary px-2.5 py-1 text-xs">
-                        {tracked.has(lead.id) ? "Tracked" : "Track"}
+                      <button onClick={() => track(lead)} disabled={trackedUrls.has(canonicalUrl(lead.sourceUrl)) || tracking === lead.id} className="btn-primary px-2.5 py-1 text-xs">
+                        {trackedUrls.has(canonicalUrl(lead.sourceUrl)) ? "Tracked" : tracking === lead.id ? "Tracking…" : "Track"}
                       </button>
                     </div>
                   </td>

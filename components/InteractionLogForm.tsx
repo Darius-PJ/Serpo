@@ -3,24 +3,35 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { INTERACTION_DIRECTIONS, INTERACTION_KINDS } from "@/lib/contacts/types";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 /** Log one touch with a contact from the /contacts page. */
-export function InteractionLogForm({ contactId }: { contactId: string }) {
+export function InteractionLogForm({ contactId, applicationId }: { contactId: string; applicationId?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [kind, setKind] = useState<string>("email");
   const [direction, setDirection] = useState<string>("outbound");
   const [notes, setNotes] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    await fetch(`/api/contacts/${contactId}/interactions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kind, direction, notes: notes || undefined }),
-    });
-    setNotes("");
-    startTransition(() => router.refresh());
+    setSaving(true);
+    setError(null);
+    try {
+      await requestJson(`/api/contacts/${contactId}/interactions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind, direction, notes: notes || undefined, applicationId }),
+      });
+      setNotes("");
+      startTransition(() => router.refresh());
+    } catch (cause) {
+      setError(errorMessage(cause, "The interaction could not be saved."));
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -56,9 +67,10 @@ export function InteractionLogForm({ contactId }: { contactId: string }) {
         aria-label="Interaction note"
         className="input-soft px-2 py-1 text-xs"
       />
-      <button type="submit" disabled={isPending} className="btn-primary px-2.5 py-1 text-xs">
+      <button type="submit" disabled={saving || isPending} className="btn-primary px-2.5 py-1 text-xs">
         Log interaction
       </button>
+      {error && <p role="alert" className="basis-full text-xs text-danger-dark">{error}</p>}
     </form>
   );
 }

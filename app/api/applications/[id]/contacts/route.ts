@@ -47,6 +47,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const body = await request.json().catch(() => ({}));
 
+  if (typeof body.contactId === "string") {
+    const contact = await prisma.contact.findUnique({
+      where: { id_userId: { id: body.contactId, userId } },
+    });
+    if (!contact) return NextResponse.json({ error: "contact not found" }, { status: 404 });
+    const link = await linkContactToApplication(contact.id, id, { sourceTool: "manual", confidence: null });
+    return NextResponse.json({ link, contact }, { status: 201 });
+  }
+
   // No server-side guessing/defaulting — the client shows the guessed domain
   // in an editable confirm dialog and must send back whatever the user
   // actually confirmed, so OSINT recon never runs against an unreviewed guess.

@@ -1,17 +1,12 @@
 import { test, expect } from "@playwright/test";
-import { randomUsername, E2E_PASSWORD } from "./helpers";
+import { resetWorkspace } from "./helpers";
 
-async function registerViaUi(page: import("@playwright/test").Page, username: string) {
-  await page.goto("/login");
-  await page.getByRole("button", { name: "Create account" }).click();
-  await page.locator('input[autocomplete="username"]').fill(username);
-  await page.locator('input[autocomplete="new-password"]').fill(E2E_PASSWORD);
-  await page.locator('button[type="submit"]').click();
-  await page.waitForURL("**/dashboard");
+async function prepareWorkspace(page: import("@playwright/test").Page) {
+  await resetWorkspace(page.context().request);
 }
 
 test("state jurisdiction group starts collapsed and expands via the chevron", async ({ page }) => {
-  await registerViaUi(page, randomUsername("boardpanel"));
+  await prepareWorkspace(page);
 
   const created = await page.context().request.post("/api/job-boards", {
     headers: { "Content-Type": "application/json" },
@@ -29,7 +24,7 @@ test("state jurisdiction group starts collapsed and expands via the chevron", as
 });
 
 test("pool verification is honest: private-host boards are rejected and unverifiable boards never show live", async ({ page, baseURL }) => {
-  await registerViaUi(page, randomUsername("boardpool"));
+  await prepareWorkspace(page);
 
   // The SSRF guard rejects http/loopback URLs at creation, so the old
   // browse-only fixture (pointing a board at the app's own /login) is
@@ -59,4 +54,24 @@ test("pool verification is honest: private-host boards are rejected and unverifi
   await expect(row.getByTitle("Verification failed — click to retry")).toBeVisible();
   await expect(row.getByTitle("Live in your search pool")).not.toBeVisible();
   await expect(row.getByTitle("Saved — link verified, but not live-searchable")).not.toBeVisible();
+});
+
+test("a failed board mutation preserves input and explains the failure", async ({ page }) => {
+  await prepareWorkspace(page);
+  await page.route("**/api/job-boards", async (route) => {
+    if (route.request().method() === "POST") {
+      await route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: "Storage unavailable" }) });
+      return;
+    }
+    await route.continue();
+  });
+  await page.goto("/sourcing");
+  await page.getByRole("button", { name: "Add a board" }).click();
+  await page.getByPlaceholder("Name").fill("Local Tech Board");
+  await page.getByPlaceholder("https://…").fill("https://jobs.example.com");
+  await page.getByRole("button", { name: "Save" }).click();
+
+  await expect(page.getByRole("alert").filter({ hasText: "Storage unavailable" })).toBeVisible();
+  await expect(page.getByPlaceholder("Name")).toHaveValue("Local Tech Board");
+  await expect(page.getByPlaceholder("https://…")).toHaveValue("https://jobs.example.com");
 });

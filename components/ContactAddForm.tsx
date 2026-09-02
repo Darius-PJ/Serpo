@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 /** Manual contact entry — merges into an existing same-name contact at the same company. */
 export function ContactAddForm() {
@@ -12,26 +13,29 @@ export function ContactAddForm() {
   const [title, setTitle] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!name.trim() || !company.trim()) return;
     setError(null);
-    const res = await fetch("/api/contacts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, company, title: title || undefined, email: email || undefined }),
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "The contact could not be saved.");
-      return;
+    setSaving(true);
+    try {
+      await requestJson("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, company, title: title || undefined, email: email || undefined }),
+      });
+      setName("");
+      setCompany("");
+      setTitle("");
+      setEmail("");
+      startTransition(() => router.refresh());
+    } catch (cause) {
+      setError(errorMessage(cause, "The contact could not be saved."));
+    } finally {
+      setSaving(false);
     }
-    setName("");
-    setCompany("");
-    setTitle("");
-    setEmail("");
-    startTransition(() => router.refresh());
   }
 
   return (
@@ -65,7 +69,7 @@ export function ContactAddForm() {
           aria-label="Contact email"
           className="input-soft px-2.5 py-1.5 text-sm"
         />
-        <button type="submit" disabled={isPending} className="btn-primary px-3 py-1.5 text-sm">
+        <button type="submit" disabled={saving || isPending} className="btn-primary px-3 py-1.5 text-sm">
           Add contact
         </button>
       </div>

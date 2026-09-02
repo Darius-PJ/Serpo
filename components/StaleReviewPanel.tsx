@@ -4,24 +4,29 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Application } from "@/generated/prisma";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 export function StaleReviewPanel({ applications }: { applications: Application[] }) {
   const router = useRouter();
   const [pendingRemove, setPendingRemove] = useState<Application | null>(null);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (applications.length === 0) return null;
 
   async function act(action: "keep" | "remove", applicationId: string) {
     setBusy(true);
+    setError(null);
     try {
-      await fetch("/api/privacy/purge", {
+      await requestJson("/api/privacy/purge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, applicationId }),
       });
       setPendingRemove(null);
       router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The application could not be updated."));
     } finally {
       setBusy(false);
     }
@@ -33,6 +38,7 @@ export function StaleReviewPanel({ applications }: { applications: Application[]
       <p className="mb-3 text-sm text-amber-800">
         No status change in 3+ months. Nothing is deleted until you choose Remove.
       </p>
+      {error && <p role="alert" className="mb-3 text-sm text-danger-dark">{error}</p>}
       <ul className="space-y-2">
         {applications.map((app) => (
           <li key={app.id} className="flex items-center justify-between rounded-xl bg-surface p-2 text-sm">

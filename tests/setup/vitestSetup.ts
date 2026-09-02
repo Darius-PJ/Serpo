@@ -2,8 +2,6 @@ import { afterEach } from "vitest";
 
 // Must be set before anything imports lib/db/prisma.
 process.env.DATABASE_URL = "file:./data/test.db";
-process.env.AUTH_SECRET = "test-only-secret-do-not-use-outside-vitest-aaaaaaaaaaaaaaaaaaaaaaaa";
-process.env.COOKIE_SECURE = "false";
 
 afterEach(async () => {
   const { prisma } = await import("@/lib/db/prisma");

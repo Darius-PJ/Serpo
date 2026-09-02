@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Message } from "@/generated/prisma";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 type MessageType = "IMMEDIATE" | "FOLLOW_UP";
 
@@ -29,18 +30,15 @@ export function MessagePanel({
     setGenerating(requestedType);
     setError(null);
     try {
-      const res = await fetch(`/api/applications/${applicationId}/messages`, {
+      await requestJson(`/api/applications/${applicationId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: requestedType }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.error ?? "The outreach draft could not be generated.");
-        return;
-      }
       setRequestedType(null);
       router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The outreach draft could not be generated."));
     } finally {
       setGenerating(null);
     }
@@ -48,32 +46,30 @@ export function MessagePanel({
 
   async function approve(message: Message) {
     setError(null);
-    const res = await fetch(`/api/messages/${message.id}/approve`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ draftText: drafts[message.id] ?? message.draftText }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      setError(data.error ?? "The draft could not be approved.");
-      return;
+    try {
+      await requestJson(`/api/messages/${message.id}/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ draftText: drafts[message.id] ?? message.draftText }),
+      });
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The draft could not be approved."));
     }
-    router.refresh();
   }
 
   async function markSent(message: Message) {
     setError(null);
-    const res = await fetch(`/api/messages/${message.id}/sent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: "{}",
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      setError(data.error ?? "The message could not be marked sent.");
-      return;
+    try {
+      await requestJson(`/api/messages/${message.id}/sent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The message could not be marked sent."));
     }
-    router.refresh();
   }
 
   const requestedLabel = requestedType === "FOLLOW_UP" ? "follow-up" : "immediate";

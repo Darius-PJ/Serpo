@@ -19,6 +19,7 @@ import {
 } from "@dnd-kit/core";
 import { APPLICATION_STATUSES, isApplicationStatus } from "@/lib/applicationStatus";
 import type { PipelineCard } from "@/lib/pipeline/types";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 import { StatusSelect } from "./StatusSelect";
 
 // Keyboard drags snap column-to-column instead of the default 25px steps:
@@ -74,6 +75,7 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
   );
   const [query, setQuery] = useState("");
   const [source, setSource] = useState("all");
+  const [error, setError] = useState<string | null>(null);
 
   const sensors = useSensors(
     // The distance constraint keeps plain clicks reaching the card's links.
@@ -93,12 +95,18 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
   function moveCard(id: string, status: string) {
     startTransition(async () => {
       applyOptimisticMove({ id, status });
-      await fetch(`/api/applications/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-      router.refresh();
+      setError(null);
+      try {
+        await requestJson(`/api/applications/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        });
+      } catch (cause) {
+        setError(errorMessage(cause, "The card could not be moved."));
+      } finally {
+        router.refresh();
+      }
     });
   }
 
@@ -134,6 +142,8 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
           ))}
         </select>
       </div>
+
+      {error && <p role="alert" className="mb-3 text-sm text-danger-dark">{error}</p>}
 
       <DndContext sensors={sensors} collisionDetection={collisionDetection} onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

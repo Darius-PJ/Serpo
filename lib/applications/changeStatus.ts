@@ -20,6 +20,9 @@ export async function changeApplicationStatus(userId: string, applicationId: str
       where: { id: applicationId },
       data: {
         status: to,
+        lastStatusChangeAt: new Date(),
+        staleFlaggedAt: null,
+        staleReviewedAt: null,
         ...(isNewlySubmitted && !existing.appliedAt ? { appliedAt: new Date() } : {}),
         ...(isNewlySubmitted
           ? { submissionState: "confirmed", submissionConfirmedAt: existing.submissionConfirmedAt ?? new Date() }

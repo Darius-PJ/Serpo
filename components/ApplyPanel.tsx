@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import type { ApplyRun } from "@/generated/prisma";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { errorMessage, requestJson } from "@/lib/http/requestJson";
 
 export function ApplyPanel({
   applicationId,
@@ -35,13 +36,10 @@ export function ApplyPanel({
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch("/api/resume-template", { method: "POST", body: formData });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.error ?? "The resume template could not be uploaded.");
-        return;
-      }
+      await requestJson("/api/resume-template", { method: "POST", body: formData });
       router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "The resume template could not be uploaded."));
     } finally {
       setUploading(false);
     }
@@ -51,18 +49,15 @@ export function ApplyPanel({
     setApplying(true);
     setError(null);
     try {
-      const res = await fetch(`/api/applications/${applicationId}/apply`, {
+      await requestJson(`/api/applications/${applicationId}/apply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ confirm: "APPLY", idempotencyKey: crypto.randomUUID() }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.error ?? "Application assistance could not start.");
-        return;
-      }
       setConfirmOpen(false);
       router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "Application assistance could not start."));
     } finally {
       setApplying(false);
     }
@@ -73,18 +68,15 @@ export function ApplyPanel({
     setApplying(true);
     setError(null);
     try {
-      const res = await fetch(`/api/applications/${applicationId}/apply/${latestRun.id}/confirm`, {
+      await requestJson(`/api/applications/${applicationId}/apply/${latestRun.id}/confirm`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ confirm: "SUBMITTED" }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.error ?? "Could not confirm the submission.");
-        return;
-      }
       setAttestationOpen(false);
       router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause, "Could not confirm the submission."));
     } finally {
       setApplying(false);
     }
@@ -93,19 +85,18 @@ export function ApplyPanel({
   async function submitMissingFieldAndRetry() {
     if (!latestRun?.missingFieldKey || !missingValue.trim()) return;
     setError(null);
-    const res = await fetch("/api/profile-fields", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key: latestRun.missingFieldKey, label: latestRun.missingFieldLabel, value: missingValue }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      setError(data.error ?? "The missing answer could not be saved.");
-      return;
+    try {
+      await requestJson("/api/profile-fields", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: latestRun.missingFieldKey, label: latestRun.missingFieldLabel, value: missingValue }),
+      });
+      setMissingValue("");
+      // This resumes an already-confirmed workflow action; it still will not submit the site form.
+      await startApply();
+    } catch (cause) {
+      setError(errorMessage(cause, "The missing answer could not be saved."));
     }
-    setMissingValue("");
-    // This resumes an already-confirmed workflow action; it still will not submit the site form.
-    await startApply();
   }
 
   return (
