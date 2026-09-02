@@ -44,7 +44,7 @@ const NAV_ITEMS: Array<{ href: string; label: string; icon: IconName }> = [
   { href: "/settings", label: "Settings", icon: "settings" },
 ];
 
-function Icon({ name }: { name: IconName }) {
+function Icon({ name, className = "h-5 w-5" }: { name: IconName; className?: string }) {
   const paths: Record<IconName, React.ReactNode> = {
     dashboard: (
       <>
@@ -100,7 +100,7 @@ function Icon({ name }: { name: IconName }) {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-5 w-5 shrink-0"
+      className={`${className} shrink-0`}
       fill="none"
       stroke="currentColor"
       strokeWidth="1.8"
@@ -128,7 +128,7 @@ export function SideNav() {
   return (
     <aside
       className={`sticky top-0 flex h-screen w-[4.25rem] shrink-0 flex-col overflow-y-auto border-r border-border-soft bg-surface-sunken/80 backdrop-blur-sm transition-[width] motion-reduce:transition-none ${
-        collapsed ? "md:w-[4.25rem]" : "md:w-56"
+        collapsed ? "md:w-[102px]" : "md:w-56"
       }`}
     >
       <Link
@@ -141,7 +141,9 @@ export function SideNav() {
           alt=""
           width={600}
           height={669}
-          className="h-[45px] w-[45px] shrink-0 rounded-full object-cover ring-1 ring-border-soft"
+          className={`shrink-0 rounded-full object-cover ring-1 ring-border-soft ${
+            collapsed ? "h-[45px] w-[45px]" : "h-[45px] w-[45px] md:h-[90px] md:w-[90px]"
+          }`}
         />
         <span
           className={`truncate bg-gradient-to-r from-primary to-primary-light bg-clip-text text-lg font-extrabold text-transparent ${
@@ -169,7 +171,7 @@ export function SideNav() {
                   : "font-medium text-foreground-muted hover:bg-primary/10 hover:text-foreground"
               }`}
             >
-              <Icon name={item.icon} />
+              <Icon name={item.icon} className={collapsed ? "h-8 w-8" : "h-5 w-5"} />
               <span className={`truncate ${collapsed ? "hidden" : "hidden md:inline"}`}>{item.label}</span>
             </Link>
           );
