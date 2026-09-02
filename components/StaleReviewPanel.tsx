@@ -33,9 +33,9 @@ export function StaleReviewPanel({ applications }: { applications: Application[]
   }
 
   return (
-    <section className="mb-8 rounded-2xl border border-amber-300 bg-amber-50 p-4">
-      <h2 className="mb-2 font-bold text-amber-900">Review for removal</h2>
-      <p className="mb-3 text-sm text-amber-800">
+    <section className="mb-8 rounded-2xl border border-accent/40 bg-accent/10 p-4">
+      <h2 className="mb-2 font-bold text-accent-light">Review for removal</h2>
+      <p className="mb-3 text-sm text-accent-light">
         No status change in 3+ months. Nothing is deleted until you choose Remove.
       </p>
       {error && <p role="alert" className="mb-3 text-sm text-danger-dark">{error}</p>}

@@ -1,34 +1,43 @@
 @import "tailwindcss";
 
+/* "Night Shift": deep indigo ground with terracotta accents, one committed
+   look (no light/dark split). Role semantics on a dark ground:
+   --primary-dark is the *readable-on-dark* text tint of the accent (used by
+   text-primary-dark everywhere), and --primary-ink is the dark text that sits
+   ON accent fills — white fails WCAG AA on terracotta at button sizes. */
 :root {
-  --background: #fdfbf3;
-  --surface: #fffefb;
-  --foreground: #3a3530;
-  --foreground-muted: #7a7166;
+  --background: #33305e;
+  --surface: #3d3a6b;
+  --surface-sunken: #2b2850;
+  --foreground: #efe7d8;
+  --foreground-muted: #c9bba4;
 
-  --primary: #5eae9e;
-  --primary-light: #a8e6cf;
-  --primary-dark: #2f6d5f;
+  --primary: #dc7c36;
+  --primary-light: #e89257;
+  --primary-dark: #f0a671;
+  --primary-ink: #2a2748;
 
-  --accent: #ffb997;
-  --accent-light: #ffd8a8;
+  --accent: #c9982e;
+  --accent-light: #dcae45;
 
-  --danger: #e07856;
-  --danger-light: #f4a583;
-  --danger-dark: #a84a2c;
+  --danger: #b33f2e;
+  --danger-light: #c04a38;
+  --danger-dark: #f2ac9c;
 
-  --border-soft: #dcebe3;
+  --border-soft: #4a5580;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-sunken);
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
 
   --color-primary: var(--primary);
   --color-primary-light: var(--primary-light);
   --color-primary-dark: var(--primary-dark);
+  --color-primary-ink: var(--primary-ink);
 
   --color-accent: var(--accent);
   --color-accent-light: var(--accent-light);
@@ -40,28 +49,6 @@
   --color-border-soft: var(--border-soft);
 
   --font-sans: var(--font-nunito);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #16231f;
-    --surface: #1e2e29;
-    --foreground: #f1e9da;
-    --foreground-muted: #b7ab97;
-
-    --primary: #6fc2ae;
-    --primary-light: #9fe0c9;
-    --primary-dark: #bfe9da;
-
-    --accent: #f0a978;
-    --accent-light: #f7c896;
-
-    --danger: #e28a68;
-    --danger-light: #f0ac8c;
-    --danger-dark: #f6c3a9;
-
-    --border-soft: #33473f;
-  }
 }
 
 /* Stylized scrollbars, themed from the same tokens as the rest of the UI so
@@ -82,11 +69,11 @@
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: padding-box;
-  background-color: color-mix(in oklab, var(--primary) 45%, var(--border-soft));
+  background-color: color-mix(in oklab, var(--primary) 65%, var(--border-soft));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: color-mix(in oklab, var(--primary) 70%, var(--border-soft));
+  background-color: color-mix(in oklab, var(--primary) 85%, var(--border-soft));
 }
 
 ::-webkit-scrollbar-corner {
@@ -103,8 +90,8 @@
 body {
   background-color: var(--background);
   background-image:
-    radial-gradient(ellipse 80% 50% at 15% -10%, color-mix(in oklab, var(--primary-light) 35%, transparent), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 5%, color-mix(in oklab, var(--accent-light) 30%, transparent), transparent);
+    radial-gradient(ellipse 80% 50% at 15% -10%, color-mix(in oklab, var(--primary-light) 16%, transparent), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 5%, color-mix(in oklab, var(--accent-light) 11%, transparent), transparent);
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-nunito), Arial, Helvetica, sans-serif;
@@ -112,7 +99,7 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-light font-semibold text-white shadow-sm shadow-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0;
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-light font-semibold text-primary-ink shadow-sm shadow-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0;
   }
 
   .btn-secondary {

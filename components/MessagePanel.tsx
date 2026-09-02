@@ -98,7 +98,7 @@ export function MessagePanel({
       <p className="mb-3 text-xs text-foreground-muted">
         Draft generation is optional. It sends the application and saved contact context to the configured AI provider, creates a local draft, and never sends an email or message.
       </p>
-      {!submissionConfirmed && <p className="mb-3 text-xs text-amber-800">Confirm the application submission before generating outreach.</p>}
+      {!submissionConfirmed && <p className="mb-3 text-xs text-accent-light">Confirm the application submission before generating outreach.</p>}
       {submissionConfirmed && !followUpDue && <p className="mb-3 text-xs text-foreground-muted">Follow-up drafts become available seven days after confirmed submission.</p>}
       {error && <p role="alert" className="mb-3 text-xs text-danger-dark">{error}</p>}
 
