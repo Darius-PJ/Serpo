@@ -44,6 +44,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# personal Claude Code permission grants stay off the shared repo
+.claude/settings.local.json
+
 # local database — this app's entire dataset; never goes to git
 /data/*.db
 /data/*.db-journal
