@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/RokuroSerpo.avif" alt="RokuroSerpo" width="720">
+</p>
+
 # Job Tracker
 
 A local-first, single-user CRM for a job search. Track applications through a
