@@ -64,6 +64,42 @@
   }
 }
 
+/* Stylized scrollbars, themed from the same tokens as the rest of the UI so
+   they follow any future palette change. Chromium and Safari take the padded
+   pill via ::-webkit-scrollbar; Firefox (no webkit pseudos) gets the standard
+   thin themed bar. Setting scrollbar-color unconditionally would disable the
+   webkit styling in Chromium, hence the @supports split. */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  background-color: color-mix(in oklab, var(--primary) 45%, var(--border-soft));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklab, var(--primary) 70%, var(--border-soft));
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--primary) 55%, var(--border-soft)) transparent;
+  }
+}
+
 body {
   background-color: var(--background);
   background-image:
