@@ -38,12 +38,6 @@ const columnKeyboardCoordinates: KeyboardCoordinateGetter = (event, { context })
   let best: { x: number; y: number; distance: number } | null = null;
 
   for (const rect of droppableRects.values()) {
-    // The card's own column nearly ties with it on center-x, and subpixel
-    // layout rounding can push that tie past the 1px direction epsilon below —
-    // a column already containing the card's center is never a move target.
-    const containsCard =
-      centerX >= rect.left && centerX <= rect.right && centerY >= rect.top && centerY <= rect.bottom;
-    if (containsCard) continue;
     const targetX = rect.left + rect.width / 2;
     const targetY = rect.top + rect.height / 2;
     const inDirection =
