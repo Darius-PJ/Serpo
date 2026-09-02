@@ -42,20 +42,24 @@ all on your own machine.
 
 ## Getting started
 
+The only prerequisite is [Node.js](https://nodejs.org) 20.9 or newer. Then:
+
 ```bash
-npm install
-npx prisma generate
-cp .env.example .env.local   # then fill in any optional keys
-npx prisma migrate deploy    # creates data/app.db
+npm run setup
 npm run dev
 ```
 
 Open http://127.0.0.1:3000/dashboard.
 
-On Windows, `scripts/launchRokuroSerpo.ps1` does all of the above server-side
-work for you: it finds a free port, upgrades the database if needed (with an
-automatic backup), starts the server, and opens the dashboard — suitable as a
-desktop shortcut target.
+`npm run setup` checks each prerequisite and does only the missing work:
+installs npm packages, generates the Prisma client, copies `.env.example` to
+`.env.local` (every key in it is optional), and creates the SQLite database —
+or fail-closed verifies and upgrades an existing one, with an automatic
+backup. It is safe to run again any time, e.g. after `git pull`.
+
+On Windows, `scripts/launchRokuroSerpo.ps1` is a double-clickable alternative
+suitable as a desktop shortcut target: it runs the same setup check, finds a
+free port, starts the server, and opens the dashboard.
 
 ## Development
 
@@ -65,6 +69,7 @@ Vitest, and Playwright.
 - `npm run verify` — the full release gate: lint, typecheck, deployment-config
   check, production build, unit tests, e2e tests. CI runs the same steps.
 - `npm run test:unit` / `npm run test:e2e` — the test suites individually.
+  The e2e suite needs browsers once: `npx playwright install`.
 - `npm run db:upgrade-and-verify` — applies pending hand-written SQL
   migrations to the live database, fail-closed: each migration is replayed
   against an in-memory copy and schema-fingerprinted before it touches
