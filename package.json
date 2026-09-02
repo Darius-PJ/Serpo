@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "setup": "node scripts/setup.mjs",
     "dev": "next dev -H 127.0.0.1",
     "build": "next build",
     "start": "next start -H 127.0.0.1",
@@ -44,5 +45,12 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.10"
+  },
+  "allowScripts": {
+    "better-sqlite3": true,
+    "@prisma/engines": true,
+    "prisma": true,
+    "msw": true,
+    "unrs-resolver": true
   }
 }

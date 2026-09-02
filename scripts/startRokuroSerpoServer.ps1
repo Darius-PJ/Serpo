@@ -19,15 +19,14 @@ Start-Transcript -Path $logPath -Append | Out-Null
 try {
   Write-Host "Preparing RokuroSerpo at http://127.0.0.1:$Port ..." -ForegroundColor Cyan
 
-  if (Test-Path (Join-Path $projectRoot "data/app.db")) {
-    & node.exe "scripts/dbUpgradeAndVerify.mjs" "data/app.db"
-  } else {
-    Write-Host "Creating the local database..." -ForegroundColor Cyan
-    & npx.cmd prisma migrate deploy
+  if (-not (Get-Command node.exe -ErrorAction SilentlyContinue)) {
+    throw "Node.js was not found. Install the LTS release from https://nodejs.org, then run this script again."
   }
-
+  # Installs packages, generates the Prisma client, and creates or upgrades the
+  # database as needed; a no-op pass takes seconds.
+  & node.exe "scripts/setup.mjs"
   if ($LASTEXITCODE -ne 0) {
-    throw "Database preparation failed with exit code $LASTEXITCODE."
+    throw "Setup failed with exit code $LASTEXITCODE."
   }
 
   Write-Host "Starting the local server. Keep this window open while using RokuroSerpo." -ForegroundColor Green

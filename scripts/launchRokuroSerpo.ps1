@@ -70,6 +70,14 @@ if ((Test-PortInUse $PreferredPort) -and (Test-RokuroSerpo $PreferredPort)) {
   exit 0
 }
 
+# A fresh machine reaches this point (nothing running to reuse): install
+# whatever is missing before booting. Up to date, this passes in seconds.
+if (-not (Get-Command node.exe -ErrorAction SilentlyContinue)) {
+  throw "Node.js was not found. Install the LTS release from https://nodejs.org, then run this shortcut again."
+}
+& node.exe (Join-Path $PSScriptRoot "setup.mjs")
+if ($LASTEXITCODE -ne 0) { throw "Setup did not complete; see the messages above." }
+
 $selectedPort = $null
 for ($port = $PreferredPort; $port -le $maxPort; $port++) {
   if (-not (Test-PortInUse $port)) {
