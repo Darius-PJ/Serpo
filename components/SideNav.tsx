@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
@@ -132,13 +133,25 @@ export function SideNav() {
     >
       <Link
         href="/dashboard"
-        className={`mx-2 mt-3 flex items-center rounded-xl px-3 py-2 bg-gradient-to-r from-primary to-primary-light bg-clip-text text-lg font-extrabold text-transparent ${
+        className={`mx-2 mt-3 flex items-center gap-2.5 rounded-xl px-3 py-2 ${
           collapsed ? "justify-center" : "justify-center md:justify-start"
         }`}
         aria-label="RokuroSerpo home"
       >
-        <span className={collapsed ? "" : "md:hidden"}>RS</span>
-        <span className={collapsed ? "hidden" : "hidden md:inline"}>RokuroSerpo</span>
+        <Image
+          src="/Rokuro-logo.jpg"
+          alt=""
+          width={600}
+          height={669}
+          className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-border-soft"
+        />
+        <span
+          className={`truncate bg-gradient-to-r from-primary to-primary-light bg-clip-text text-lg font-extrabold text-transparent ${
+            collapsed ? "hidden" : "hidden md:inline"
+          }`}
+        >
+          RokuroSerpo
+        </span>
       </Link>
       <nav aria-label="Primary navigation" className="mt-2 flex w-full flex-1 flex-col gap-1 px-2 py-1">
         {NAV_ITEMS.map((item) => {
