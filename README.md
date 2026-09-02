@@ -51,19 +51,12 @@ creates the SQLite database — or fail-closed verifies and upgrades an
 existing one, with an automatic backup. Setup only does the missing work, so
 it is safe to run again any time, e.g. after `git pull`.
 
-### Windows: a desktop shortcut
+### Windows: double-click
 
-The launcher is `scripts\launchRokuroSerpo.ps1` inside this repository. To
-turn it into a shortcut: right-click the desktop → New → Shortcut, and enter
-as the location (substituting where you put the repository):
-
-```text
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\path\to\RokuroSerpo\scripts\launchRokuroSerpo.ps1"
-```
-
-Name it whatever you like. Double-clicking it installs anything missing,
-finds a free port, starts the server, and opens the dashboard — after
-creating the shortcut you're done.
+Double-click `RokuroSerpo.cmd` in the repository folder. It installs
+anything missing, finds a free port, starts the server, and opens the
+dashboard. For a desktop shortcut, right-click `RokuroSerpo.cmd` → Send to →
+Desktop (create shortcut) — after that you're done.
 
 ### Any platform: the command line
 
