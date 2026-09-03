@@ -56,8 +56,10 @@ it is safe to run again any time, e.g. after `git pull`.
 If someone sent you `Install-RokuroSerpo.cmd`, that one file is the whole
 install: double-click it and it puts the app in your Documents folder, gets
 Node.js if your machine has none (app-private, nothing installed
-system-wide), creates a desktop shortcut, and starts up. You need nothing
-else. (Maintainers build it with `npm run build:installer`.)
+system-wide), creates a desktop shortcut, and starts up — while the JobSpy
+job source (LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google) sets itself up in
+the background. You need nothing else. (Maintainers build it with
+`npm run build:installer`.)
 
 ### Windows: double-click
 

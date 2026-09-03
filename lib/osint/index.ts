@@ -1,8 +1,8 @@
-import { theHarvesterConnector } from "./theHarvester";
+import { hunterConnector } from "./hunter";
 import type { DecisionMakerResult, OsintConnector } from "./types";
 
 // Add another OSINT tool by implementing OsintConnector and registering it here.
-const CONNECTORS: OsintConnector[] = [theHarvesterConnector];
+const CONNECTORS: OsintConnector[] = [hunterConnector];
 
 export interface OsintRunResult {
   tool: string;
