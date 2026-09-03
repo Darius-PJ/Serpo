@@ -33,6 +33,12 @@ export default defineConfig({
     timeout: 180_000,
     env: {
       DATABASE_URL: "file:./data/e2e.db",
+      // Explicitly empty so a developer's .env.local keys can never leak into
+      // e2e runs: pipeline tests move cards to Submitted, which would
+      // otherwise fire real Hunter.io discovery and AI drafting.
+      HUNTER_API_KEY: "",
+      ENABLE_AI_ASSISTANCE: "false",
+      ANTHROPIC_API_KEY: "",
     },
   },
 });

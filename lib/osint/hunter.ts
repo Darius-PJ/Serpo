@@ -1,4 +1,4 @@
-import type { DecisionMakerResult, OsintConnector } from "./types";
+import type { DecisionMakerResult, OsintConnector, OsintQuery } from "./types";
 
 // Hunter.io Domain Search: named people with positions and per-email confidence
 // scores for a company domain. Replaced theHarvester (2026-09-02), whose free
@@ -24,9 +24,13 @@ export const hunterConnector: OsintConnector = {
     return Boolean(process.env.HUNTER_API_KEY);
   },
 
-  async research(domain: string): Promise<DecisionMakerResult[]> {
+  async research(query: OsintQuery): Promise<DecisionMakerResult[]> {
+    if (!query.domain && !query.company) throw new Error("Hunter.io needs a domain or company name to search.");
     const url = new URL("https://api.hunter.io/v2/domain-search");
-    url.searchParams.set("domain", domain);
+    // Hunter resolves a bare company name itself, so automation can search on
+    // the user-entered name without ever fabricating a domain.
+    if (query.domain) url.searchParams.set("domain", query.domain);
+    else url.searchParams.set("company", query.company!);
     url.searchParams.set("limit", "25");
 
     // The key travels in a header, never the URL, so it can't leak into

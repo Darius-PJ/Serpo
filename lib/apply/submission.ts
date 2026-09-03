@@ -29,7 +29,7 @@ export async function confirmApplicationSubmission({
     if (!run) throw new Error("apply run not found");
 
     if (run.status === "submitted") {
-      return { run, application };
+      return { run, application, becameSubmitted: false };
     }
     const confirmableStatuses = evidence.kind === "detected_confirmation" ? ["pending"] : ["review_required", "unknown"];
     if (!confirmableStatuses.includes(run.status)) {
@@ -81,7 +81,9 @@ export async function confirmApplicationSubmission({
         },
       });
     }
-    return { run: updatedRun, application: updatedApplication };
+    // Callers use this to queue outreach preparation — only a real stage move
+    // into Submitted should trigger it, not a re-confirmation.
+    return { run: updatedRun, application: updatedApplication, becameSubmitted: application.status !== "Submitted" };
   });
 }
 

@@ -43,7 +43,7 @@ describe("hunter.io connector", () => {
       }),
     });
 
-    const results = await hunterConnector.research("acme.test");
+    const results = await hunterConnector.research({ domain: "acme.test" });
 
     expect(results).toEqual([
       {
@@ -59,15 +59,29 @@ describe("hunter.io connector", () => {
 
   it("sends the API key in a header, never in the URL", async () => {
     fetchMock.mockResolvedValue({ ok: true, json: async () => ({ data: { emails: [] } }) });
-    await hunterConnector.research("acme.test");
+    await hunterConnector.research({ domain: "acme.test" });
 
     const [url, init] = fetchMock.mock.calls[0];
     expect(String(url)).not.toContain("test-key");
     expect(init.headers["X-API-KEY"]).toBe("test-key");
   });
 
+  it("searches by company name when no domain is known", async () => {
+    fetchMock.mockResolvedValue({ ok: true, json: async () => ({ data: { emails: [] } }) });
+    await hunterConnector.research({ company: "Acme Rockets Inc" });
+
+    const url = new URL(String(fetchMock.mock.calls[0][0]));
+    expect(url.searchParams.get("company")).toBe("Acme Rockets Inc");
+    expect(url.searchParams.get("domain")).toBeNull();
+  });
+
+  it("rejects a query with neither domain nor company", async () => {
+    await expect(hunterConnector.research({})).rejects.toThrow(/domain or company/i);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("surfaces an HTTP failure as an error", async () => {
     fetchMock.mockResolvedValue({ ok: false, status: 429 });
-    await expect(hunterConnector.research("acme.test")).rejects.toThrow(/429/);
+    await expect(hunterConnector.research({ domain: "acme.test" })).rejects.toThrow(/429/);
   });
 });
