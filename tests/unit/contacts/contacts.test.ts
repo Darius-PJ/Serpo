@@ -50,11 +50,11 @@ describe("linkContactToApplication", () => {
     });
     const contact = await findOrCreateContact(user.id, "Acme", { name: "Rina Patel" });
 
-    const link = await linkContactToApplication(contact.id, application.id, { sourceTool: "theharvester", confidence: "high" });
+    const link = await linkContactToApplication(contact.id, application.id, { sourceTool: "hunter", confidence: "high" });
     const repeat = await linkContactToApplication(contact.id, application.id, { sourceTool: "other-tool", confidence: null });
 
     expect(repeat.id).toBe(link.id);
-    expect(repeat).toMatchObject({ sourceTool: "theharvester", confidence: "high" });
+    expect(repeat).toMatchObject({ sourceTool: "hunter", confidence: "high" });
   });
 });
 
@@ -65,12 +65,12 @@ describe("listContactsForApplication", () => {
       data: { userId: user.id, company: "Acme", role: "Engineer", source: "manual" },
     });
     const contact = await findOrCreateContact(user.id, "Acme", { name: "Rina Patel", title: "Recruiter" });
-    await linkContactToApplication(contact.id, application.id, { sourceTool: "theharvester", confidence: null });
+    await linkContactToApplication(contact.id, application.id, { sourceTool: "hunter", confidence: null });
 
     const links = await listContactsForApplication(user.id, application.id);
     expect(links).toHaveLength(1);
     expect(links[0].contact).toMatchObject({ name: "Rina Patel", title: "Recruiter" });
-    expect(links[0].sourceTool).toBe("theharvester");
+    expect(links[0].sourceTool).toBe("hunter");
 
     const intruder = await prisma.user.create({ data: { username: "contact-list-app-intruder", passwordHash: "unused" } });
     await expect(listContactsForApplication(intruder.id, application.id)).resolves.toEqual([]);

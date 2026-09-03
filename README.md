@@ -35,9 +35,14 @@ all on your own machine.
 - **Applications** — per-application record with tasks, contacts, message
   drafts, apply runs, and a unified timeline of everything that ever happened.
 - **Contacts** — reusable, company-grouped contacts with an interaction log;
-  optional OSINT-based discovery per application.
+  Hunter.io-powered discovery of likely decision-makers, run manually or
+  automatically.
+- **Auto-outreach** — submitting an application kicks off background contact
+  discovery and an AI-drafted outreach message addressed to the best contact
+  found, saved for your review. Nothing sends without you.
 - **Sourcing** — federated job search across Adzuna, USAJobs, Jooble, the
-  keyless boards above, and optionally JobSpy, with dedup and relevance tiers.
+  keyless boards above, and JobSpy (set up automatically by the one-click
+  installer), with dedup and relevance tiers.
 - **Résumé workspace** — keep a template, tailor per application, export DOCX.
 
 ## Getting started

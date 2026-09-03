@@ -121,12 +121,12 @@ describe("lib/privacy/purge", () => {
     });
 
     const shared = await findOrCreateContact(a.user.id, "Acme", { name: "Shared Person" });
-    await linkContactToApplication(shared.id, a.application.id, { sourceTool: "theharvester", confidence: null });
-    await linkContactToApplication(shared.id, second.id, { sourceTool: "theharvester", confidence: null });
+    await linkContactToApplication(shared.id, a.application.id, { sourceTool: "hunter", confidence: null });
+    await linkContactToApplication(shared.id, second.id, { sourceTool: "hunter", confidence: null });
     const orphan = await findOrCreateContact(a.user.id, "Acme", { name: "Only Here" });
-    await linkContactToApplication(orphan.id, a.application.id, { sourceTool: "theharvester", confidence: null });
+    await linkContactToApplication(orphan.id, a.application.id, { sourceTool: "hunter", confidence: null });
     const withHistory = await findOrCreateContact(a.user.id, "Acme", { name: "Has History" });
-    await linkContactToApplication(withHistory.id, a.application.id, { sourceTool: "theharvester", confidence: null });
+    await linkContactToApplication(withHistory.id, a.application.id, { sourceTool: "hunter", confidence: null });
     await logInteraction(a.user.id, { contactId: withHistory.id, kind: "note", direction: "outbound" });
 
     const result = await purgeContactResearch(a.application.id, a.user.id);

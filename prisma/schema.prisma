@@ -59,7 +59,7 @@ model ContactApplication {
   contact       Contact     @relation(fields: [contactId], references: [id], onDelete: Cascade)
   applicationId String
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  sourceTool    String // "theharvester" | "manual" | ...
+  sourceTool    String // "hunter" | "manual" | ...
   confidence    String? // raw tool signal, not a fabricated score
   foundAt       DateTime    @default(now())
 
