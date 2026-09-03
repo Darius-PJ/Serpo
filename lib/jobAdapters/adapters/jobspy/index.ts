@@ -3,6 +3,7 @@
 // per-board partial failure); the legacy lib/jobSources/jobSpy.ts path it
 // replaced was removed in Phase 5.
 import { spawn, spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
@@ -19,21 +20,39 @@ interface JobSpyRawResult {
 
 const REQUESTED_SITES = ["indeed", "linkedin", "zip_recruiter", "glassdoor", "google"];
 
+// JOBSPY_PYTHON wins; without it, the conventional venv the installer's
+// background provisioning creates (scripts/setupJobSpy.ps1) is probed before
+// falling back to whatever "python" resolves to on PATH.
+function jobSpyPython(): string {
+  if (process.env.JOBSPY_PYTHON) return process.env.JOBSPY_PYTHON;
+  const venvPython = path.join(
+    process.cwd(),
+    ".venv-jobspy",
+    ...(process.platform === "win32" ? ["Scripts", "python.exe"] : ["bin", "python"]),
+  );
+  if (existsSync(venvPython)) return venvPython;
+  return "python";
+}
+
 // python-jobspy is a runtime dependency package.json can't see — probe for it so
 // a missing package reads as "unconfigured" (excluded from search, like an adapter
 // missing its API key) instead of failing every search and tripping the circuit
 // breaker. find_spec avoids importing jobspy (and its pandas chain), so the probe
-// costs one ~100ms interpreter start, cached for the life of the server process —
-// installing the package mid-flight needs a restart to be noticed.
+// costs one ~100ms interpreter start. A positive result is cached for the life of
+// the server process; a negative one expires so the installer's background
+// provisioning is noticed without a restart.
+const NEGATIVE_PROBE_TTL_MS = 5 * 60_000;
 let probeResult: boolean | null = null;
+let probeCheckedAt = 0;
 function isPythonJobSpyInstalled(): boolean {
-  if (probeResult === null) {
-    const python = process.env.JOBSPY_PYTHON || "python";
-    const probe = spawnSync(python, ["-c", "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('jobspy') else 1)"], {
+  const now = Date.now();
+  if (probeResult === null || (probeResult === false && now - probeCheckedAt > NEGATIVE_PROBE_TTL_MS)) {
+    const probe = spawnSync(jobSpyPython(), ["-c", "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('jobspy') else 1)"], {
       timeout: 15_000,
       windowsHide: true,
     });
     probeResult = probe.status === 0;
+    probeCheckedAt = now;
   }
   return probeResult;
 }
@@ -41,12 +60,12 @@ function isPythonJobSpyInstalled(): boolean {
 // Test-only: clears the cached probe between test cases.
 export function resetJobSpyProbeForTests(): void {
   probeResult = null;
+  probeCheckedAt = 0;
 }
 
 function runPythonScript(scriptPath: string, args: string[], signal: AbortSignal): Promise<string> {
   return new Promise((resolve, reject) => {
-    const python = process.env.JOBSPY_PYTHON || "python";
-    const child = spawn(python, [scriptPath, ...args], { signal });
+    const child = spawn(jobSpyPython(), [scriptPath, ...args], { signal });
 
     let stdout = "";
     let stderr = "";

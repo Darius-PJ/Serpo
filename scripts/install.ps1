@@ -62,6 +62,18 @@ $shortcut.WorkingDirectory = $projectRoot
 $shortcut.Save()
 Write-Host "Desktop shortcut created." -ForegroundColor Green
 
+# JobSpy (the LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google source) provisions
+# itself in the background - the app is usable immediately, and searches pick
+# the source up automatically once this finishes. Log: jobspy-setup.log.
+$jobSpyScript = Join-Path $projectRoot "scripts\setupJobSpy.ps1"
+$jobSpyLog = Join-Path $stateRoot "jobspy-setup.log"
+New-Item -ItemType Directory -Force -Path $stateRoot | Out-Null
+Start-Process -FilePath "powershell.exe" -WindowStyle Hidden -ArgumentList @(
+  "-NoProfile", "-ExecutionPolicy", "Bypass",
+  "-Command", "Start-Transcript -Path '$jobSpyLog' -Append | Out-Null; try { & '$jobSpyScript' } finally { Stop-Transcript | Out-Null }"
+)
+Write-Host "JobSpy (extra job source) is installing in the background; see $jobSpyLog if curious." -ForegroundColor Cyan
+
 if ($SkipLaunch) {
   Write-Host "Install finished (launch skipped)." -ForegroundColor Green
 } else {

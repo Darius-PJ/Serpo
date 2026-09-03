@@ -9,12 +9,22 @@ vi.mock("node:child_process", async (importOriginal) => {
   return { ...actual, spawnSync: spawnSyncMock };
 });
 
+// existsSync is the seam for the .venv-jobspy interpreter fallback.
+const existsSyncMock = vi.hoisted(() => vi.fn());
+vi.mock("node:fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("node:fs")>();
+  return { ...actual, existsSync: existsSyncMock };
+});
+
 import { jobSpyAdapter, resetJobSpyProbeForTests } from "@/lib/jobAdapters/adapters/jobspy";
 
 describe("jobspy adapter dependency probe", () => {
   beforeEach(() => {
     spawnSyncMock.mockReset();
+    existsSyncMock.mockReset();
+    existsSyncMock.mockReturnValue(false);
     vi.unstubAllEnvs();
+    vi.useRealTimers();
     resetJobSpyProbeForTests();
   });
 
@@ -48,6 +58,39 @@ describe("jobspy adapter dependency probe", () => {
     spawnSyncMock.mockReturnValue({ status: 0 });
     jobSpyAdapter.isConfigured();
     expect(spawnSyncMock.mock.calls[0][0]).toBe("C:/custom/python311/python.exe");
+  });
+
+  it("falls back to the project .venv-jobspy interpreter when JOBSPY_PYTHON is unset", () => {
+    existsSyncMock.mockReturnValue(true);
+    spawnSyncMock.mockReturnValue({ status: 0 });
+    jobSpyAdapter.isConfigured();
+    expect(String(spawnSyncMock.mock.calls[0][0])).toContain(".venv-jobspy");
+  });
+
+  it("JOBSPY_PYTHON wins over an existing .venv-jobspy", () => {
+    vi.stubEnv("JOBSPY_PYTHON", "C:/custom/python311/python.exe");
+    existsSyncMock.mockReturnValue(true);
+    spawnSyncMock.mockReturnValue({ status: 0 });
+    jobSpyAdapter.isConfigured();
+    expect(spawnSyncMock.mock.calls[0][0]).toBe("C:/custom/python311/python.exe");
+  });
+
+  it("re-probes a missing dependency after the negative-cache window (background installs get noticed)", () => {
+    vi.useFakeTimers();
+    spawnSyncMock.mockReturnValue({ status: 1 });
+    expect(jobSpyAdapter.isConfigured()).toBe(false);
+    expect(jobSpyAdapter.isConfigured()).toBe(false);
+    expect(spawnSyncMock).toHaveBeenCalledTimes(1);
+
+    vi.advanceTimersByTime(6 * 60_000);
+    spawnSyncMock.mockReturnValue({ status: 0 });
+    expect(jobSpyAdapter.isConfigured()).toBe(true);
+    expect(spawnSyncMock).toHaveBeenCalledTimes(2);
+
+    // A positive result stays cached for the life of the process.
+    vi.advanceTimersByTime(60 * 60_000);
+    expect(jobSpyAdapter.isConfigured()).toBe(true);
+    expect(spawnSyncMock).toHaveBeenCalledTimes(2);
   });
 
   it("healthCheck surfaces the missing dependency", async () => {
