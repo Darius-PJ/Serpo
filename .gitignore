@@ -50,6 +50,10 @@ yarn-error.log*
 # personal Claude Code permission grants stay off the shared repo
 .claude/settings.local.json
 
+# AI-assistant instruction files stay local (next dev re-creates AGENTS.md)
+AGENTS.md
+CLAUDE.md
+
 # local database — this app's entire dataset; never goes to git
 /data/*.db
 /data/*.db-journal
