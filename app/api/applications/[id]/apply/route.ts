@@ -6,6 +6,7 @@ import { tailorResume } from "@/lib/apply/tailorResume";
 import { renderResumeDocx } from "@/lib/apply/renderDocx";
 import { runApplyAutomation } from "@/lib/apply/browserApply";
 import { confirmApplicationSubmission } from "@/lib/apply/submission";
+import { queueOutreachPreparation } from "@/lib/outreach/autoPrepare";
 
 export const dynamic = "force-dynamic";
 
@@ -87,6 +88,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         evidence: result.submissionEvidence,
         runData: { tailoredResumePath: resumePath, formAnswersSnapshot, error: null },
       });
+      if (confirmed.becameSubmitted) queueOutreachPreparation(userId, id);
       return NextResponse.json({ run: confirmed.run, application: confirmed.application });
     }
 

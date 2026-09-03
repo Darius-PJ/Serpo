@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db/prisma";
 const ACTION_LABELS: Record<string, string> = {
   "application.submission_confirmed": "Submission confirmed",
   "application.status_changed": "Status changed",
+  "application.outreach_prepared": "Outreach prepared",
+  "application.outreach_failed": "Outreach preparation failed",
 };
 
 /** Human label for an AuditEvent action; unknown actions render as recorded. */
@@ -12,6 +14,17 @@ export function describeAuditAction(action: string, details?: string | null): st
     try {
       const { from, to } = JSON.parse(details) as { from?: unknown; to?: unknown };
       if (typeof from === "string" && typeof to === "string") return `Status changed: ${from} → ${to}`;
+    } catch {
+      // fall through to the plain label
+    }
+  }
+  if (action === "application.outreach_prepared" && details) {
+    try {
+      const { contactsLinked, draftId } = JSON.parse(details) as { contactsLinked?: unknown; draftId?: unknown };
+      if (typeof contactsLinked === "number") {
+        const draftNote = draftId ? "draft ready for review" : "no draft (AI assistance off)";
+        return `Outreach prepared: ${contactsLinked} contact${contactsLinked === 1 ? "" : "s"} found, ${draftNote}`;
+      }
     } catch {
       // fall through to the plain label
     }

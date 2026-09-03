@@ -7,10 +7,17 @@ export interface DecisionMakerResult {
   confidence?: string;
 }
 
+/** What to research: a user-confirmed domain, or the company name exactly as
+ * the user entered it — never a guessed domain. */
+export interface OsintQuery {
+  domain?: string;
+  company?: string;
+}
+
 export interface OsintConnector {
   key: string;
   label: string;
   isConfigured(): boolean;
-  /** Research a company by domain and return whatever contact signals it finds. */
-  research(domain: string): Promise<DecisionMakerResult[]>;
+  /** Research a company and return whatever contact signals the tool finds. */
+  research(query: OsintQuery): Promise<DecisionMakerResult[]>;
 }

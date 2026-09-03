@@ -4,6 +4,7 @@ import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 import { isApplicationStatus } from "@/lib/applicationStatus";
 import { changeApplicationStatus } from "@/lib/applications/changeStatus";
+import { queueOutreachPreparation } from "@/lib/outreach/autoPrepare";
 
 export const dynamic = "force-dynamic";
 const MAX_FIELD_LENGTH = 200;
@@ -82,6 +83,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return NextResponse.json({ error: "not found" }, { status: 404 });
     }
     application = changed;
+    // Entering Submitted kicks off contact discovery + an outreach draft in
+    // the background, after this response is sent.
+    if (body.status === "Submitted" && existing.status !== "Submitted") {
+      queueOutreachPreparation(userId, id);
+    }
   }
 
   return NextResponse.json({ application });

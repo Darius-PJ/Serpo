@@ -1,5 +1,5 @@
 import { hunterConnector } from "./hunter";
-import type { DecisionMakerResult, OsintConnector } from "./types";
+import type { DecisionMakerResult, OsintConnector, OsintQuery } from "./types";
 
 // Add another OSINT tool by implementing OsintConnector and registering it here.
 const CONNECTORS: OsintConnector[] = [hunterConnector];
@@ -11,13 +11,13 @@ export interface OsintRunResult {
   error?: string;
 }
 
-export async function researchAllTools(domain: string): Promise<OsintRunResult[]> {
+export async function researchAllTools(query: OsintQuery): Promise<OsintRunResult[]> {
   const configured = configuredOsintConnectors();
 
   return Promise.all(
     configured.map(async (connector): Promise<OsintRunResult> => {
       try {
-        const results = await connector.research(domain);
+        const results = await connector.research(query);
         return { tool: connector.key, label: connector.label, results };
       } catch (err) {
         return {
@@ -36,4 +36,4 @@ export function configuredOsintConnectors() {
 }
 
 export { CONNECTORS as osintConnectors };
-export type { DecisionMakerResult, OsintConnector } from "./types";
+export type { DecisionMakerResult, OsintConnector, OsintQuery } from "./types";

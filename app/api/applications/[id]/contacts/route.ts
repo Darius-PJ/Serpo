@@ -68,7 +68,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Contact research is not configured. No research was sent." }, { status: 503 });
   }
 
-  const runs = await researchAllTools(domain);
+  const runs = await researchAllTools({ domain });
   const existingLinks = await listContactsForApplication(userId, id);
   const seen = new Set(existingLinks.map((link) => contactKey(link.contact)));
   const created = [];

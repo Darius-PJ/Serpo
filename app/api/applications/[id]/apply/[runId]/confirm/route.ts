@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 import { confirmApplicationSubmission, makeUserAttestationEvidence } from "@/lib/apply/submission";
+import { queueOutreachPreparation } from "@/lib/outreach/autoPrepare";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       applyRunId: runId,
       evidence: makeUserAttestationEvidence(),
     });
+    if (confirmed.becameSubmitted) queueOutreachPreparation(userId, id);
     return NextResponse.json(confirmed);
   } catch (err) {
     if (err instanceof Error && (err.message === "not found" || err.message === "apply run not found")) {
