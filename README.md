@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/RokuroSerpo.avif" alt="RokuroSerpo" width="720">
+  <img src="public/Serpo.avif" alt="Serpo" width="720">
 </p>
 
-# RokuroSerpo
+# Serpo
 
 A local-first, single-user CRM for a job search. Track applications through a
 pipeline, keep contacts and interaction history, queue follow-ups and tasks,
@@ -53,7 +53,7 @@ it is safe to run again any time, e.g. after `git pull`.
 
 ### Easiest: the installer
 
-If someone sent you `Install-RokuroSerpo.cmd`, that one file is the whole
+If someone sent you `Install-Serpo.cmd`, that one file is the whole
 install: double-click it and it puts the app in your Documents folder, gets
 Node.js if your machine has none (app-private, nothing installed
 system-wide), creates a desktop shortcut, and starts up — while the JobSpy
@@ -63,9 +63,9 @@ the background. You need nothing else. (Maintainers build it with
 
 ### Windows: double-click
 
-Double-click `RokuroSerpo.cmd` in the repository folder. It installs
+Double-click `Serpo.cmd` in the repository folder. It installs
 anything missing, finds a free port, starts the server, and opens the
-dashboard. For a desktop shortcut, right-click `RokuroSerpo.cmd` → Send to →
+dashboard. For a desktop shortcut, right-click `Serpo.cmd` → Send to →
 Desktop (create shortcut) — after that you're done.
 
 ### Any platform: the command line

@@ -16,8 +16,8 @@ const nunito = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "RokuroSerpo",
-  description: "RokuroSerpo — a local-first job & contract application tracker",
+  title: "Serpo",
+  description: "Serpo — a local-first job & contract application tracker",
 };
 
 export default async function RootLayout({

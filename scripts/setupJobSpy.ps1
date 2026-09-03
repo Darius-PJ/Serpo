@@ -7,7 +7,7 @@ param([string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot))
 
 $ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$stateRoot = Join-Path $env:LOCALAPPDATA "RokuroSerpo"
+$stateRoot = Join-Path $env:LOCALAPPDATA "Serpo"
 $venv = Join-Path $ProjectRoot ".venv-jobspy"
 $venvPython = Join-Path $venv "Scripts\python.exe"
 
@@ -70,7 +70,7 @@ Write-Host "Creating the JobSpy Python environment..."
 # Remove-Item and even python -m venv --clear fail on (long-path support is
 # off by default in Windows), while robocopy handles any depth.
 if (Test-Path $venv) {
-  $emptyDir = Join-Path $env:TEMP "rokuroserpo-empty"
+  $emptyDir = Join-Path $env:TEMP "serpo-empty"
   New-Item -ItemType Directory -Force -Path $emptyDir | Out-Null
   robocopy $emptyDir $venv /MIR /NJH /NJS /NDL /NFL | Out-Null
   Remove-Item -Recurse -Force $venv
