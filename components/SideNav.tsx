@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
 
-const STORAGE_KEY = "rokuroserpo-nav-collapsed";
+const STORAGE_KEY = "serpo-nav-collapsed";
 
 // The collapse preference lives in localStorage (an external store), read via
 // useSyncExternalStore: the server snapshot renders expanded, and React
@@ -134,7 +134,7 @@ export function SideNav() {
       <Link
         href="/dashboard"
         className="mx-2 mt-3 flex flex-col items-center gap-1.5 rounded-xl px-3 py-2"
-        aria-label="RokuroSerpo home"
+        aria-label="Serpo home"
       >
         <Image
           src="/Rokuro-logo.jpg"
@@ -150,7 +150,7 @@ export function SideNav() {
             collapsed ? "hidden" : "hidden md:inline"
           }`}
         >
-          RokuroSerpo
+          Serpo
         </span>
       </Link>
       <nav aria-label="Primary navigation" className="mt-2 flex w-full flex-1 flex-col gap-1 px-2 py-1">

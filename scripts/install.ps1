@@ -1,12 +1,12 @@
 # First-run installer, executed from the installed copy by the self-extracting
-# Install-RokuroSerpo.cmd (see scripts/buildInstaller.ps1). Provides Node.js if
+# Install-Serpo.cmd (see scripts/buildInstaller.ps1). Provides Node.js if
 # the machine has none (official portable build, app-private, no admin rights),
 # creates a desktop shortcut, and hands off to the normal launcher.
 param([switch]$SkipLaunch)
 
 $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$stateRoot = Join-Path $env:LOCALAPPDATA "RokuroSerpo"
+$stateRoot = Join-Path $env:LOCALAPPDATA "Serpo"
 $portableNode = Join-Path $stateRoot "node"
 
 function Test-NodeVersion {
@@ -52,12 +52,12 @@ if (Test-NodeVersion) {
   $env:Path = "$portableNode;$env:Path"
 
   if (-not (Test-NodeVersion)) { throw "The downloaded Node.js did not run correctly." }
-  Write-Host "Node.js $version ready (private to RokuroSerpo, nothing installed system-wide)." -ForegroundColor Green
+  Write-Host "Node.js $version ready (private to Serpo, nothing installed system-wide)." -ForegroundColor Green
 }
 
 $shell = New-Object -ComObject WScript.Shell
-$shortcut = $shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath("Desktop")) "RokuroSerpo.lnk"))
-$shortcut.TargetPath = Join-Path $projectRoot "RokuroSerpo.cmd"
+$shortcut = $shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath("Desktop")) "Serpo.lnk"))
+$shortcut.TargetPath = Join-Path $projectRoot "Serpo.cmd"
 $shortcut.WorkingDirectory = $projectRoot
 $shortcut.Save()
 Write-Host "Desktop shortcut created." -ForegroundColor Green
@@ -77,6 +77,6 @@ Write-Host "JobSpy (extra job source) is installing in the background; see $jobS
 if ($SkipLaunch) {
   Write-Host "Install finished (launch skipped)." -ForegroundColor Green
 } else {
-  Write-Host "Starting RokuroSerpo - the first run installs its packages and can take a few minutes." -ForegroundColor Cyan
-  & cmd.exe /c (Join-Path $projectRoot "RokuroSerpo.cmd")
+  Write-Host "Starting Serpo - the first run installs its packages and can take a few minutes." -ForegroundColor Cyan
+  & cmd.exe /c (Join-Path $projectRoot "Serpo.cmd")
 }

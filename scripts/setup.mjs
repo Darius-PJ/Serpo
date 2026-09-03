@@ -15,7 +15,7 @@ const [MIN_MAJOR, MIN_MINOR] = [20, 9];
 const [major, minor] = process.versions.node.split(".").map(Number);
 if (major < MIN_MAJOR || (major === MIN_MAJOR && minor < MIN_MINOR)) {
   console.error(
-    `RokuroSerpo needs Node.js ${MIN_MAJOR}.${MIN_MINOR} or newer; this is ${process.versions.node}.\n` +
+    `Serpo needs Node.js ${MIN_MAJOR}.${MIN_MINOR} or newer; this is ${process.versions.node}.\n` +
       "Install the current LTS release from https://nodejs.org and run setup again.",
   );
   process.exit(1);
@@ -51,7 +51,7 @@ if (!existsSync(lockfile)) {
   console.error("package-lock.json is missing — this is not a complete checkout of the repository.");
   process.exit(1);
 }
-const markerPath = path.join(root, "node_modules", ".rokuroserpo-setup");
+const markerPath = path.join(root, "node_modules", ".serpo-setup");
 const lockHash = () => createHash("sha256").update(readFileSync(lockfile)).digest("hex");
 if (!existsSync(path.join(root, "node_modules"))) {
   run("Installing npm packages (a first run takes a few minutes)", "npm", ["ci"]);
