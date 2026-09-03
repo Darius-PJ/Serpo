@@ -51,6 +51,14 @@ creates the SQLite database — or fail-closed verifies and upgrades an
 existing one, with an automatic backup. Setup only does the missing work, so
 it is safe to run again any time, e.g. after `git pull`.
 
+### Easiest: the installer
+
+If someone sent you `Install-RokuroSerpo.cmd`, that one file is the whole
+install: double-click it and it puts the app in your Documents folder, gets
+Node.js if your machine has none (app-private, nothing installed
+system-wide), creates a desktop shortcut, and starts up. You need nothing
+else. (Maintainers build it with `npm run build:installer`.)
+
 ### Windows: double-click
 
 Double-click `RokuroSerpo.cmd` in the repository folder. It installs

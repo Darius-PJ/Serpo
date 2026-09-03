@@ -72,6 +72,11 @@ if ((Test-PortInUse $PreferredPort) -and (Test-RokuroSerpo $PreferredPort)) {
 
 # A fresh machine reaches this point (nothing running to reuse): install
 # whatever is missing before booting. Up to date, this passes in seconds.
+# Machines set up by the installer carry an app-private portable Node.
+$portableNode = Join-Path $stateRoot "node"
+if (Test-Path (Join-Path $portableNode "node.exe")) {
+  $env:Path = "$portableNode;$env:Path"
+}
 if (-not (Get-Command node.exe -ErrorAction SilentlyContinue)) {
   throw "Node.js was not found. Install the LTS release from https://nodejs.org, then run this shortcut again."
 }

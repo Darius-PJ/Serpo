@@ -19,6 +19,11 @@ Start-Transcript -Path $logPath -Append | Out-Null
 try {
   Write-Host "Preparing RokuroSerpo at http://127.0.0.1:$Port ..." -ForegroundColor Cyan
 
+  # Machines set up by the installer carry an app-private portable Node.
+  $portableNode = Join-Path $stateRoot "node"
+  if (Test-Path (Join-Path $portableNode "node.exe")) {
+    $env:Path = "$portableNode;$env:Path"
+  }
   if (-not (Get-Command node.exe -ErrorAction SilentlyContinue)) {
     throw "Node.js was not found. Install the LTS release from https://nodejs.org, then run this script again."
   }

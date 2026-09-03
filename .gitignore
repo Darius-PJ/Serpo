@@ -30,6 +30,9 @@ __pycache__/
 # production
 /build
 
+# built installer artifacts (rebuild with npm run build:installer)
+/dist/
+
 # misc
 .DS_Store
 *.pem
