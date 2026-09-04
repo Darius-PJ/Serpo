@@ -59,6 +59,7 @@ $shell = New-Object -ComObject WScript.Shell
 $shortcut = $shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath("Desktop")) "Serpo.lnk"))
 $shortcut.TargetPath = Join-Path $projectRoot "Serpo.cmd"
 $shortcut.WorkingDirectory = $projectRoot
+$shortcut.IconLocation = (Join-Path $projectRoot "public\Rokuro.ico") + ",0"
 $shortcut.Save()
 Write-Host "Desktop shortcut created." -ForegroundColor Green
 
