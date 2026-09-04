@@ -71,7 +71,10 @@ the background. You need nothing else. (Maintainers build it with
 Double-click `Serpo.cmd` in the repository folder. It installs
 anything missing, finds a free port, starts the server, and opens the
 dashboard. For a desktop shortcut, right-click `Serpo.cmd` → Send to →
-Desktop (create shortcut) — after that you're done.
+Desktop (create shortcut) — after that you're done. To give the shortcut
+Rokuro's portrait, right-click it → Properties → Change Icon → Browse →
+`public\Rokuro.ico` in this folder. (The installer's shortcut comes with it
+already.)
 
 ### Any platform: the command line
 

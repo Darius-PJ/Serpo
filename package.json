@@ -5,6 +5,7 @@
   "scripts": {
     "setup": "node scripts/setup.mjs",
     "build:installer": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/buildInstaller.ps1",
+    "build:icon": "node scripts/buildIcon.mjs",
     "dev": "next dev -H 127.0.0.1",
     "build": "next build",
     "start": "next start -H 127.0.0.1",
