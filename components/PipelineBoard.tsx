@@ -126,13 +126,13 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Filter by company or role…"
           aria-label="Filter by company or role"
-          className="input-soft px-2.5 py-1.5 text-sm"
+          className="input-soft px-2.5 py-1.5 text-base"
         />
         <select
           value={source}
           onChange={(event) => setSource(event.target.value)}
           aria-label="Filter by source"
-          className="input-soft px-2 py-1.5 text-sm"
+          className="input-soft px-2 py-1.5 text-base"
         >
           <option value="all">All sources</option>
           {sources.map((entry) => (
@@ -143,7 +143,7 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
         </select>
       </div>
 
-      {error && <p role="alert" className="mb-3 text-sm text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="mb-3 text-base text-danger-dark">{error}</p>}
 
       <DndContext sensors={sensors} collisionDetection={collisionDetection} onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -164,14 +164,14 @@ function BoardColumn({ status, cards }: { status: string; cards: PipelineCard[] 
   const { setNodeRef, isOver } = useDroppable({ id: status });
   return (
     <div ref={setNodeRef} className={`card-soft p-3 ${isOver ? "ring-2 ring-primary" : ""}`}>
-      <h2 className="mb-2 text-sm font-bold text-primary-dark">
+      <h2 className="mb-2 text-base font-bold text-heading">
         {status} ({cards.length})
       </h2>
       <ul className="space-y-2">
         {cards.map((card) => (
           <BoardCard key={card.id} card={card} />
         ))}
-        {cards.length === 0 && <li className="text-xs text-foreground-muted">None</li>}
+        {cards.length === 0 && <li className="text-sm text-foreground-muted">None</li>}
       </ul>
     </div>
   );
@@ -185,14 +185,14 @@ function BoardCard({ card }: { card: PipelineCard }) {
     <li
       ref={setNodeRef}
       style={style}
-      className={`relative rounded-xl border border-border-soft bg-surface p-2 text-sm ${
+      className={`relative rounded-xl border border-border-soft bg-surface p-2 text-base ${
         isDragging ? "z-10 opacity-90 shadow-lg" : ""
       }`}
     >
       <div className="flex items-start justify-between gap-2">
         <Link
           href={`/applications/${card.id}`}
-          className="font-semibold text-foreground hover:text-primary-dark hover:underline"
+          className="font-semibold text-foreground hover:link-accent"
         >
           {card.company}
         </Link>
@@ -207,7 +207,7 @@ function BoardCard({ card }: { card: PipelineCard }) {
         </button>
       </div>
       <div className="text-foreground-muted">{card.role}</div>
-      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+      <div className="mt-1 flex flex-wrap items-center gap-2 text-sm">
         <span
           className={
             card.stageAgeStale
@@ -219,8 +219,8 @@ function BoardCard({ card }: { card: PipelineCard }) {
         </span>
         <span className="text-foreground-muted">{card.source}</span>
       </div>
-      {card.nextAction && <div className="mt-1 text-xs text-foreground-muted">Next: {card.nextAction}</div>}
-      {card.followUpDue && <div className="mt-1 text-xs text-accent-light">Follow-up draft due</div>}
+      {card.nextAction && <div className="mt-1 text-sm text-foreground-muted">Next: {card.nextAction}</div>}
+      {card.followUpDue && <div className="mt-1 text-sm text-accent-light">Follow-up draft due</div>}
       <div className="mt-2">
         <StatusSelect
           applicationId={card.id}

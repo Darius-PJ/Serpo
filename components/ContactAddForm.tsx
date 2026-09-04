@@ -46,34 +46,34 @@ export function ContactAddForm() {
           onChange={(event) => setName(event.target.value)}
           placeholder="Name"
           aria-label="Contact name"
-          className="input-soft px-2.5 py-1.5 text-sm"
+          className="input-soft px-2.5 py-1.5 text-base"
         />
         <input
           value={company}
           onChange={(event) => setCompany(event.target.value)}
           placeholder="Company"
           aria-label="Contact company"
-          className="input-soft px-2.5 py-1.5 text-sm"
+          className="input-soft px-2.5 py-1.5 text-base"
         />
         <input
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           placeholder="Title (optional)"
           aria-label="Contact title"
-          className="input-soft px-2.5 py-1.5 text-sm"
+          className="input-soft px-2.5 py-1.5 text-base"
         />
         <input
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="Email (optional)"
           aria-label="Contact email"
-          className="input-soft px-2.5 py-1.5 text-sm"
+          className="input-soft px-2.5 py-1.5 text-base"
         />
-        <button type="submit" disabled={saving || isPending} className="btn-primary px-3 py-1.5 text-sm">
+        <button type="submit" disabled={saving || isPending} className="btn-primary ">
           Add contact
         </button>
       </div>
-      {error && <p role="alert" className="mt-2 text-xs text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="mt-2 text-sm text-danger-dark">{error}</p>}
     </form>
   );
 }

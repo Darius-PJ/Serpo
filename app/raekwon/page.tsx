@@ -22,8 +22,8 @@ export default async function RaekwonPage() {
   return (
     <div>
       <div className="card-soft mb-6 p-4">
-        <h1 className="text-xl font-extrabold text-foreground">AI Scout</h1>
-        <p className="mt-1 text-sm text-foreground-muted">
+        <h1 className="text-2xl font-extrabold text-heading">AI Scout</h1>
+        <p className="mt-1 text-base text-foreground-muted">
           Generate a focused lead batch from configured job sources and review which sources performed best.
         </p>
       </div>

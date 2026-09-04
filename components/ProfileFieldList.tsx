@@ -28,20 +28,20 @@ export function ProfileFieldList({ fields }: { fields: ProfileField[] }) {
   }
 
   if (fields.length === 0) {
-    return <p className="text-sm text-foreground-muted">No saved answers yet — they accumulate as auto-apply runs ask for them.</p>;
+    return <p className="text-base text-foreground-muted">No saved answers yet — they accumulate as auto-apply runs ask for them.</p>;
   }
 
   return (
     <div>
-      {error && <p role="alert" className="mb-2 text-sm text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="mb-2 text-base text-danger-dark">{error}</p>}
       <ul className="space-y-2">
       {fields.map((f) => (
-        <li key={f.id} className="card-soft flex items-center justify-between p-2 text-sm">
+        <li key={f.id} className="card-soft flex items-center justify-between p-2 text-base">
           <div>
             <div className="font-semibold">{f.label}</div>
             <div className="text-foreground-muted">{f.value}</div>
           </div>
-          <button disabled={deleting === f.id} onClick={() => remove(f.id)} className="btn-danger-outline px-2 py-1 text-xs">
+          <button disabled={deleting === f.id} onClick={() => remove(f.id)} className="btn-danger-outline px-2 py-1 text-sm">
             Delete
           </button>
         </li>

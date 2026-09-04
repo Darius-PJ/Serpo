@@ -5,7 +5,7 @@ test("a manual opportunity becomes an editable CRM record with linked contact hi
   await resetWorkspace(page.context().request);
   await page.goto("/dashboard");
 
-  await page.getByRole("button", { name: "New application" }).click();
+  await page.getByRole("button", { name: "Add manual application" }).click();
   await page.getByLabel("Company").fill("Northstar Labs");
   await page.getByLabel("Role").fill("Platform Engineer");
   await page.getByLabel("Application notes").fill("Referred by the infrastructure team");

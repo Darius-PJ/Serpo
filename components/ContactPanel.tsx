@@ -112,24 +112,24 @@ export function ContactPanel({
   return (
     <section className="card-soft mb-6 p-4">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h2 className="font-bold text-foreground">Contacts</h2>
+        <h2 className="font-bold text-heading">Contacts</h2>
         <div className="flex gap-2">
           {links.length > 0 && (
-            <button onClick={() => setPurgeOpen(true)} disabled={loading} className="btn-secondary px-3 py-1.5 text-xs">
+            <button onClick={() => setPurgeOpen(true)} disabled={loading} className="btn-secondary px-3 py-1.5 text-sm">
               Delete research
             </button>
           )}
-          <button onClick={() => setConfirmOpen(true)} disabled={loading} className="btn-primary px-3 py-1.5 text-xs">
+          <button onClick={() => setConfirmOpen(true)} disabled={loading} className="btn-primary px-3 py-1.5 text-sm">
             {loading ? "Researching..." : "Research contacts"}
           </button>
         </div>
       </div>
-      <p className="mb-3 text-xs text-foreground-muted">
+      <p className="mb-3 text-sm text-foreground-muted">
         Research may send the domain you approve to configured public-source tools. Discovered people are saved as
         contacts linked to this application. No message is sent automatically.
       </p>
-      {error && <p role="alert" className="mb-2 text-xs text-danger-dark">{error}</p>}
-      {researchNotice && <p className="mb-2 text-xs text-foreground-muted">{researchNotice}</p>}
+      {error && <p role="alert" className="mb-2 text-sm text-danger-dark">{error}</p>}
+      {researchNotice && <p className="mb-2 text-sm text-foreground-muted">{researchNotice}</p>}
 
       {unlinkedContacts.length > 0 && (
         <form onSubmit={attachContact} className="mb-3 flex flex-wrap gap-2">
@@ -137,7 +137,7 @@ export function ContactPanel({
             aria-label="Attach existing contact"
             value={contactId}
             onChange={(event) => setContactId(event.target.value)}
-            className="input-soft px-2.5 py-1.5 text-sm"
+            className="input-soft px-2.5 py-1.5 text-base"
           >
             {unlinkedContacts.map((contact) => (
               <option key={contact.id} value={contact.id}>
@@ -145,20 +145,20 @@ export function ContactPanel({
               </option>
             ))}
           </select>
-          <button type="submit" disabled={loading} className="btn-secondary px-3 py-1.5 text-xs">Attach contact</button>
+          <button type="submit" disabled={loading} className="btn-secondary px-3 py-1.5 text-sm">Attach contact</button>
         </form>
       )}
 
       {links.length === 0 ? (
-        <p className="text-sm text-foreground-muted">No linked contacts yet.</p>
+        <p className="text-base text-foreground-muted">No linked contacts yet.</p>
       ) : (
-        <ul className="space-y-2 text-sm">
+        <ul className="space-y-2 text-base">
           {links.map((link) => (
             <li key={link.id} className="rounded-lg border border-border-soft p-2">
               <div className="font-medium text-foreground">{link.contact.name ?? "Name not provided"}</div>
               {link.contact.title && <div className="text-foreground-muted">{link.contact.title}</div>}
               {link.contact.email && <div className="break-all text-foreground-muted">{link.contact.email}</div>}
-              <div className="mt-1 text-xs text-foreground-muted">
+              <div className="mt-1 text-sm text-foreground-muted">
                 Source: {link.sourceTool}{link.confidence ? ` (${link.confidence})` : ""}
               </div>
               <InteractionLogForm contactId={link.contact.id} applicationId={applicationId} />
@@ -166,8 +166,8 @@ export function ContactPanel({
           ))}
         </ul>
       )}
-      <p className="mt-3 text-xs">
-        <Link href="/contacts" className="text-primary-dark underline">
+      <p className="mt-3 text-sm">
+        <Link href="/contacts" className="link-accent">
           All contacts →
         </Link>
       </p>
@@ -181,12 +181,12 @@ export function ContactPanel({
         onConfirm={research}
         onCancel={() => setConfirmOpen(false)}
       >
-        <label className="mb-1 block text-xs text-foreground-muted">Domain</label>
+        <label className="mb-1 block text-sm text-foreground-muted">Domain</label>
         <input
           value={domain}
           onChange={(event) => setDomain(event.target.value)}
           placeholder="example.com"
-          className="input-soft w-full px-2.5 py-1.5 text-sm"
+          className="input-soft w-full px-2.5 py-1.5 text-base"
         />
       </ConfirmDialog>
 

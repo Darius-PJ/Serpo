@@ -50,11 +50,11 @@ export function ConfirmDialog({
       className="card-soft fixed top-1/2 left-1/2 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 p-0 backdrop:bg-primary-dark/20 backdrop:backdrop-blur-sm"
     >
       <div className="p-4">
-        <h2 className={`mb-2 font-bold ${tone === "danger" ? "text-danger-dark" : "text-foreground"}`}>{title}</h2>
-        <p className="mb-4 text-sm text-foreground-muted">{description}</p>
+        <h2 className={`mb-2 font-bold ${tone === "danger" ? "text-danger-dark" : "text-heading"}`}>{title}</h2>
+        <p className="mb-4 text-base text-foreground-muted">{description}</p>
         {children && <div className="mb-4">{children}</div>}
         <div className="flex justify-end gap-2">
-          <button type="button" onClick={onCancel} disabled={busy} className="btn-secondary px-3 py-1.5 text-sm">
+          <button type="button" onClick={onCancel} disabled={busy} className="btn-secondary ">
             {cancelLabel}
           </button>
           <button

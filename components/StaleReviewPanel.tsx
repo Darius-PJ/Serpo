@@ -34,14 +34,14 @@ export function StaleReviewPanel({ applications }: { applications: Application[]
 
   return (
     <section className="mb-8 rounded-2xl border border-accent/40 bg-accent/10 p-4">
-      <h2 className="mb-2 font-bold text-accent-light">Review for removal</h2>
-      <p className="mb-3 text-sm text-accent-light">
+      <h2 className="mb-2 font-bold text-heading">Review for removal</h2>
+      <p className="mb-3 text-base text-accent-light">
         No status change in 3+ months. Nothing is deleted until you choose Remove.
       </p>
-      {error && <p role="alert" className="mb-3 text-sm text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="mb-3 text-base text-danger-dark">{error}</p>}
       <ul className="space-y-2">
         {applications.map((app) => (
-          <li key={app.id} className="flex items-center justify-between rounded-xl bg-surface p-2 text-sm">
+          <li key={app.id} className="flex items-center justify-between rounded-xl bg-surface p-2 text-base">
             <span>
               {app.company} — {app.role}{" "}
               <span className="text-foreground-muted">
@@ -49,10 +49,10 @@ export function StaleReviewPanel({ applications }: { applications: Application[]
               </span>
             </span>
             <span className="flex gap-2">
-              <button onClick={() => act("keep", app.id)} className="btn-secondary px-2 py-1 text-xs">
+              <button onClick={() => act("keep", app.id)} className="btn-secondary px-2 py-1 text-sm">
                 Keep
               </button>
-              <button onClick={() => setPendingRemove(app)} className="btn-danger-outline px-2 py-1 text-xs">
+              <button onClick={() => setPendingRemove(app)} className="btn-danger-outline px-2 py-1 text-sm">
                 Remove
               </button>
             </span>

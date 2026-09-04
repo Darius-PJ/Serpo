@@ -1,16 +1,23 @@
 import { test, expect } from "@playwright/test";
 import { resetWorkspace } from "./helpers";
 
-test("dashboard is a CRM home and the column board lives at /pipeline", async ({ page }) => {
+const EMPTY_QUEUE = "Nothing is waiting on you. When a follow-up comes due it appears here first.";
+
+test("a fresh dashboard leads with the search and grows metrics once something is tracked", async ({ page }) => {
   await resetWorkspace(page.context().request);
 
   await page.goto("/dashboard");
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
-  await expect(page.getByText("All caught up — nothing needs your attention.")).toBeVisible();
-  await expect(page.getByText("No activity yet.")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Pipeline metrics" })).toBeVisible();
+
+  // First run: one thing to do, and it is the search. Nothing to count yet.
+  await expect(page.getByRole("heading", { name: "Start with a search" })).toBeVisible();
+  await expect(page.getByText(EMPTY_QUEUE)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Add manual application" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pipeline metrics" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Recent activity" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Sourced 0" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Open board →" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open board" })).toBeVisible();
+  await expect(page.getByText("Everything here is stored in one file on this computer.", { exact: false })).toBeVisible();
 
   const created = await page.context().request.post("/api/applications", {
     headers: { "Content-Type": "application/json" },
@@ -18,7 +25,11 @@ test("dashboard is a CRM home and the column board lives at /pipeline", async ({
   });
   expect(created.ok()).toBe(true);
 
+  // With one application tracked the search stays, renamed, and the numbers appear.
   await page.reload();
+  await expect(page.getByRole("heading", { name: "Find the next one" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pipeline metrics" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Recent activity" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Sourced 1" })).toBeVisible();
   await expect(page.getByRole("cell", { name: "manual" })).toBeVisible();
 

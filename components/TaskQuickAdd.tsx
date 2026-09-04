@@ -45,19 +45,19 @@ export function TaskQuickAdd({ applicationId }: { applicationId?: string }) {
         onChange={(event) => setTitle(event.target.value)}
         placeholder="Add a task…"
         aria-label="New task title"
-        className="input-soft px-2.5 py-1.5 text-sm"
+        className="input-soft px-2.5 py-1.5 text-base"
       />
       <input
         type="date"
         value={dueDate}
         onChange={(event) => setDueDate(event.target.value)}
         aria-label="Due date"
-        className="input-soft px-2 py-1.5 text-sm"
+        className="input-soft px-2 py-1.5 text-base"
       />
-      <button type="submit" disabled={saving || isPending} className="btn-primary px-3 py-1.5 text-sm">
+      <button type="submit" disabled={saving || isPending} className="btn-primary ">
         Add task
       </button>
-      {error && <p role="alert" className="basis-full text-xs text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="basis-full text-sm text-danger-dark">{error}</p>}
     </form>
   );
 }

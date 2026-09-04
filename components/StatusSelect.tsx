@@ -35,7 +35,7 @@ export function StatusSelect({ applicationId, status, label }: { applicationId: 
         value={status}
         disabled={saving || isPending}
         onChange={(e) => onChange(e.target.value)}
-        className="input-soft px-2 py-1 text-xs font-medium"
+        className="input-soft px-2 py-1 text-sm font-medium"
       >
         {APPLICATION_STATUSES.map((s) => (
           <option key={s} value={s}>
@@ -43,7 +43,7 @@ export function StatusSelect({ applicationId, status, label }: { applicationId: 
           </option>
         ))}
       </select>
-      {error && <span role="alert" className="ml-2 text-xs text-danger-dark">{error}</span>}
+      {error && <span role="alert" className="ml-2 text-sm text-danger-dark">{error}</span>}
     </span>
   );
 }

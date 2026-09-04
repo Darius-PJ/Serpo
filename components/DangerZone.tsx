@@ -38,14 +38,14 @@ export function DangerZone() {
   return (
     <section className="mt-8 rounded-2xl border border-danger/30 bg-surface/90 p-4 shadow-sm shadow-danger/5">
       <h2 className="mb-2 font-bold text-danger-dark">Danger zone</h2>
-      <p className="mb-3 text-sm text-foreground-muted">
+      <p className="mb-3 text-base text-foreground-muted">
         Permanently deletes every application, contact, task, résumé, saved answer, and private
         sourcing resource in this local workspace. The shared job board directory is preserved.
       </p>
-      <button onClick={() => setOpen(true)} className="btn-danger-outline px-3 py-1.5 text-sm">
+      <button onClick={() => setOpen(true)} className="btn-danger-outline ">
         Wipe all my data
       </button>
-      {cleanupWarning && <p role="alert" className="mt-3 text-sm text-danger-dark">{cleanupWarning}</p>}
+      {cleanupWarning && <p role="alert" className="mt-3 text-base text-danger-dark">{cleanupWarning}</p>}
 
       <ConfirmDialog
         open={open}

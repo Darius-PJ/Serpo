@@ -39,7 +39,7 @@ export function TaskActions({ taskId, title, showSnooze = true }: { taskId: stri
           disabled={isPending || saving}
           onClick={() => patch({ completed: true })}
           aria-label={`Complete task: ${title}`}
-          className="btn-primary px-2 py-0.5 text-xs"
+          className="btn-primary px-2 py-0.5 text-sm"
         >
           Done
         </button>
@@ -49,13 +49,13 @@ export function TaskActions({ taskId, title, showSnooze = true }: { taskId: stri
             disabled={isPending || saving}
             onClick={() => patch({ snoozeDays: 1 })}
             aria-label={`Snooze task: ${title}`}
-            className="input-soft px-2 py-0.5 text-xs font-medium text-foreground-muted hover:text-primary-dark"
+            className="input-soft px-2 py-0.5 text-sm font-medium text-foreground-muted hover:text-primary-dark"
           >
             Snooze 1d
           </button>
         )}
       </span>
-      {error && <span role="alert" className="mt-1 block max-w-48 text-xs text-danger-dark">{error}</span>}
+      {error && <span role="alert" className="mt-1 block max-w-48 text-sm text-danger-dark">{error}</span>}
     </span>
   );
 }

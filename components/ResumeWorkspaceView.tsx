@@ -93,21 +93,21 @@ export function ResumeWorkspaceView({
 
   return (
     <div className="space-y-8">
-      {error && <p role="alert" className="text-sm text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="text-base text-danger-dark">{error}</p>}
       <div className="card-soft flex flex-wrap items-center justify-between gap-3 p-4">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">Resume</h1>
+          <h1 className="text-2xl font-extrabold text-heading">Resume</h1>
           {isGeneral ? (
-            <p className="mt-1 text-sm text-foreground-muted">
+            <p className="mt-1 text-base text-foreground-muted">
               General resume improvement — not tied to a specific job posting.
             </p>
           ) : (
-            <p className="mt-1 text-sm text-foreground-muted">
+            <p className="mt-1 text-base text-foreground-muted">
               {workspace.role} <span className="font-medium">at</span> {workspace.company}
               {workspace.sourceUrl && (
                 <>
                   {" · "}
-                  <a href={workspace.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-primary-dark underline">
+                  <a href={workspace.sourceUrl} target="_blank" rel="noopener noreferrer" className="link-accent">
                     Original posting
                   </a>
                 </>
@@ -118,11 +118,11 @@ export function ResumeWorkspaceView({
         {!isGeneral && (
           <div className="flex gap-2">
             {workspace.originSearchQuery && (
-              <Link href={`/sourcing?${workspace.originSearchQuery}`} className="btn-secondary px-3 py-1.5 text-sm">
+              <Link href={`/sourcing?${workspace.originSearchQuery}`} className="btn-secondary ">
                 ← Back to search
               </Link>
             )}
-            <Link href="/resume" className="btn-secondary px-3 py-1.5 text-sm">
+            <Link href="/resume" className="btn-secondary ">
               Start fresh
             </Link>
           </div>
@@ -133,7 +133,7 @@ export function ResumeWorkspaceView({
         <>
           {!templateReady && (
             <div className="card-soft p-4">
-              <p className="mb-3 text-sm text-foreground-muted">Upload your resume (.md or .docx) to touch it up.</p>
+              <p className="mb-3 text-base text-foreground-muted">Upload your resume (.md or .docx) to touch it up.</p>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -141,14 +141,14 @@ export function ResumeWorkspaceView({
                 className="hidden"
                 onChange={(e) => e.target.files?.[0] && uploadResume(e.target.files[0])}
               />
-              <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="btn-secondary px-3 py-1.5 text-sm">
+              <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="btn-secondary ">
                 {uploading ? "Uploading…" : "Upload resume"}
               </button>
             </div>
           )}
 
           <section>
-            <h2 className="mb-3 text-lg font-extrabold text-foreground">Your resume, improved</h2>
+            <h2 className="mb-3 text-lg font-extrabold text-heading">Your resume, improved</h2>
             {templateReady ? (
               <ResumeBubble
                 workspaceId={workspace.id}
@@ -166,7 +166,7 @@ export function ResumeWorkspaceView({
               />
             ) : (
               <div className="card-soft p-4">
-                <p className="text-sm text-foreground-muted">Upload your resume above to unlock this.</p>
+                <p className="text-base text-foreground-muted">Upload your resume above to unlock this.</p>
               </div>
             )}
           </section>
@@ -174,10 +174,10 @@ export function ResumeWorkspaceView({
       ) : (
         <>
           <section>
-            <h2 className="mb-3 text-lg font-extrabold text-foreground">Reference resume</h2>
+            <h2 className="mb-3 text-lg font-extrabold text-heading">Reference resume</h2>
             <div className="card-soft p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="text-xs text-foreground-muted">
+                <p className="text-sm text-foreground-muted">
                   Your uploaded resume, unmodified — the source for Improved and an option for Meld.
                 </p>
                 <input
@@ -190,23 +190,23 @@ export function ResumeWorkspaceView({
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="btn-secondary shrink-0 px-3 py-1.5 text-sm"
+                  className="btn-secondary shrink-0 "
                 >
                   {uploading ? "Uploading…" : templateReady ? "Replace resume" : "Browse"}
                 </button>
               </div>
               {templateReady ? (
-                <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap rounded-xl border border-border-soft bg-surface p-3 text-xs text-foreground">
+                <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap rounded-xl border border-border-soft bg-surface p-3 text-sm text-foreground">
                   {templateText}
                 </pre>
               ) : (
-                <p className="text-sm text-foreground-muted">No resume uploaded yet.</p>
+                <p className="text-base text-foreground-muted">No resume uploaded yet.</p>
               )}
             </div>
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-extrabold text-foreground">Your resume, improved</h2>
+            <h2 className="mb-3 text-lg font-extrabold text-heading">Your resume, improved</h2>
             {templateReady ? (
               <ResumeBubble
                 workspaceId={workspace.id}
@@ -223,13 +223,13 @@ export function ResumeWorkspaceView({
               />
             ) : (
               <div className="card-soft p-4">
-                <p className="text-sm text-foreground-muted">Upload your resume above to unlock this.</p>
+                <p className="text-base text-foreground-muted">Upload your resume above to unlock this.</p>
               </div>
             )}
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-extrabold text-foreground">Your competition</h2>
+            <h2 className="mb-3 text-lg font-extrabold text-heading">Your competition</h2>
             <ResumeBubble
               workspaceId={workspace.id}
               artifact="benchmark"
@@ -243,16 +243,16 @@ export function ResumeWorkspaceView({
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-extrabold text-foreground">Meld</h2>
+            <h2 className="mb-3 text-lg font-extrabold text-heading">Meld</h2>
             {availableMeldSources.length >= 2 ? (
               <div className="space-y-3">
                 <div className="card-soft flex flex-wrap items-end gap-3 p-4">
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-foreground-muted">Meld A</label>
+                    <label className="mb-1 block text-sm font-medium text-foreground-muted">Meld A</label>
                     <select
                       value={meldSourceA}
                       onChange={(e) => setMeldSourceA(e.target.value as MeldSource)}
-                      className="input-soft px-2.5 py-1.5 text-sm"
+                      className="input-soft px-2.5 py-1.5 text-base"
                     >
                       <option value="" disabled>
                         Choose…
@@ -267,11 +267,11 @@ export function ResumeWorkspaceView({
                     </select>
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-foreground-muted">Meld B</label>
+                    <label className="mb-1 block text-sm font-medium text-foreground-muted">Meld B</label>
                     <select
                       value={meldSourceB}
                       onChange={(e) => setMeldSourceB(e.target.value as MeldSource)}
-                      className="input-soft px-2.5 py-1.5 text-sm"
+                      className="input-soft px-2.5 py-1.5 text-base"
                     >
                       <option value="" disabled>
                         Choose…
@@ -304,7 +304,7 @@ export function ResumeWorkspaceView({
               </div>
             ) : (
               <div className="card-soft p-4">
-                <p className="text-sm text-foreground-muted">
+                <p className="text-base text-foreground-muted">
                   Upload your resume and generate at least one more resume above (improved or competition) to unlock Meld.
                 </p>
               </div>
