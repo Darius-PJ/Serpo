@@ -209,27 +209,27 @@ export function JobSearchForm() {
 
   function renderListing(listing: Listing, showAddAlias: boolean) {
     return (
-      <li key={listing.id} className="rounded-2xl border border-border-soft bg-surface p-3 text-sm">
+      <li key={listing.id} className="rounded-2xl border border-border-soft bg-surface p-3 text-base">
         <div className="font-semibold text-foreground">{listing.role}</div>
         <div className="mb-2 text-foreground-muted">
           {listing.company}
           {listing.location ? ` · ${listing.location}` : ""}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <a href={listing.url} target="_blank" rel="noopener noreferrer" className="btn-secondary px-2.5 py-1 text-xs">
+          <a href={listing.url} target="_blank" rel="noopener noreferrer" className="btn-secondary px-3 text-sm">
             Open
           </a>
           <button
             onClick={() => track(listing)}
             disabled={listing.tracked || tracked.has(listing.id) || tracking === listing.id}
-            className="btn-primary px-2.5 py-1 text-xs"
+            className="btn-primary px-3 text-sm"
           >
             {listing.tracked || tracked.has(listing.id) ? "Tracked" : tracking === listing.id ? "Tracking..." : "Track"}
           </button>
           <button
             onClick={() => openResume(listing)}
             disabled={generatingResumeFor === listing.id}
-            className="btn-secondary px-2.5 py-1 text-xs"
+            className="btn-secondary px-3 text-sm"
             title="See a competitive benchmark and an improved version of your own resume for this role"
           >
             {generatingResumeFor === listing.id ? "Generating…" : "Resume"}
@@ -238,7 +238,7 @@ export function JobSearchForm() {
             <button
               onClick={() => addAlias(listing)}
               disabled={savingAlias === listing.id}
-              className="btn-secondary px-2.5 py-1 text-xs"
+              className="btn-secondary px-3 text-sm"
               title="Treat this title as a primary match for this search from now on"
             >
               {savingAlias === listing.id ? "Saving…" : "Add alias"}
@@ -257,24 +257,24 @@ export function JobSearchForm() {
           onChange={(e) => setKeywords(e.target.value)}
           placeholder="Job title (e.g. backend engineer)"
           required
-          className="input-soft min-w-[220px] flex-1 px-3 py-2 text-sm"
+          className="input-soft min-w-[220px] flex-1 px-3 py-2 text-base"
         />
         <input
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="Location (optional)"
-          className="input-soft w-48 px-3 py-2 text-sm"
+          className="input-soft w-48 px-3 py-2 text-base"
         />
-        <label className="flex items-center gap-1 text-sm text-foreground-muted">
+        <label className="flex items-center gap-1 text-base text-foreground-muted">
           <input type="checkbox" checked={remoteOnly} onChange={(e) => setRemoteOnly(e.target.checked)} className="accent-primary" />
           Remote only
         </label>
-        <label className="flex items-center gap-1 text-sm text-foreground-muted">
+        <label className="flex items-center gap-1 text-base text-foreground-muted">
           Show
           <select
             value={pageSize}
             onChange={(e) => setPageSize(Number(e.target.value))}
-            className="input-soft px-2 py-1 text-sm"
+            className="input-soft px-2 py-1 text-base"
           >
             {PAGE_SIZE_OPTIONS.map((n) => (
               <option key={n} value={n}>
@@ -284,14 +284,14 @@ export function JobSearchForm() {
           </select>
           per page
         </label>
-        <button type="submit" disabled={loading} className="btn-primary px-4 py-2 text-sm">
+        <button type="submit" disabled={loading} className="btn-primary px-4 py-2 text-base">
           {loading ? "Searching…" : "Search"}
         </button>
       </form>
 
-      {error && <p role="alert" className="mb-4 text-sm text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="mb-4 text-base text-danger-dark">{error}</p>}
 
-      <p className="mb-4 text-xs text-foreground-muted">
+      <p className="mb-4 text-sm text-foreground-muted">
         Showing exact and same-responsibility title matches (entry/mid-level, US-based or remote). Senior,
         lead, and management titles are excluded. Related titles from the role&#39;s O*NET family are grouped
         separately — add one as an alias to always treat it as a primary match.
@@ -299,7 +299,7 @@ export function JobSearchForm() {
 
       {titleAliases.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-foreground-muted">Your aliases for &quot;{activeQuery?.kw}&quot;:</span>
+          <span className="text-sm font-medium text-foreground-muted">Your aliases for &quot;{activeQuery?.kw}&quot;:</span>
           {titleAliases.map((entry) => (
             <button key={entry.id} onClick={() => removeAlias(entry.id)} className="chip" title="Remove this alias">
               {entry.alias} ✕
@@ -310,7 +310,7 @@ export function JobSearchForm() {
 
       {suggestedTitles.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-foreground-muted">Suggested titles to try:</span>
+          <span className="text-sm font-medium text-foreground-muted">Suggested titles to try:</span>
           {suggestedTitles.map((title) => (
             <button key={title} onClick={() => searchTitle(title)} disabled={loading} className="chip">
               {title}
@@ -331,25 +331,25 @@ export function JobSearchForm() {
             return (
               <div key={group.source} className="cloud-cell p-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <h2 className="text-sm font-bold text-primary-dark">
+                  <h2 className="text-base font-bold text-heading">
                     {group.label} <span className="font-normal text-foreground-muted">({primary.length})</span>
                   </h2>
                 </div>
-                {group.error && <p className="mb-2 text-xs text-danger-dark">{group.error}</p>}
+                {group.error && <p className="mb-2 text-sm text-danger-dark">{group.error}</p>}
 
                 <ul className="max-h-96 space-y-2 overflow-y-auto pr-1">
                   {pageItems.map((listing) => renderListing(listing, false))}
                   {primary.length === 0 && related.length === 0 && !group.error && (
-                    <li className="text-xs text-foreground-muted">No matching titles</li>
+                    <li className="text-sm text-foreground-muted">No matching titles</li>
                   )}
                 </ul>
 
                 {totalPages > 1 && (
-                  <div className="mt-3 flex items-center justify-between text-xs text-foreground-muted">
+                  <div className="mt-3 flex items-center justify-between text-sm text-foreground-muted">
                     <button
                       onClick={() => setPage(group.source, page - 1)}
                       disabled={page <= 1}
-                      className="btn-secondary px-2.5 py-1 text-xs"
+                      className="btn-secondary px-3 text-sm"
                     >
                       Prev
                     </button>
@@ -359,7 +359,7 @@ export function JobSearchForm() {
                     <button
                       onClick={() => setPage(group.source, page + 1)}
                       disabled={page >= totalPages}
-                      className="btn-secondary px-2.5 py-1 text-xs"
+                      className="btn-secondary px-3 text-sm"
                     >
                       Next
                     </button>
@@ -368,7 +368,7 @@ export function JobSearchForm() {
 
                 {related.length > 0 && (
                   <details className="mt-3">
-                    <summary className="cursor-pointer text-xs font-medium text-foreground-muted">
+                    <summary className="cursor-pointer text-sm font-medium text-foreground-muted">
                       {related.length} related title{related.length === 1 ? "" : "s"} from this role&#39;s family
                     </summary>
                     <ul className="mt-2 max-h-64 space-y-2 overflow-y-auto pr-1">
@@ -383,8 +383,8 @@ export function JobSearchForm() {
       )}
 
       {searched && results.length === 0 && (
-        <p className="text-sm text-foreground-muted">
-          No sources are configured yet — add API keys in .env.local to start searching.
+        <p className="text-base text-foreground-muted">
+          Nothing came back from the sources that are set up. The keyless boards work without keys; the others need one in .env.local. You can also add a role by hand below.
         </p>
       )}
     </div>

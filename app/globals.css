@@ -1,30 +1,68 @@
 @import "tailwindcss";
 
-/* "Night Shift": deep indigo ground with terracotta accents, one committed
-   look (no light/dark split). Role semantics on a dark ground:
-   --primary-dark is the *readable-on-dark* text tint of the accent (used by
-   text-primary-dark everywhere), and --primary-ink is the dark text that sits
-   ON accent fills — white fails WCAG AA on terracotta at button sizes. */
+/* Serpo colour system, from the Hesperia palette (Monet, 2026-09-04; see
+   design/decisions.md D-001 and D-002).
+
+   Two themes follow the system setting. Light: Spear-gleam ground, violet as
+   ink, button, band, and focus ring. Dark ("Night Shift"): Vesper violet
+   ground, Spear-gleam text, gold-family accents. Every tint here is a palette
+   hue moved in lightness only, and is recorded in the brand file's tint scale.
+
+   Role semantics: --primary is the fill of the one primary action and
+   --primary-ink the text that sits on it; --primary-dark is accent text on the
+   ground (links, always underlined); --accent is for icons and large text
+   only; --danger is a fill and --danger-dark is danger text on the ground. */
 :root {
-  --background: #33305e;
-  --surface: #3d3a6b;
-  --surface-sunken: #2b2850;
-  --foreground: #efe7d8;
-  --foreground-muted: #c9bba4;
+  color-scheme: light dark;
 
-  --primary: #dc7c36;
-  --primary-light: #e89257;
-  --primary-dark: #f0a671;
-  --primary-ink: #2a2748;
+  /* light */
+  --background: #e9eef5;        /* Spear-gleam white */
+  --surface: #ffffff;
+  --surface-sunken: #dde3ec;    /* Spear-gleam, lightness 0.90 */
+  --foreground: #33305e;        /* Vesper violet as ink */
+  --foreground-muted: #55668a;  /* Earth-shadow blue: 5.75 on white, 4.93 on Spear-gleam */
+  --heading: #33305e;           /* headings are ink on the light ground */
 
-  --accent: #c9982e;
-  --accent-light: #dcae45;
+  --primary: #33305e;           /* Vesper violet fill */
+  --primary-light: #2c2951;     /* violet, lightness 0.24: hover fill */
+  --primary-dark: #33305e;      /* accent text on the light ground: violet, underlined */
+  --primary-ink: #e9eef5;       /* Spear-gleam on violet: 10.4 to 1, Lc 90 */
 
-  --danger: #b33f2e;
-  --danger-light: #c04a38;
-  --danger-dark: #f2ac9c;
+  --accent: #b0703a;            /* Cyprian copper: icons and large text on light grounds, 4.02 on white */
+  --accent-light: #c9982e;      /* Apple-gold: decorative only on light grounds (2.62 on white) */
 
-  --border-soft: #4a5580;
+  --danger: #8e3a2c;            /* Ember fill; white text on it 7.52 */
+  --danger-light: #7a3226;      /* Ember, lightness 0.32: hover fill */
+  --danger-dark: #8e3a2c;       /* Ember as text: 7.52 on white */
+
+  --border-soft: #7c78ba;       /* violet, lightness 0.60: 4.00 on white, 3.43 on Spear-gleam */
+  --focus: #33305e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #33305e;      /* Vesper violet */
+    --surface: #3e3b73;         /* violet, lightness 0.34 */
+    --surface-sunken: #2c2951;  /* violet, lightness 0.24 */
+    --foreground: #e9eef5;      /* Spear-gleam: 10.4 on violet, Lc 90 */
+    --foreground-muted: #ddd4c5; /* Tufa dust, lightness 0.82: 8.29 on violet, Lc 74; 6.88 on surface */
+    --heading: #c9982e;         /* Apple-gold: headings stand apart from body text on violet, 4.65, Lc 44 (owner's call, see design/decisions.md section 7) */
+
+    --primary: #ead4a4;         /* Apple-gold light fill; violet ink on it 8.38, Lc 74 */
+    --primary-light: #f2e3c1;   /* Apple-gold, lightness 0.85: hover fill */
+    --primary-dark: #ead4a4;    /* Apple-gold light as accent text: 8.38 on violet, Lc 75, always underlined as a link */
+    --primary-ink: #33305e;
+
+    --accent: #c9982e;          /* Apple-gold: icons and large text on violet, 4.65, Lc 44 */
+    --accent-light: #ead4a4;
+
+    --danger: #8e3a2c;          /* Ember fill; Spear-gleam text on it 6.45, Lc 79 */
+    --danger-light: #a3463a;    /* Ember, lightness 0.43: hover fill */
+    --danger-dark: #e4b2a9;     /* Ember light as text: 6.52 on violet, Lc 61; short messages with an icon or role */
+
+    --border-soft: #908cc4;     /* violet, lightness 0.66: 3.90 on violet, 3.24 on surface */
+    --focus: #ead4a4;
+  }
 }
 
 @theme inline {
@@ -33,6 +71,7 @@
   --color-surface-sunken: var(--surface-sunken);
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
+  --color-heading: var(--heading);
 
   --color-primary: var(--primary);
   --color-primary-light: var(--primary-light);
@@ -47,15 +86,12 @@
   --color-danger-dark: var(--danger-dark);
 
   --color-border-soft: var(--border-soft);
+  --color-focus: var(--focus);
 
   --font-sans: var(--font-nunito);
 }
 
-/* Stylized scrollbars, themed from the same tokens as the rest of the UI so
-   they follow any future palette change. Chromium and Safari take the padded
-   pill via ::-webkit-scrollbar; Firefox (no webkit pseudos) gets the standard
-   thin themed bar. Setting scrollbar-color unconditionally would disable the
-   webkit styling in Chromium, hence the @supports split. */
+/* Themed scrollbars, from the same tokens. */
 ::-webkit-scrollbar {
   width: 12px;
   height: 12px;
@@ -69,11 +105,11 @@
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: padding-box;
-  background-color: color-mix(in oklab, var(--primary) 65%, var(--border-soft));
+  background-color: var(--border-soft);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: color-mix(in oklab, var(--primary) 85%, var(--border-soft));
+  background-color: var(--foreground-muted);
 }
 
 ::-webkit-scrollbar-corner {
@@ -83,56 +119,76 @@
 @supports not selector(::-webkit-scrollbar) {
   * {
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklab, var(--primary) 55%, var(--border-soft)) transparent;
+    scrollbar-color: var(--border-soft) transparent;
   }
+}
+
+html {
+  font-size: 16px;
 }
 
 body {
   background-color: var(--background);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 15% -10%, color-mix(in oklab, var(--primary-light) 16%, transparent), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 5%, color-mix(in oklab, var(--accent-light) 11%, transparent), transparent);
-  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-nunito), Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+/* Motion is opt-out for anyone who asked the system for less of it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-light font-semibold text-primary-ink shadow-sm shadow-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0;
+    @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 font-semibold text-primary-ink transition-colors hover:bg-primary-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-border-soft bg-surface font-medium text-foreground transition-all hover:border-primary/40 hover:bg-primary-light/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-border-soft bg-surface px-4 font-medium text-foreground transition-colors hover:border-foreground-muted hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-danger to-danger-light font-semibold text-white shadow-sm shadow-danger/30 transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-danger/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0;
+    @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-danger px-4 font-semibold text-white transition-colors hover:bg-danger-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
   }
 
   .btn-danger-outline {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-danger/40 font-medium text-danger-dark transition-all hover:bg-danger-light/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-danger-dark px-4 font-medium text-danger-dark transition-colors hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
   }
 
   .card-soft {
-    @apply rounded-2xl border border-border-soft bg-surface/90 shadow-sm shadow-primary/5 backdrop-blur-sm;
+    @apply rounded-2xl border border-border-soft bg-surface;
   }
 
   .input-soft {
-    @apply rounded-xl border border-border-soft bg-surface text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40;
+    @apply min-h-10 rounded-xl border border-border-soft bg-surface text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus;
   }
 
   .chip {
-    @apply rounded-full border border-border-soft bg-surface px-3 py-1 text-xs text-primary-dark transition-all hover:border-primary/40 hover:bg-primary-light/15 disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex min-h-8 items-center rounded-full border border-border-soft bg-surface px-3 py-1 text-sm text-foreground transition-colors hover:border-foreground-muted hover:bg-surface-sunken disabled:pointer-events-none disabled:opacity-50;
   }
 
-  /* Soft, puffy, cloud-like result cell — big radius + layered glow rather than
-     a literal wobbly blob outline, which would clip/distort the scrollable
-     list and pagination controls it needs to hold. */
+  /* A result cell: the same card as everywhere else. The earlier "cloud" glow
+     was the one shape used nowhere else in the product. */
   .cloud-cell {
-    @apply relative flex flex-col overflow-hidden rounded-[2.5rem] border border-border-soft bg-surface/95;
-    box-shadow:
-      0 12px 32px -10px color-mix(in oklab, var(--primary) 30%, transparent),
-      0 3px 10px -3px color-mix(in oklab, var(--primary) 18%, transparent);
+    @apply relative flex flex-col overflow-hidden rounded-2xl border border-border-soft bg-surface;
+  }
+
+  /* Accent text on the ground is a link colour, and links are underlined so
+     they never depend on colour alone. */
+  .link-accent {
+    @apply font-medium text-primary-dark underline decoration-1 underline-offset-2 hover:decoration-2;
+  }
+
+  /* The one-line explanation under a page heading. */
+  .page-lede {
+    @apply mb-6 max-w-prose text-base text-foreground-muted;
   }
 }

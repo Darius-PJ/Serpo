@@ -137,39 +137,39 @@ export function RaekwonPanel({
     <div className="space-y-6">
       <form onSubmit={generate} className="card-soft flex flex-wrap items-end gap-3 p-4">
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground-muted">Keyword</label>
+          <label className="mb-1 block text-sm font-medium text-foreground-muted">Keyword</label>
           <input
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             placeholder="e.g. backend engineer"
             required
-            className="input-soft w-52 px-3 py-1.5 text-sm"
+            className="input-soft w-52 "
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground-muted">Location</label>
-          <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Optional" className="input-soft w-40 px-3 py-1.5 text-sm" />
+          <label className="mb-1 block text-sm font-medium text-foreground-muted">Location</label>
+          <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Optional" className="input-soft w-40 " />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground-muted">Job type</label>
-          <select value={jobType} onChange={(e) => setJobType(e.target.value)} className="input-soft px-2 py-1.5 text-sm">
+          <label className="mb-1 block text-sm font-medium text-foreground-muted">Job type</label>
+          <select value={jobType} onChange={(e) => setJobType(e.target.value)} className="input-soft px-2 py-1.5 text-base">
             <option value="">Any</option>
             <option value="full-time">Full-time</option>
             <option value="contract">Contract</option>
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground-muted">Salary / hourly rate target</label>
+          <label className="mb-1 block text-sm font-medium text-foreground-muted">Salary / hourly rate target</label>
           <input
             value={compensationTarget}
             onChange={(e) => setCompensationTarget(e.target.value)}
             placeholder="e.g. $120k+ or $60/hr"
-            className="input-soft w-48 px-3 py-1.5 text-sm"
+            className="input-soft w-48 "
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground-muted">Batch size</label>
-          <select value={batchSize} onChange={(e) => setBatchSize(Number(e.target.value))} className="input-soft px-2 py-1.5 text-sm">
+          <label className="mb-1 block text-sm font-medium text-foreground-muted">Batch size</label>
+          <select value={batchSize} onChange={(e) => setBatchSize(Number(e.target.value))} className="input-soft px-2 py-1.5 text-base">
             {BATCH_SIZE_OPTIONS.map((n) => (
               <option key={n} value={n}>
                 {n}
@@ -177,18 +177,18 @@ export function RaekwonPanel({
             ))}
           </select>
         </div>
-        <button type="submit" disabled={generating} className="btn-primary px-4 py-2 text-sm">
+        <button type="submit" disabled={generating} className="btn-primary px-4 py-2 text-base">
           {generating ? "Cooking… (up to 2 min)" : "Generate"}
         </button>
       </form>
 
-      {error && <p className="text-sm text-danger-dark">{error}</p>}
+      {error && <p className="text-base text-danger-dark">{error}</p>}
 
       {leads.length > 0 && (
         <div className="cloud-cell overflow-x-auto p-4">
-          <table className="w-full min-w-[950px] text-left text-sm">
+          <table className="w-full min-w-[950px] text-left text-base">
             <thead>
-              <tr className="border-b border-border-soft text-xs font-bold uppercase tracking-wide text-primary-dark">
+              <tr className="border-b border-border-soft text-sm font-bold uppercase tracking-wide text-primary-dark">
                 <th className="pb-2 pr-3">#</th>
                 <th className="pb-2 pr-3">Company</th>
                 <th className="pb-2 pr-3">Role</th>
@@ -207,7 +207,7 @@ export function RaekwonPanel({
                   <td className="py-2 pr-3 font-semibold text-foreground">{lead.company}</td>
                   <td className="py-2 pr-3">
                     {lead.roleTitle}
-                    <div className="text-xs text-foreground-muted">via &quot;{lead.keyword}&quot;</div>
+                    <div className="text-sm text-foreground-muted">via &quot;{lead.keyword}&quot;</div>
                   </td>
                   <td className="py-2 pr-3 text-foreground-muted">{lead.location ?? "—"}</td>
                   <td className="py-2 pr-3 text-foreground-muted">{lead.jobType}</td>
@@ -216,15 +216,15 @@ export function RaekwonPanel({
                   <td className="py-2 pr-3 max-w-xs text-foreground-muted">
                     {lead.explanation}
                     {suppressedCount(lead) > 0 && (
-                      <div className="mt-1 text-xs text-foreground-muted italic">+{suppressedCount(lead)} similar posting(s) suppressed</div>
+                      <div className="mt-1 text-sm text-foreground-muted italic">+{suppressedCount(lead)} similar posting(s) suppressed</div>
                     )}
                   </td>
                   <td className="py-2">
                     <div className="flex flex-col gap-1">
-                      <a href={lead.sourceUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary px-2.5 py-1 text-xs">
+                      <a href={lead.sourceUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary px-3 text-sm">
                         Open
                       </a>
-                      <button onClick={() => track(lead)} disabled={trackedUrls.has(canonicalUrl(lead.sourceUrl)) || tracking === lead.id} className="btn-primary px-2.5 py-1 text-xs">
+                      <button onClick={() => track(lead)} disabled={trackedUrls.has(canonicalUrl(lead.sourceUrl)) || tracking === lead.id} className="btn-primary px-3 text-sm">
                         {trackedUrls.has(canonicalUrl(lead.sourceUrl)) ? "Tracked" : tracking === lead.id ? "Tracking…" : "Track"}
                       </button>
                     </div>
@@ -238,7 +238,7 @@ export function RaekwonPanel({
 
       {report?.sourcesHubMarkdown && (
         <div className="card-soft p-4">
-          <h2 className="mb-2 font-bold text-foreground">Best-performing sources</h2>
+          <h2 className="mb-2 font-bold text-heading">Best-performing sources</h2>
           <MarkdownLite markdown={report.sourcesHubMarkdown} />
         </div>
       )}

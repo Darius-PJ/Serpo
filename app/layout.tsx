@@ -30,14 +30,14 @@ export default async function RootLayout({
       <body className="min-h-screen bg-background text-foreground antialiased">
         <a
           href="#main-content"
-          className="sr-only absolute left-4 top-4 z-50 rounded bg-primary px-3 py-2 text-sm font-semibold text-primary-ink focus:not-sr-only"
+          className="sr-only absolute left-4 top-4 z-50 rounded-xl bg-primary px-3 py-2 text-base font-semibold text-primary-ink focus:not-sr-only"
         >
           Skip to main content
         </a>
         <div className="flex min-h-screen">
           <SideNav />
           <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 px-4 py-6">
-            <div className="mx-auto max-w-5xl">{children}</div>
+            <div className="mx-auto max-w-6xl">{children}</div>
           </main>
         </div>
       </body>

@@ -7,11 +7,11 @@ test("tasks flow from quick-add through the attention queue, pipeline cards, don
 
   // A fresh account starts caught up; adding a standalone task changes that.
   await page.goto("/dashboard");
-  await expect(page.getByText("All caught up — nothing needs your attention.")).toBeVisible();
+  await expect(page.getByText("Nothing is waiting on you. When a follow-up comes due it appears here first.")).toBeVisible();
   await page.getByLabel("New task title").fill("Update resume");
   await page.getByRole("button", { name: "Add task" }).click();
   await expect(page.getByText("Update resume")).toBeVisible();
-  await expect(page.getByText("All caught up — nothing needs your attention.")).not.toBeVisible();
+  await expect(page.getByText("Nothing is waiting on you. When a follow-up comes due it appears here first.")).not.toBeVisible();
 
   // An application-linked task added from the detail page, dated in the past
   // so it is immediately due.
@@ -47,5 +47,5 @@ test("tasks flow from quick-add through the attention queue, pipeline cards, don
   // Completing the standalone task empties the queue again.
   await page.goto("/dashboard");
   await page.getByRole("button", { name: "Complete task: Update resume" }).click();
-  await expect(page.getByText("All caught up — nothing needs your attention.")).toBeVisible();
+  await expect(page.getByText("Nothing is waiting on you. When a follow-up comes due it appears here first.")).toBeVisible();
 });

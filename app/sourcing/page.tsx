@@ -33,12 +33,12 @@ export default async function SourcingPage() {
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">Sourcing</h1>
-          <p className="text-sm text-foreground-muted">Search live sources, review boards, or ask the AI scout for a focused lead batch.</p>
+          <h1 className="text-2xl font-extrabold text-heading">Sourcing</h1>
+          <p className="page-lede mb-0">Job boards, saved resources, and the AI scout. The quick search also lives on the dashboard.</p>
         </div>
-        <Link href="/raekwon" className="btn-secondary px-3 py-1.5 text-sm">Open AI Scout</Link>
+        <Link href="/raekwon" className="btn-secondary">Open AI Scout</Link>
       </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
         <div className="min-w-0">

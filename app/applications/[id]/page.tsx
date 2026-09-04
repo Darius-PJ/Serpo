@@ -42,28 +42,28 @@ export default async function ApplicationDetailPage({
 
   return (
     <div>
-      <Link href="/pipeline" className="mb-3 inline-flex text-sm text-primary-dark underline">
+      <Link href="/pipeline" className="mb-3 inline-flex text-base link-accent">
         Back to pipeline
       </Link>
       <div className="card-soft mb-6 p-4">
-        <h1 className="text-xl font-extrabold text-foreground">
+        <h1 className="text-2xl font-extrabold text-heading">
           {application.role} <span className="font-medium text-foreground-muted">at {application.company}</span>
         </h1>
-        <div className="mt-2 flex items-center gap-3 text-sm text-foreground-muted">
+        <div className="mt-2 flex items-center gap-3 text-base text-foreground-muted">
           <StatusSelect
             applicationId={application.id}
             status={application.status}
             label={`Status for ${application.company} — ${application.role}`}
           />
           {application.url && (
-            <a href={application.url} target="_blank" rel="noopener noreferrer" className="text-primary-dark underline">
+            <a href={application.url} target="_blank" rel="noopener noreferrer" className="link-accent">
               Original posting
             </a>
           )}
           <span>Source: {application.source}</span>
         </div>
         {application.appliedAt && (
-          <p className="mt-1 text-xs text-foreground-muted">
+          <p className="mt-1 text-sm text-foreground-muted">
             Applied {application.appliedAt.toLocaleDateString()}
           </p>
         )}
@@ -78,15 +78,15 @@ export default async function ApplicationDetailPage({
       />
 
       <section aria-labelledby="application-tasks" className="card-soft mb-6 p-4">
-        <h2 id="application-tasks" className="mb-2 text-sm font-bold text-primary-dark">
+        <h2 id="application-tasks" className="mb-2 text-base font-bold text-heading">
           Tasks
         </h2>
         {tasks.length === 0 ? (
-          <p className="mb-3 text-sm text-foreground-muted">No open tasks.</p>
+          <p className="mb-3 text-base text-foreground-muted">No open tasks.</p>
         ) : (
           <ul className="mb-3 divide-y divide-border-soft">
             {tasks.map((task) => (
-              <li key={task.id} className="flex items-center gap-3 py-2 text-sm">
+              <li key={task.id} className="flex items-center gap-3 py-2 text-base">
                 <span className="min-w-0 flex-1">
                   <span className="font-semibold text-foreground">{task.title}</span>
                   {task.dueAt && (
@@ -117,15 +117,15 @@ export default async function ApplicationDetailPage({
       />
 
       <section aria-labelledby="application-timeline" className="card-soft mb-6 p-4">
-        <h2 id="application-timeline" className="mb-2 font-bold text-foreground">
+        <h2 id="application-timeline" className="mb-2 font-bold text-heading">
           Timeline
         </h2>
-        <ul className="space-y-1.5 border-l-2 border-border-soft pl-3 text-sm">
+        <ul className="space-y-1.5 border-l-2 border-border-soft pl-3 text-base">
           {(timeline ?? []).map((entry) => (
             <li key={entry.id}>
               <span className="font-medium text-foreground">{entry.label}</span>
               {entry.detail && <span className="text-foreground-muted"> — {entry.detail}</span>}
-              <span className="ml-2 text-xs text-foreground-muted">{entry.at.toLocaleDateString()}</span>
+              <span className="ml-2 text-sm text-foreground-muted">{entry.at.toLocaleDateString()}</span>
             </li>
           ))}
         </ul>

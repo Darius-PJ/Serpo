@@ -12,10 +12,13 @@ export default async function PipelinePage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-extrabold text-foreground">Pipeline</h1>
-        <Link href="/sourcing" className="btn-primary px-3 py-1.5 text-sm">
-          Source jobs
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-extrabold text-heading">Pipeline</h1>
+          <p className="page-lede mb-0">Every application by stage. Drag a card or change its status; each move is kept in the application&apos;s timeline.</p>
+        </div>
+        <Link href="/dashboard" className="btn-primary">
+          Search for roles
         </Link>
       </div>
 

@@ -21,7 +21,7 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
       nodes.push(<strong key={`${keyPrefix}-${i++}`}>{match[1]}</strong>);
     } else {
       nodes.push(
-        <a key={`${keyPrefix}-${i++}`} href={match[3]} target="_blank" rel="noopener noreferrer" className="text-primary-dark underline">
+        <a key={`${keyPrefix}-${i++}`} href={match[3]} target="_blank" rel="noopener noreferrer" className="link-accent">
           {match[2]}
         </a>
       );
@@ -65,19 +65,19 @@ export function MarkdownLite({ markdown }: { markdown: string }) {
     const h1Match = trimmed.match(/^#\s+(.*)$/);
     if (h2Match) {
       elements.push(
-        <h3 key={index} className="mt-3 text-sm font-bold text-primary-dark">
+        <h3 key={index} className="mt-3 text-base font-bold text-heading">
           {renderInline(h2Match[1], `h2-${index}`)}
         </h3>
       );
     } else if (h1Match) {
       elements.push(
-        <h2 key={index} className="mt-4 text-base font-extrabold text-foreground">
+        <h2 key={index} className="mt-4 text-base font-extrabold text-heading">
           {renderInline(h1Match[1], `h1-${index}`)}
         </h2>
       );
     } else {
       elements.push(
-        <p key={index} className="text-sm text-foreground-muted">
+        <p key={index} className="text-base text-foreground-muted">
           {renderInline(trimmed, `p-${index}`)}
         </p>
       );

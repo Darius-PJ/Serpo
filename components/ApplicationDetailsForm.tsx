@@ -49,23 +49,23 @@ export function ApplicationDetailsForm({
 
   return (
     <form onSubmit={onSubmit} className="card-soft mb-6 grid gap-3 p-4 sm:grid-cols-2">
-      <h2 className="font-bold text-foreground sm:col-span-2">Application record</h2>
-      <label className="text-sm font-medium">Company
+      <h2 className="font-bold text-heading sm:col-span-2">Application record</h2>
+      <label className="text-base font-medium">Company
         <input value={company} onChange={(event) => setCompany(event.target.value)} className="input-soft mt-1 w-full px-3 py-2" />
       </label>
-      <label className="text-sm font-medium">Role
+      <label className="text-base font-medium">Role
         <input value={role} onChange={(event) => setRole(event.target.value)} className="input-soft mt-1 w-full px-3 py-2" />
       </label>
-      <label className="text-sm font-medium sm:col-span-2">Application notes
+      <label className="text-base font-medium sm:col-span-2">Application notes
         <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={4} className="input-soft mt-1 w-full px-3 py-2" />
       </label>
-      <label className="text-sm font-medium sm:col-span-2">Captured job description
+      <label className="text-base font-medium sm:col-span-2">Captured job description
         <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={6} className="input-soft mt-1 w-full px-3 py-2" />
       </label>
-      {error && <p role="alert" className="text-sm text-danger-dark sm:col-span-2">{error}</p>}
+      {error && <p role="alert" className="text-base text-danger-dark sm:col-span-2">{error}</p>}
       <div className="flex items-center gap-3 sm:col-span-2">
-        <button type="submit" disabled={saving} className="btn-primary px-3 py-1.5 text-sm">Save details</button>
-        {saved && <span role="status" className="text-xs text-foreground-muted">Saved</span>}
+        <button type="submit" disabled={saving} className="btn-primary ">Save details</button>
+        {saved && <span role="status" className="text-sm text-foreground-muted">Saved</span>}
       </div>
     </form>
   );

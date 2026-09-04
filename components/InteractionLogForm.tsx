@@ -40,7 +40,7 @@ export function InteractionLogForm({ contactId, applicationId }: { contactId: st
         value={kind}
         onChange={(event) => setKind(event.target.value)}
         aria-label="Interaction kind"
-        className="input-soft px-2 py-1 text-xs"
+        className="input-soft px-2 py-1 text-sm"
       >
         {INTERACTION_KINDS.map((entry) => (
           <option key={entry} value={entry}>
@@ -52,7 +52,7 @@ export function InteractionLogForm({ contactId, applicationId }: { contactId: st
         value={direction}
         onChange={(event) => setDirection(event.target.value)}
         aria-label="Interaction direction"
-        className="input-soft px-2 py-1 text-xs"
+        className="input-soft px-2 py-1 text-sm"
       >
         {INTERACTION_DIRECTIONS.map((entry) => (
           <option key={entry} value={entry}>
@@ -65,12 +65,12 @@ export function InteractionLogForm({ contactId, applicationId }: { contactId: st
         onChange={(event) => setNotes(event.target.value)}
         placeholder="Note (optional)"
         aria-label="Interaction note"
-        className="input-soft px-2 py-1 text-xs"
+        className="input-soft px-2 py-1 text-sm"
       />
-      <button type="submit" disabled={saving || isPending} className="btn-primary px-2.5 py-1 text-xs">
+      <button type="submit" disabled={saving || isPending} className="btn-primary px-3 text-sm">
         Log interaction
       </button>
-      {error && <p role="alert" className="basis-full text-xs text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="basis-full text-sm text-danger-dark">{error}</p>}
     </form>
   );
 }

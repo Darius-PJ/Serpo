@@ -185,12 +185,12 @@ export function ResumeBubble({
   if (status === "not_started") {
     return (
       <div className="card-soft p-4">
-        <h2 className="mb-2 font-bold text-foreground">{label}</h2>
-        <p className="mb-3 text-xs text-foreground-muted">{disclaimer}</p>
-        <button onClick={regenerate} disabled={busy || regenerateDisabled} className="btn-primary px-3 py-1.5 text-sm">
+        <h2 className="mb-2 font-bold text-heading">{label}</h2>
+        <p className="mb-3 text-sm text-foreground-muted">{disclaimer}</p>
+        <button onClick={regenerate} disabled={busy || regenerateDisabled} className="btn-primary ">
           {busy ? "Working… (up to a minute)" : generateLabel}
         </button>
-        {error && <p className="mt-2 text-sm text-danger-dark">{error}</p>}
+        {error && <p className="mt-2 text-base text-danger-dark">{error}</p>}
       </div>
     );
   }
@@ -198,9 +198,9 @@ export function ResumeBubble({
   if (status === "failed" && !initialContent) {
     return (
       <div className="card-soft p-4">
-        <h2 className="mb-2 font-bold text-foreground">{label}</h2>
-        <p className="mb-3 text-sm text-danger-dark">{error ?? "Generation failed."}</p>
-        <button onClick={regenerate} disabled={busy} className="btn-primary px-3 py-1.5 text-sm">
+        <h2 className="mb-2 font-bold text-heading">{label}</h2>
+        <p className="mb-3 text-base text-danger-dark">{error ?? "Generation failed."}</p>
+        <button onClick={regenerate} disabled={busy} className="btn-primary ">
           {busy ? "Trying again…" : "Try again"}
         </button>
       </div>
@@ -211,19 +211,19 @@ export function ResumeBubble({
     <div className="space-y-4">
       <div className="card-soft p-4">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="font-bold text-foreground">{label}</h2>
-          {savedAt && <span className="text-xs text-foreground-muted">Saved {savedAt.toLocaleTimeString()}</span>}
+          <h2 className="font-bold text-heading">{label}</h2>
+          {savedAt && <span className="text-sm text-foreground-muted">Saved {savedAt.toLocaleTimeString()}</span>}
         </div>
-        <p className="mb-3 rounded-xl border border-accent/40 bg-accent/10 p-2 text-xs text-accent-light">{disclaimer}</p>
+        <p className="mb-3 rounded-xl border border-accent/40 bg-accent/10 p-2 text-sm text-accent-light">{disclaimer}</p>
         <div className="flex gap-2">
-          <button onClick={save} disabled={busy} className="btn-primary px-3 py-1.5 text-sm">
+          <button onClick={save} disabled={busy} className="btn-primary ">
             {busy ? "Working…" : "Save"}
           </button>
-          <button onClick={regenerate} disabled={busy || regenerateDisabled} className="btn-secondary px-3 py-1.5 text-sm">
+          <button onClick={regenerate} disabled={busy || regenerateDisabled} className="btn-secondary ">
             {busy ? "Working…" : regenerateLabel}
           </button>
           {allowExport && (
-            <button onClick={() => setExportOpen(true)} disabled={busy} className="btn-secondary px-3 py-1.5 text-sm">
+            <button onClick={() => setExportOpen(true)} disabled={busy} className="btn-secondary ">
               Download
             </button>
           )}
@@ -240,11 +240,11 @@ export function ResumeBubble({
           onConfirm={confirmExport}
           onCancel={() => setExportOpen(false)}
         >
-          <label className="mb-1 block text-xs text-foreground-muted">Format</label>
+          <label className="mb-1 block text-sm text-foreground-muted">Format</label>
           <select
             value={exportFormat}
             onChange={(e) => setExportFormat(e.target.value as ExportFormat)}
-            className="input-soft w-full px-2.5 py-1.5 text-sm"
+            className="input-soft w-full px-2.5 py-1.5 text-base"
           >
             {EXPORT_FORMATS.map((format) => (
               <option key={format} value={format}>
@@ -255,31 +255,31 @@ export function ResumeBubble({
         </ConfirmDialog>
       )}
 
-      {error && status === "failed" && <p className="text-sm text-danger-dark">Last attempt failed: {error}</p>}
+      {error && status === "failed" && <p className="text-base text-danger-dark">Last attempt failed: {error}</p>}
 
       <div className="card-soft p-4">
-        <label className="mb-1 block text-xs font-medium text-foreground-muted">Contact header</label>
+        <label className="mb-1 block text-sm font-medium text-foreground-muted">Contact header</label>
         <input
           value={resume.contactHeader}
           onChange={(e) => setResume((prev) => ({ ...prev, contactHeader: e.target.value }))}
-          className="input-soft w-full px-3 py-1.5 text-sm"
+          className="input-soft w-full "
         />
       </div>
 
       <div className="card-soft p-4">
-        <label className="mb-1 block text-xs font-medium text-foreground-muted">Summary</label>
+        <label className="mb-1 block text-sm font-medium text-foreground-muted">Summary</label>
         <textarea
           value={resume.summary}
           onChange={(e) => setResume((prev) => ({ ...prev, summary: e.target.value }))}
           rows={3}
-          className="input-soft w-full p-2 text-sm"
+          className="input-soft w-full p-2 text-base"
         />
       </div>
 
       <div className="card-soft p-4">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="font-bold text-foreground">Experience</h2>
-          <button onClick={addExperience} className="btn-secondary px-2.5 py-1 text-xs">
+          <h2 className="font-bold text-heading">Experience</h2>
+          <button onClick={addExperience} className="btn-secondary px-3 text-sm">
             Add row
           </button>
         </div>
@@ -291,19 +291,19 @@ export function ResumeBubble({
                   value={row.employer}
                   onChange={(e) => updateExperience(i, { employer: e.target.value })}
                   placeholder="Employer"
-                  className="input-soft px-2.5 py-1 text-sm"
+                  className="input-soft px-2.5 py-1 text-base"
                 />
                 <input
                   value={row.title}
                   onChange={(e) => updateExperience(i, { title: e.target.value })}
                   placeholder="Title"
-                  className="input-soft px-2.5 py-1 text-sm"
+                  className="input-soft px-2.5 py-1 text-base"
                 />
                 <input
                   value={row.dates}
                   onChange={(e) => updateExperience(i, { dates: e.target.value })}
                   placeholder="Dates"
-                  className="input-soft px-2.5 py-1 text-sm"
+                  className="input-soft px-2.5 py-1 text-base"
                 />
               </div>
               <textarea
@@ -311,26 +311,26 @@ export function ResumeBubble({
                 onChange={(e) => updateExperience(i, { bullets: e.target.value.split("\n") })}
                 placeholder="One bullet per line"
                 rows={3}
-                className="input-soft w-full p-2 text-sm"
+                className="input-soft w-full p-2 text-base"
               />
-              <button onClick={() => removeExperience(i)} className="btn-danger-outline mt-2 px-2.5 py-1 text-xs">
+              <button onClick={() => removeExperience(i)} className="btn-danger-outline mt-2 px-3 text-sm">
                 Remove
               </button>
             </div>
           ))}
-          {resume.experience.length === 0 && <p className="text-sm text-foreground-muted">No experience rows yet.</p>}
+          {resume.experience.length === 0 && <p className="text-base text-foreground-muted">No experience rows yet.</p>}
         </div>
       </div>
 
       <div className="card-soft p-4">
-        <label className="mb-1 block text-xs font-medium text-foreground-muted">Skills (one per line)</label>
-        <textarea value={skillsText} onChange={(e) => setSkillsText(e.target.value)} rows={4} className="input-soft w-full p-2 text-sm" />
+        <label className="mb-1 block text-sm font-medium text-foreground-muted">Skills (one per line)</label>
+        <textarea value={skillsText} onChange={(e) => setSkillsText(e.target.value)} rows={4} className="input-soft w-full p-2 text-base" />
       </div>
 
       <div className="card-soft p-4">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="font-bold text-foreground">Education</h2>
-          <button onClick={addEducation} className="btn-secondary px-2.5 py-1 text-xs">
+          <h2 className="font-bold text-heading">Education</h2>
+          <button onClick={addEducation} className="btn-secondary px-3 text-sm">
             Add row
           </button>
         </div>
@@ -342,27 +342,27 @@ export function ResumeBubble({
                   value={row.institution}
                   onChange={(e) => updateEducation(i, { institution: e.target.value })}
                   placeholder="Institution"
-                  className="input-soft px-2.5 py-1 text-sm"
+                  className="input-soft px-2.5 py-1 text-base"
                 />
                 <input
                   value={row.credential}
                   onChange={(e) => updateEducation(i, { credential: e.target.value })}
                   placeholder="Credential"
-                  className="input-soft px-2.5 py-1 text-sm"
+                  className="input-soft px-2.5 py-1 text-base"
                 />
                 <input
                   value={row.dates}
                   onChange={(e) => updateEducation(i, { dates: e.target.value })}
                   placeholder="Dates"
-                  className="input-soft px-2.5 py-1 text-sm"
+                  className="input-soft px-2.5 py-1 text-base"
                 />
               </div>
-              <button onClick={() => removeEducation(i)} className="btn-danger-outline mt-2 px-2.5 py-1 text-xs">
+              <button onClick={() => removeEducation(i)} className="btn-danger-outline mt-2 px-3 text-sm">
                 Remove
               </button>
             </div>
           ))}
-          {resume.education.length === 0 && <p className="text-sm text-foreground-muted">No education rows yet.</p>}
+          {resume.education.length === 0 && <p className="text-base text-foreground-muted">No education rows yet.</p>}
         </div>
       </div>
     </div>

@@ -219,9 +219,9 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
 
   return (
     <div className="space-y-6">
-      {error && <p role="alert" className="text-sm text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="text-base text-danger-dark">{error}</p>}
       <section className="card-soft p-4">
-        <h2 className="mb-2 font-bold text-foreground">Job boards &amp; resources</h2>
+        <h2 className="mb-2 font-bold text-heading">Job boards &amp; resources</h2>
 
         {Object.entries(grouped).map(([jurisdiction, list]) => {
           const isCollapsible = COLLAPSIBLE_JURISDICTIONS.has(jurisdiction);
@@ -232,13 +232,13 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
                 <button
                   type="button"
                   onClick={() => toggleJurisdiction(jurisdiction)}
-                  className="flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-primary-dark"
+                  className="flex items-center gap-1 text-sm font-bold uppercase tracking-wide text-primary-dark"
                 >
                   <ChevronIcon expanded={isExpanded} />
                   {jurisdiction} ({list.length})
                 </button>
               ) : (
-                <h3 className="text-xs font-bold uppercase tracking-wide text-primary-dark">
+                <h3 className="text-sm font-bold uppercase tracking-wide text-primary-dark">
                   {jurisdiction} ({list.length})
                 </h3>
               )}
@@ -247,7 +247,7 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
                   {list.map((board) => (
                     <li
                       key={board.id}
-                      className="flex items-center justify-between gap-2 rounded-xl border border-border-soft bg-surface px-3 py-1.5 text-xs"
+                      className="flex items-center justify-between gap-2 rounded-xl border border-border-soft bg-surface px-3 py-1.5 text-sm"
                     >
                       <a href={board.url} target="_blank" rel="noopener noreferrer" className="truncate hover:underline">
                         {board.name}
@@ -266,15 +266,15 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
           );
         })}
 
-        <button type="button" onClick={() => setShowAddForm((v) => !v)} className="btn-secondary mt-2 px-3 py-1 text-xs">
+        <button type="button" onClick={() => setShowAddForm((v) => !v)} className="btn-secondary mt-2 px-3 py-1 text-sm">
           Add a board
         </button>
         {showAddForm && <AddBoardForm onAdd={addBoard} />}
       </section>
 
       <section className="card-soft p-4">
-        <h2 className="mb-1 font-bold text-foreground">Resource discovery</h2>
-        <p className="mb-3 text-xs text-foreground-muted">
+        <h2 className="mb-1 font-bold text-heading">Resource discovery</h2>
+        <p className="mb-3 text-sm text-foreground-muted">
           Searches the internet for new job boards, government training programs, and government IT
           opportunities. Nothing is added automatically — each find gets you a script and instructions.
         </p>
@@ -283,24 +283,24 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
             value={gatherQuery}
             onChange={(e) => setGatherQuery(e.target.value)}
             placeholder="A location, industry, or niche…"
-            className="input-soft flex-1 px-2.5 py-1 text-sm"
+            className="input-soft flex-1 px-2.5 py-1 text-base"
           />
-          <button type="submit" disabled={gathering} className="btn-secondary px-3 py-1 text-sm">
+          <button type="submit" disabled={gathering} className="btn-secondary px-3 py-1 text-base">
             {gathering ? "Gathering…" : "Gather"}
           </button>
         </form>
 
         {(Object.entries(findsByCategory) as [GathererFind["category"], GathererFind[]][]).map(([category, categoryFinds]) => (
           <div key={category} className="mt-3">
-            <h3 className="mb-1 text-xs font-bold uppercase tracking-wide text-primary-dark">{CATEGORY_LABELS[category]}</h3>
+            <h3 className="mb-1 text-sm font-bold uppercase tracking-wide text-primary-dark">{CATEGORY_LABELS[category]}</h3>
             <ul className="space-y-1">
               {categoryFinds.map((find) => (
-                <li key={find.url} className="rounded-xl border border-border-soft bg-surface p-2 text-xs">
+                <li key={find.url} className="rounded-xl border border-border-soft bg-surface p-2 text-sm">
                   <div className="mb-1 flex items-center justify-between gap-2">
                     <a href={find.url} target="_blank" rel="noopener noreferrer" className="font-medium hover:underline">
                       {find.name}
                     </a>
-                    <button onClick={() => openGuide(find)} className="btn-primary shrink-0 px-2 py-0.5 text-xs">
+                    <button onClick={() => openGuide(find)} className="btn-primary shrink-0 px-2 py-0.5 text-sm">
                       Integration guide
                     </button>
                   </div>
@@ -324,26 +324,26 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
         className="card-soft fixed top-1/2 left-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 p-0 backdrop:bg-primary-dark/20 backdrop:backdrop-blur-sm"
       >
         <div className="p-4">
-          <h2 className="mb-2 font-bold text-foreground">{guideTarget?.name}</h2>
-          {guideLoading && <p className="text-sm text-foreground-muted">Asking Claude how this could be integrated…</p>}
+          <h2 className="mb-2 font-bold text-heading">{guideTarget?.name}</h2>
+          {guideLoading && <p className="text-base text-foreground-muted">Asking Claude how this could be integrated…</p>}
           {guide && (
-            <div className="text-sm">
+            <div className="text-base">
               <p className="mb-2 text-foreground-muted">{guide.explanation}</p>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-primary-dark">
+              <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary-dark">
                 Suggested approach: {guide.suggestedApproach}
               </p>
               {guide.codeSnippet && (
-                <pre className="max-h-64 overflow-auto rounded-xl border border-border-soft bg-background p-2 text-xs">
+                <pre className="max-h-64 overflow-auto rounded-xl border border-border-soft bg-background p-2 text-sm">
                   <code>{guide.codeSnippet}</code>
                 </pre>
               )}
-              <p className="mt-2 text-xs text-foreground-muted">
+              <p className="mt-2 text-sm text-foreground-muted">
                 AI-generated and not automatically installed — review before adding this to the codebase.
               </p>
             </div>
           )}
           <div className="mt-4 flex justify-end">
-            <button onClick={closeGuide} className="btn-secondary px-3 py-1.5 text-sm">
+            <button onClick={closeGuide} className="btn-secondary ">
               Close
             </button>
           </div>
@@ -377,20 +377,20 @@ function AddBoardForm({ onAdd }: { onAdd: (b: { name: string; url: string; juris
       }}
       className="mt-2 flex flex-wrap gap-2"
     >
-      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="input-soft px-2.5 py-1 text-xs" />
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="input-soft px-3 text-sm" />
       <input
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         placeholder="https://…"
-        className="input-soft min-w-[160px] flex-1 px-2.5 py-1 text-xs"
+        className="input-soft min-w-[160px] flex-1 px-3 text-sm"
       />
-      <select value={jurisdiction} onChange={(e) => setJurisdiction(e.target.value)} className="input-soft px-2.5 py-1 text-xs">
+      <select value={jurisdiction} onChange={(e) => setJurisdiction(e.target.value)} className="input-soft px-3 text-sm">
         <option value="state">State</option>
         <option value="municipal">Municipal</option>
         <option value="federal">Federal</option>
         <option value="other">Other</option>
       </select>
-      <button type="submit" disabled={saving} className="btn-primary px-3 py-1 text-xs">
+      <button type="submit" disabled={saving} className="btn-primary px-3 py-1 text-sm">
         {saving ? "Saving…" : "Save"}
       </button>
     </form>

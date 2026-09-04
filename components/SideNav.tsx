@@ -127,8 +127,8 @@ export function SideNav() {
 
   return (
     <aside
-      className={`sticky top-0 flex h-screen w-[4.25rem] shrink-0 flex-col overflow-y-auto border-r border-border-soft bg-surface-sunken/80 backdrop-blur-sm transition-[width] motion-reduce:transition-none ${
-        collapsed ? "md:w-[102px]" : "md:w-56"
+      className={`sticky top-0 flex h-screen w-[4.25rem] shrink-0 flex-col overflow-y-auto border-r border-border-soft bg-surface-sunken transition-[width] motion-reduce:transition-none ${
+ collapsed ? "md:w-[102px]" : "md:w-56"
       }`}
     >
       <Link
@@ -142,12 +142,12 @@ export function SideNav() {
           width={600}
           height={669}
           className={`shrink-0 rounded-full object-cover ring-1 ring-border-soft ${
-            collapsed ? "h-[45px] w-[45px]" : "h-[45px] w-[45px] md:h-[90px] md:w-[90px]"
+ collapsed ? "h-[45px] w-[45px]" : "h-[45px] w-[45px] md:h-[90px] md:w-[90px]"
           }`}
         />
         <span
-          className={`truncate bg-gradient-to-r from-primary to-primary-light bg-clip-text text-lg font-extrabold text-transparent ${
-            collapsed ? "hidden" : "hidden md:inline"
+          className={`truncate text-lg font-extrabold text-foreground ${
+ collapsed ? "hidden" : "hidden md:inline"
           }`}
         >
           Serpo
@@ -163,12 +163,12 @@ export function SideNav() {
               aria-label={item.label}
               aria-current={active ? "page" : undefined}
               title={item.label}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors ${
-                collapsed ? "justify-center" : "justify-center md:justify-start"
+              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-base transition-colors ${
+ collapsed ? "justify-center" : "justify-center md:justify-start"
               } ${
                 active
-                  ? "bg-primary font-bold text-primary-ink shadow-sm shadow-primary/30"
-                  : "font-medium text-foreground-muted hover:bg-primary/10 hover:text-foreground"
+                  ? "bg-primary font-bold text-primary-ink"
+                  : "font-medium text-foreground-muted hover:bg-surface hover:text-foreground"
               }`}
             >
               <Icon name={item.icon} className={collapsed ? "h-8 w-8" : "h-5 w-5"} />
@@ -181,7 +181,7 @@ export function SideNav() {
         type="button"
         onClick={toggle}
         aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
-        className="m-2 hidden items-center justify-center rounded-xl border border-border-soft px-3 py-2 text-foreground-muted transition-colors hover:bg-primary/10 hover:text-foreground md:flex"
+        className="m-2 hidden min-h-10 items-center justify-center rounded-xl border border-border-soft px-3 py-2 text-foreground-muted transition-colors hover:bg-surface hover:text-foreground md:flex"
       >
         <svg
           aria-hidden="true"

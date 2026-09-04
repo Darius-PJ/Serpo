@@ -101,17 +101,17 @@ export function ApplyPanel({
 
   return (
     <section className="card-soft mb-6 p-4">
-      <h2 className="mb-2 font-bold text-foreground">Application assistant</h2>
-      <p className="mb-3 text-xs text-foreground-muted">
+      <h2 className="mb-2 font-bold text-heading">Application assistant</h2>
+      <p className="mb-3 text-sm text-foreground-muted">
         Tailor a resume for this posting, open a visible browser, and fill supported fields from your saved profile.
         You review every form and choose whether to submit it.
       </p>
-      <p className="mb-3 text-xs font-medium text-foreground">
+      <p className="mb-3 text-sm font-medium text-foreground">
         The assistant never clicks Submit or reports an application as sent without an employer confirmation or your explicit attestation.
       </p>
 
       {!hasResumeTemplate && (
-        <div className="mb-3 rounded-xl border border-accent/40 bg-accent/10 p-2 text-sm text-accent-light">
+        <div className="mb-3 rounded-xl border border-accent/40 bg-accent/10 p-2 text-base text-accent-light">
           Upload a resume template (.md or .docx) before you can use the application assistant.
         </div>
       )}
@@ -124,14 +124,14 @@ export function ApplyPanel({
           className="hidden"
           onChange={(e) => e.target.files?.[0] && uploadResume(e.target.files[0])}
         />
-        <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="btn-secondary px-3 py-1.5 text-sm">
+        <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="btn-secondary ">
           {uploading ? "Uploading..." : hasResumeTemplate ? "Replace resume" : "Upload resume"}
         </button>
 
         <button
           onClick={() => setConfirmOpen(true)}
           disabled={!hasResumeTemplate || applying}
-          className="btn-primary px-3 py-1.5 text-sm"
+          className="btn-primary "
         >
           {applying ? "Working..." : "Tailor & fill form"}
         </button>
@@ -157,26 +157,26 @@ export function ApplyPanel({
         onCancel={() => setAttestationOpen(false)}
       />
 
-      {error && <p role="alert" className="mb-3 text-sm text-danger-dark">{error}</p>}
+      {error && <p role="alert" className="mb-3 text-base text-danger-dark">{error}</p>}
 
       {latestRun && (
-        <div className="rounded-xl border border-border-soft p-3 text-sm">
+        <div className="rounded-xl border border-border-soft p-3 text-base">
           <div className="mb-1 font-semibold text-foreground">Latest run: {latestRun.status}</div>
 
           {latestRun.status === "needs_input" && (
             <div className="mt-2">
-              <label className="mb-1 block text-xs text-foreground-muted">{latestRun.missingFieldLabel}</label>
+              <label className="mb-1 block text-sm text-foreground-muted">{latestRun.missingFieldLabel}</label>
               <div className="flex gap-2">
                 <input
                   value={missingValue}
                   onChange={(e) => setMissingValue(e.target.value)}
                   className="input-soft flex-1 px-2 py-1"
                 />
-                <button onClick={submitMissingFieldAndRetry} disabled={applying} className="btn-primary px-3 py-1 text-sm">
+                <button onClick={submitMissingFieldAndRetry} disabled={applying} className="btn-primary px-3 py-1 text-base">
                   Save &amp; continue
                 </button>
               </div>
-              <p className="mt-1 text-xs text-foreground-muted">Saved for this and every future application.</p>
+              <p className="mt-1 text-sm text-foreground-muted">Saved for this and every future application.</p>
             </div>
           )}
 
@@ -191,7 +191,7 @@ export function ApplyPanel({
                   ? "Review the browser window. If you submitted it, confirm that action here."
                   : "The site did not provide a reliable submission result. Confirm only if you submitted it."}
               </p>
-              <button onClick={() => setAttestationOpen(true)} disabled={applying} className="btn-primary px-3 py-1.5 text-sm">
+              <button onClick={() => setAttestationOpen(true)} disabled={applying} className="btn-primary ">
                 Confirm I submitted it
               </button>
             </div>
@@ -200,7 +200,7 @@ export function ApplyPanel({
           {latestRun.status === "submitted" && (
             <p className="text-foreground-muted">
               Confirmed submitted {latestRun.submittedAt?.toLocaleString()} -{" "}
-              <a href={`/api/applications/${applicationId}/resume`} className="text-primary-dark underline">
+              <a href={`/api/applications/${applicationId}/resume`} className="link-accent">
                 download the resume that was used
               </a>
             </p>
