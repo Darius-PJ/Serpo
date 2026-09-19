@@ -72,6 +72,7 @@ export async function wipeAllData(userId: string) {
     const contacts = await tx.contact.deleteMany({ where: { userId } });
     const tasks = await tx.task.deleteMany({ where: { userId } });
     const titleAliases = await tx.titleAlias.deleteMany({ where: { userId } });
+    const eliminatedJobs = await tx.eliminatedJob.deleteMany({ where: { userId } });
     const auditEvents = await tx.auditEvent.deleteMany({ where: { userId } });
     const deletedApplications = await tx.application.deleteMany({ where: { userId } });
     const resumeTemplates = await tx.resumeTemplate.deleteMany({ where: { userId } });
@@ -87,6 +88,7 @@ export async function wipeAllData(userId: string) {
       interactions: interactions.count,
       tasks: tasks.count,
       titleAliases: titleAliases.count,
+      eliminatedJobs: eliminatedJobs.count,
       auditEvents: auditEvents.count,
       resumeTemplates: resumeTemplates.count,
       resumeWorkspaces: resumeWorkspaces.count,

@@ -55,12 +55,7 @@ if (Test-NodeVersion) {
   Write-Host "Node.js $version ready (private to Serpo, nothing installed system-wide)." -ForegroundColor Green
 }
 
-$shell = New-Object -ComObject WScript.Shell
-$shortcut = $shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath("Desktop")) "Serpo.lnk"))
-$shortcut.TargetPath = Join-Path $projectRoot "Serpo.cmd"
-$shortcut.WorkingDirectory = $projectRoot
-$shortcut.IconLocation = (Join-Path $projectRoot "public\Rokuro.ico") + ",0"
-$shortcut.Save()
+& (Join-Path $PSScriptRoot "createShortcut.ps1") -ProjectRoot $projectRoot
 Write-Host "Desktop shortcut created." -ForegroundColor Green
 
 # JobSpy (the LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google source) provisions

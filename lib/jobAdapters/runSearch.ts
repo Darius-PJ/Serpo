@@ -5,6 +5,7 @@
 // tests/unit/jobAdapters/noAdapterImportsOutsideRegistry.test.ts.
 import { createAdapterContext } from "./context";
 import { RateLimitExceededError } from "./services/rateLimiter";
+import { ScrapePausedError } from "./services/scrapeScheduler";
 import type { Adapter, JobSearchResultGroup, NormalizedJobListing, NormalizedQuery, SearchEnvelope, SearchError } from "./types";
 
 const RETRYABLE_BY_KIND: Record<SearchError["kind"], boolean> = {
@@ -19,6 +20,7 @@ const RETRYABLE_BY_KIND: Record<SearchError["kind"], boolean> = {
 
 function classifyError(err: unknown): SearchError["kind"] {
   if (err instanceof RateLimitExceededError) return "circuit-open";
+  if (err instanceof ScrapePausedError) return "circuit-open";
   if (err instanceof SyntaxError) return "parse-error";
   if (err instanceof Error) {
     if (err.name === "TimeoutError") return "timeout";
@@ -28,20 +30,24 @@ function classifyError(err: unknown): SearchError["kind"] {
   return "unknown";
 }
 
-async function collectListings(adapter: Adapter, query: NormalizedQuery, ctx: ReturnType<typeof createAdapterContext>): Promise<NormalizedJobListing[]> {
+async function collectListings(adapter: Adapter, query: NormalizedQuery, ctx: ReturnType<typeof createAdapterContext>): Promise<{ listings: NormalizedJobListing[]; warning?: string; details?: string }> {
   const cached = await ctx.cache.get(query);
-  if (cached) return cached;
+  if (cached) return { listings: cached };
 
   await ctx.rateLimiter.acquire();
   const fetchedAt = new Date().toISOString();
   const listings: NormalizedJobListing[] = [];
+  let warning: string | undefined;
+  let details: string | undefined;
   for await (const page of adapter.search(query, ctx)) {
+    warning = page.warning ?? warning;
+    details = page.details ?? details;
     for (const rawItem of page.items) {
       listings.push(adapter.normalize(rawItem, { fetchedAt, query }));
     }
   }
-  await ctx.cache.set(query, listings);
-  return listings;
+  if (!warning) await ctx.cache.set(query, listings);
+  return { listings, warning, details };
 }
 
 export async function runAdapterSearch(query: NormalizedQuery, adapters: Adapter[], correlationId: string): Promise<SearchEnvelope> {
@@ -60,16 +66,19 @@ export async function runAdapterSearch(query: NormalizedQuery, adapters: Adapter
           throw Object.assign(new Error(`${sourceId}: circuit breaker open`), { name: "CircuitOpenError" });
         }
 
-        const listings = await collectListings(adapter, query, ctx);
+        const { listings, warning, details } = await collectListings(adapter, query, ctx);
         ctx.circuitBreaker.recordSuccess();
-        results.push({ source: sourceId, label: adapter.metadata.displayName, listings });
+        results.push({ source: sourceId, label: adapter.metadata.displayName, listings, warning, details });
         ctx.logger.info("search completed", { resultCount: listings.length });
       } catch (err) {
         const kind = err instanceof Error && err.name === "CircuitOpenError" ? "circuit-open" : classifyError(err);
         if (kind !== "circuit-open") ctx.circuitBreaker.recordFailure();
-        const message = err instanceof Error ? err.message : String(err);
-        errors.push({ sourceId, kind, message, retryable: RETRYABLE_BY_KIND[kind] });
-        results.push({ source: sourceId, label: adapter.metadata.displayName, listings: [] });
+        let message = err instanceof Error ? err.message : String(err);
+        const details = err instanceof Error && "details" in err ? String(err.details) : undefined;
+        const stale = adapter.capabilities.runtime === "subprocess" ? await ctx.cache.getStale?.(query).catch(() => null) : null;
+        if (stale?.listings.length) message += ` Showing cached results from ${stale.fetchedAt}.`;
+        errors.push({ sourceId, kind, message, details, retryable: RETRYABLE_BY_KIND[kind] });
+        results.push({ source: sourceId, label: adapter.metadata.displayName, listings: stale?.listings ?? [] });
         ctx.logger.error("search failed", { kind, message });
       } finally {
         perSourceTiming[sourceId] = { startedAt: startedAt.toISOString(), durationMs: Date.now() - startedAt.getTime() };
@@ -77,5 +86,6 @@ export async function runAdapterSearch(query: NormalizedQuery, adapters: Adapter
     })
   );
 
-  return { results, errors, meta: { perSourceTiming, degraded: errors.length > 0 } };
+  results.sort((a, b) => adapters.findIndex((adapter) => adapter.metadata.id === a.source) - adapters.findIndex((adapter) => adapter.metadata.id === b.source));
+  return { results, errors, meta: { perSourceTiming, degraded: errors.length > 0 || results.some((group) => Boolean(group.warning)) } };
 }

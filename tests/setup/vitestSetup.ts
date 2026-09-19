@@ -20,5 +20,6 @@ afterEach(async () => {
   await prisma.jobBoard.deleteMany();
   await prisma.resumeTemplate.deleteMany();
   await prisma.profileField.deleteMany();
+  await prisma.eliminatedJob.deleteMany();
   await prisma.user.deleteMany();
 });

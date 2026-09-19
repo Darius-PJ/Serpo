@@ -68,13 +68,25 @@ the background. You need nothing else. (Maintainers build it with
 
 ### Windows: double-click
 
-Double-click `Serpo.cmd` in the repository folder. It installs
-anything missing, finds a free port, starts the server, and opens the
-dashboard. For a desktop shortcut, right-click `Serpo.cmd` → Send to →
-Desktop (create shortcut) — after that you're done. To give the shortcut
-Rokuro's portrait, right-click it → Properties → Change Icon → Browse →
-`public\Rokuro.ico` in this folder. (The installer's shortcut comes with it
-already.)
+Double-click `Serpo.vbs` or use the Serpo desktop shortcut. It installs
+anything missing, finds a free port, and opens a dedicated Serpo window with
+the server running in the background. No PowerShell window stays visible.
+`Serpo.cmd` also hands off to this hidden launcher, although Windows may briefly
+show its initial command window. To create or update the desktop shortcut, run
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/createShortcut.ps1`.
+
+**Quit**, at the bottom of the left rail, closes Serpo's dedicated browser window
+and stops its owned Node server tree (including in-flight JobSpy subprocesses).
+Closing the dedicated window with X also stops the session. Ordinary browser
+windows are untouched. The hidden server shell exits when its managed host ends.
+The app window uses installed Microsoft Edge, falling back to Chrome, with a
+separate profile under `%LOCALAPPDATA%\Serpo\browser-profile`.
+
+Existing sessions started before this update must be closed once manually.
+Relaunch from the updated shortcut to enable managed Quit. Servers started with
+`npm run dev` are intentionally not terminated by the Quit endpoint.
+Startup failures are logged in `%LOCALAPPDATA%\Serpo\launcher.log` and
+`server-<port>.log`. Windowless startup errors also show a short error dialog.
 
 ### Any platform: the command line
 
@@ -89,6 +101,10 @@ Then open http://127.0.0.1:3000/dashboard.
 
 Built with Next.js (App Router), Prisma + better-sqlite3, Tailwind CSS,
 Vitest, and Playwright.
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for a map of the codebase —
+layers, key modules, cross-cutting concerns, durable state, and how the scripts
+and launch lifecycle fit together.
 
 - `npm run verify` — the full release gate: lint, typecheck, deployment-config
   check, production build, unit tests, e2e tests. CI runs the same steps.

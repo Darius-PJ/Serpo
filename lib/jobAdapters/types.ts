@@ -64,6 +64,8 @@ export interface AdapterPage<TRaw> {
   items: TRaw[];
   nextCursor: string | null;
   partial: boolean;
+  warning?: string;
+  details?: string;
 }
 
 export interface Logger {
@@ -80,6 +82,7 @@ export interface RateLimiterHandle {
 }
 
 export interface CacheHandle {
+  getStale?(criteria: object): Promise<{ listings: NormalizedJobListing[]; fetchedAt: string } | null>;
   get(criteria: object): Promise<NormalizedJobListing[] | null>;
   set(criteria: object, listings: NormalizedJobListing[]): Promise<void>;
 }
@@ -162,6 +165,7 @@ export interface Adapter<TRaw = unknown> {
 }
 
 export interface SearchError {
+  details?: string;
   sourceId: string;
   kind: "timeout" | "http-error" | "parse-error" | "circuit-open" | "unconfigured" | "aborted" | "unknown";
   message: string;
@@ -169,6 +173,8 @@ export interface SearchError {
 }
 
 export interface JobSearchResultGroup {
+  warning?: string;
+  details?: string;
   source: string;
   label: string;
   listings: NormalizedJobListing[];

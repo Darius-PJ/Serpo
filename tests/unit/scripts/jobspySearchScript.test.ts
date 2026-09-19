@@ -23,6 +23,49 @@ function runPy(lines: string[]): unknown {
 }
 
 describe.skipIf(!pythonAvailable)("scripts/jobspy_search.py", () => {
+  it("distinguishes a Google challenge, forbidden access, location failure, and other errors", () => {
+    expect(runPy([`print(json.dumps([m.classify_failure(s) for s in ['HTTP 429', 'https://www.google.com/sorry/index', 'HTTP 403 forbidden', 'Glassdoor location not parsed', 'timeout']]))`]))
+      .toEqual(["rate-limited", "rate-limited", "blocked", "invalid-request", "error"]);
+  });
+
+  it("stops after the first blocked HTTP response and preserves Retry-After", () => {
+    expect(runPy([
+      `from types import SimpleNamespace`,
+      `guard = m.RequestGuard(3)`,
+      `calls = []`,
+      `def request():`,
+      `    calls.append(1)`,
+      `    return SimpleNamespace(status_code=429, url='https://www.google.com/sorry/index', headers={'Retry-After': '3600'})`,
+      `for _ in range(3):`,
+      `    try: guard.call(request)`,
+      `    except RuntimeError: pass`,
+      `print(json.dumps([len(calls), guard.retry_after, m.classify_failure(guard.failure)]))`,
+    ])).toEqual([1, 3600, "rate-limited"]);
+  });
+
+  it("keeps logged failures distinct from zero matches and preserves partial results", () => {
+    expect(runPy([
+      `from types import SimpleNamespace`,
+      `logger = m.logging.getLogger('JobSpy:Glassdoor')`,
+      `def scraper(**kwargs):`,
+      `    assert kwargs['site_name'] == ['glassdoor']`,
+      `    logger.error('Glassdoor response status code 400')`,
+      `    return SimpleNamespace(to_dict=lambda **kw: [{'site': 'glassdoor', 'title': 'Engineer', 'job_url': 'https://example.com/1'}])`,
+      `result = m.scrape_board(scraper, 'glassdoor', 'engineer', 'Atlanta, GA', False, 10, m.RequestGuard(3))`,
+      `print(json.dumps([result['status'], len(result['items'])]))`,
+    ])).toEqual(["invalid-request", 1]);
+  });
+
+  it("a failed Google scrape cannot prevent a separate successful board", () => {
+    expect(runPy([
+      `from types import SimpleNamespace`,
+      `def scraper(**kwargs):`,
+      `    if kwargs['site_name'] == ['google']: raise RuntimeError('too many 429 responses')`,
+      `    return SimpleNamespace(to_dict=lambda **kw: [{'site': 'indeed', 'title': 'Engineer', 'job_url': 'https://example.com/1'}])`,
+      `results = [m.scrape_board(scraper, site, 'engineer', None, False, 10, m.RequestGuard(3)) for site in ['google', 'indeed']]`,
+      `print(json.dumps([[r['status'], len(r['items'])] for r in results]))`,
+    ])).toEqual([["rate-limited", 0], ["ok", 1]]);
+  });
   it("sanitize_records nulls NaN-like values and keeps real ones", () => {
     const records = runPy([
       `records = m.sanitize_records([{`,

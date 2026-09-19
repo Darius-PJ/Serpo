@@ -16,7 +16,8 @@ vi.mock("node:fs", async (importOriginal) => {
   return { ...actual, existsSync: existsSyncMock };
 });
 
-import { jobSpyAdapter, resetJobSpyProbeForTests } from "@/lib/jobAdapters/adapters/jobspy";
+import { jobSpyAdapters, resetJobSpyProbeForTests } from "@/lib/jobAdapters/adapters/jobspy";
+const jobSpyAdapter = jobSpyAdapters[0];
 
 describe("jobspy adapter dependency probe", () => {
   beforeEach(() => {

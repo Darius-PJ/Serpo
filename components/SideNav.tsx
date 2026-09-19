@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "serpo-nav-collapsed";
 
@@ -30,7 +30,7 @@ function readCollapsed() {
   }
 }
 
-type IconName = "dashboard" | "sourcing" | "pipeline" | "work" | "contacts" | "resume" | "settings";
+type IconName = "dashboard" | "sourcing" | "pipeline" | "work" | "contacts" | "resume" | "settings" | "quit";
 
 // Sourcing sits directly after Dashboard: feeding the pipeline is the daily
 // action this workspace exists to prompt, so it gets the second slot.
@@ -46,6 +46,7 @@ const NAV_ITEMS: Array<{ href: string; label: string; icon: IconName }> = [
 
 function Icon({ name, className = "h-5 w-5" }: { name: IconName; className?: string }) {
   const paths: Record<IconName, React.ReactNode> = {
+    quit: <><path d="M12 3v9" /><path d="M7 5.5a8 8 0 1 0 10 0" /></>,
     dashboard: (
       <>
         <rect x="3" y="3" width="7.5" height="7.5" rx="1.5" />
@@ -115,6 +116,25 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName; className?: str
 export function SideNav() {
   const pathname = usePathname();
   const collapsed = useSyncExternalStore(subscribeToCollapse, readCollapsed, () => false);
+  const [quitting, setQuitting] = useState(false);
+  const [quitError, setQuitError] = useState<string | null>(null);
+
+  async function quit() {
+    if (quitting) return;
+    setQuitting(true);
+    setQuitError(null);
+    try {
+      const response = await fetch("/api/app/quit", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Serpo could not quit.");
+      // The launcher closes its owned browser, including pages reached through
+      // navigation. An ordinary manually opened tab may refuse window.close().
+      window.close();
+    } catch (error) {
+      setQuitError(error instanceof Error ? error.message : "Serpo could not quit.");
+      setQuitting(false);
+    }
+  }
 
   function toggle() {
     try {
@@ -177,6 +197,13 @@ export function SideNav() {
           );
         })}
       </nav>
+      {quitError && <p role="alert" className="mx-2 rounded-xl bg-surface p-2 text-xs text-danger-dark">{quitError}</p>}
+      <button type="button" onClick={quit} disabled={quitting} aria-label="Quit Serpo" title="Quit Serpo"
+        className={`mx-2 mb-1 flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-base font-medium text-foreground-muted transition-colors hover:bg-surface hover:text-foreground disabled:opacity-60 ${collapsed ? "justify-center" : "justify-center md:justify-start"}`}>
+        <Icon name="quit" className={collapsed ? "h-8 w-8" : "h-5 w-5"} />
+        <span className={collapsed ? "hidden" : "hidden md:inline"}>{quitting ? "Quitting…" : "Quit"}</span>
+      </button>
+      {quitting && <div role="status" className="fixed inset-0 z-50 flex items-center justify-center bg-surface p-8 text-center"><div><h1 className="text-xl font-bold">Closing Serpo…</h1><p className="mt-2">The app window and local server are shutting down.</p><p className="mt-2 text-sm text-foreground-muted">If you opened this in a normal browser tab, you can close this tab.</p></div></div>}
       <button
         type="button"
         onClick={toggle}

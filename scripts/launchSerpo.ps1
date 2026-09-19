@@ -2,8 +2,7 @@ param(
   [ValidateRange(1, 65535)]
   [int]$PreferredPort = 3000,
   [switch]$SkipBrowser,
-  [switch]$SkipFolder,
-  [switch]$HiddenServerWindow
+  [switch]$SkipFolder
 )
 
 $ErrorActionPreference = "Stop"
@@ -43,6 +42,18 @@ function Open-Workspace([int]$Port) {
     Start-Process -FilePath "explorer.exe" -ArgumentList @($projectRoot)
   }
   if (-not $SkipBrowser) {
+    # Managed sessions own a dedicated browser; focus that window on relaunch.
+    $hostStatePath = Join-Path $stateRoot "host-state.json"
+    if (Test-Path $hostStatePath) {
+      try {
+        $hostState = Get-Content -Raw $hostStatePath | ConvertFrom-Json
+        if ([int]$hostState.port -eq $Port -and $hostState.projectRoot -eq $projectRoot) {
+          Invoke-WebRequest -Uri "http://127.0.0.1:$($hostState.controlPort)/focus" -Method Post -Headers @{ Authorization = "Bearer $($hostState.token)" } -UseBasicParsing -TimeoutSec 5 | Out-Null
+          return
+        }
+      } catch { Write-Host "The previous app window is no longer available." }
+    }
+    # A pre-update or manually started server cannot own/close a browser window.
     Start-Process $url
   }
   Write-Host "Serpo is ready at $url" -ForegroundColor Green
@@ -100,27 +111,38 @@ if ($selectedPort -ne $PreferredPort) {
   Write-Host "Using available port $selectedPort instead." -ForegroundColor Cyan
 }
 
-$windowStyle = if ($HiddenServerWindow) { "Hidden" } else { "Normal" }
+$windowStyle = "Hidden"
 $runnerArguments = @(
   "-NoProfile",
   "-ExecutionPolicy", "Bypass",
   "-File", "`"$runnerPath`"",
   "-Port", $selectedPort
 )
-if ($HiddenServerWindow) { $runnerArguments += "-NonInteractive" }
+$runnerArguments += "-NonInteractive"
+if ($SkipBrowser) { $runnerArguments += "-SkipBrowser" }
+$launchStartedAt = Get-Date
 $serverProcess = Start-Process -FilePath "powershell.exe" -ArgumentList $runnerArguments -WorkingDirectory $projectRoot -WindowStyle $windowStyle -PassThru
 
 $deadline = (Get-Date).AddSeconds(120)
+function Test-ManagedReady([int]$Port) {
+  $hostStatePath = Join-Path $stateRoot "host-state.json"
+  try {
+    if (-not (Test-Path $hostStatePath)) { return $false }
+    if ((Get-Item $hostStatePath).LastWriteTime -lt $launchStartedAt) { return $false }
+    $hostState = Get-Content -Raw $hostStatePath | ConvertFrom-Json
+    return [int]$hostState.port -eq $Port -and $hostState.projectRoot -eq $projectRoot -and (Test-Serpo $Port)
+  } catch { return $false }
+}
 do {
   if ($serverProcess.HasExited) {
     $logPath = Join-Path $stateRoot "server-$selectedPort.log"
     throw "The server exited before becoming ready. See $logPath"
   }
   Start-Sleep -Milliseconds 500
-} until ((Test-Serpo $selectedPort) -or (Get-Date) -ge $deadline)
+} until ((Test-ManagedReady $selectedPort) -or (Get-Date) -ge $deadline)
 
-if (-not (Test-Serpo $selectedPort)) {
-  throw "The server did not become ready within 120 seconds. It is still running on port $selectedPort; inspect its window or log."
+if (-not (Test-ManagedReady $selectedPort)) {
+  throw "Serpo did not finish starting within 120 seconds. See the server-$selectedPort.log file."
 }
 
 @{
@@ -130,4 +152,6 @@ if (-not (Test-Serpo $selectedPort)) {
   startedAt = (Get-Date).ToString("o")
 } | ConvertTo-Json | Set-Content -Encoding UTF8 $statePath
 
-Open-Workspace $selectedPort
+# serpoHost opens and owns the app window; do not open a second browser tab.
+if (-not $SkipFolder) { Start-Process -FilePath "explorer.exe" -ArgumentList @($projectRoot) }
+Write-Host "Serpo is ready at http://127.0.0.1:$selectedPort/dashboard" -ForegroundColor Green

@@ -9,6 +9,7 @@ import { runAdapterSearch } from "./runSearch";
 import { listConfiguredAdapters, findAdapterById } from "./registry";
 import type { NormalizedJobListing as NewListing } from "./types";
 import type { JobSearchCriteria, JobSearchResult, NormalizedJobListing as OldListing } from "@/lib/jobSources/types";
+import { selectedJobSpySites } from "@/lib/jobSpyBoards";
 
 function toLegacyListing(l: NewListing): OldListing {
   return {
@@ -25,7 +26,9 @@ function toLegacyListing(l: NewListing): OldListing {
 
 /** Searches every configured, keyword-style adapter (static sources — not board-scoped ones). */
 export async function searchAllAdapters(criteria: JobSearchCriteria, correlationId: string): Promise<JobSearchResult[]> {
-  const adapters = listConfiguredAdapters().filter((adapter) => adapter.capabilities.queryModel !== "enumerate-target");
+  const selected = selectedJobSpySites(criteria.jobSpySites);
+  const adapters = listConfiguredAdapters().filter((adapter) => adapter.capabilities.queryModel !== "enumerate-target"
+    && (!adapter.metadata.id.startsWith("jobspy:") || selected.some((site) => adapter.metadata.id === `jobspy:${site}`)));
   const query = {
     kind: "keywords" as const,
     keywords: criteria.keywords,
@@ -36,7 +39,7 @@ export async function searchAllAdapters(criteria: JobSearchCriteria, correlation
 
   return envelope.results.map((group) => {
     const err = envelope.errors.find((e) => e.sourceId === group.source);
-    return { source: group.source, label: group.label, listings: group.listings.map(toLegacyListing), error: err?.message };
+    return { source: group.source, label: group.label, listings: group.listings.map(toLegacyListing), error: err?.message ?? group.warning, errorDetails: err?.details ?? group.details };
   });
 }
 

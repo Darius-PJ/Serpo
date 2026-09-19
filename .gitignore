@@ -57,6 +57,7 @@ CLAUDE.md
 # local database — this app's entire dataset; never goes to git
 /data/*.db
 /data/*.db-journal
+/data/*.jobspy-state.json*
 /data/*.backup-*
 /data/resumes/
 /data/raekwon-archive/
@@ -67,3 +68,6 @@ CLAUDE.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# editor/scratch backups (e.g. design/decisions.md.backup)
+*.backup

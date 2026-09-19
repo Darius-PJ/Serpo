@@ -2,7 +2,7 @@
 // (lib/jobSources/cache.ts) rather than duplicating it — that module was genericized
 // (Phase 3) specifically so this new record shape (lib/jobAdapters/types.ts) can share
 // the same storage without the legacy path's own type changing at all.
-import { getCachedListings, setCachedListings } from "@/lib/jobSources/cache";
+import { getCachedListings, getStaleListings, setCachedListings } from "@/lib/jobSources/cache";
 import type { AdapterCapabilities, CacheHandle, NormalizedJobListing } from "../types";
 
 export function createCacheHandle(sourceId: string, capabilities: Pick<AdapterCapabilities, "cacheable" | "tosForbidsStorage">): CacheHandle {
@@ -10,6 +10,10 @@ export function createCacheHandle(sourceId: string, capabilities: Pick<AdapterCa
   const storageAllowed = capabilities.cacheable && !capabilities.tosForbidsStorage;
 
   return {
+    async getStale(criteria) {
+      if (!storageAllowed) return null;
+      return getStaleListings<NormalizedJobListing>(sourceId, criteria);
+    },
     async get(criteria) {
       if (!storageAllowed) return null;
       return getCachedListings<NormalizedJobListing>(sourceId, criteria);

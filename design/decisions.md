@@ -220,15 +220,15 @@ Limits: the first-run state was verified by reading the render conditions and th
 
 ## 6. Rubric
 
-| Criterion | Monet | User | Note |
-|---|---|---|---|
-| Justified | pass | | Seven decisions, each with claims by ID, grade, and context, a transfer check, and alternatives; P claims marked; the one T claim used only as an expectation. |
-| On brand | pass | | Every colour is a palette entry or a lightness-only tint of one; violet as ink, button, band, and focus ring on the light side; gold family leads on violet; brand file not edited; the tints are proposed to the owner in D-002. |
-| Distinct | pass | | The category default (a light kanban tracker) is named in the expectations block; Serpo departs from it in the search-first home, the violet dark theme, and Rokuro, and matches it deliberately in the board. No paragon's look reproduced. |
-| Intact | pass | | Manifest passes; unit tests pass; every inventory line present; the diff is class attributes, order, and copy. |
-| Complete | pass | | Every screen of the first-time path walked in both themes with both contrast numbers; sub-checklist recorded; limits stated. |
+| Criterion | Monet | User | Monet note | User note |
+|---|---|---|---|---|
+| Justified | pass | pass | Seven decisions, each with claims by ID, grade, and context, a transfer check, and alternatives; P claims marked; the one T claim used only as an expectation. |
+| On brand | pass | pass | Every colour is a palette entry or a lightness-only tint of one; violet as ink, button, band, and focus ring on the light side; gold family leads on violet; brand file not edited; the tints are proposed to the owner in D-002. |
+| Distinct | pass | pass | The category default (a light kanban tracker) is named in the expectations block; Serpo departs from it in the search-first home, the violet dark theme, and Rokuro, and matches it deliberately in the board. No paragon's look reproduced. |
+| Intact | pass | pass | Manifest passes; unit tests pass; every inventory line present; the diff is class attributes, order, and copy. |
+| Complete | pass | pass | Every screen of the first-time path walked in both themes with both contrast numbers; sub-checklist recorded; limits stated. |
 
-Scored by the user on: 
+Scored by the user on: 11-09-2026
 
 ## 7. Outcomes
 

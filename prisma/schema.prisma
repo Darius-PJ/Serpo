@@ -25,6 +25,7 @@ model User {
   tasks           Task[]
   contacts        Contact[]
   interactions    Interaction[]
+  eliminatedJobs  EliminatedJob[]
 }
 
 // A person in the job search — recruiter, hiring manager, referral. Promoted
@@ -125,6 +126,24 @@ model TitleAlias {
 
   @@unique([userId, keyword, alias])
   @@index([userId, keyword])
+}
+
+// Per-account "not interested" list — a chosen search listing the user has
+// hidden from future federated searches. Keyed by listing URL, the same
+// identity the tracked-exclusion check uses (Application.url), so tracked and
+// eliminated listings drop out of results symmetrically.
+model EliminatedJob {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  url       String
+  company   String?
+  role      String?
+  source    String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, url])
+  @@index([userId])
 }
 
 model AuditEvent {

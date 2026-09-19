@@ -1,4 +1,5 @@
 export interface JobSearchCriteria {
+  jobSpySites?: string[];
   keywords: string;
   location?: string;
   remoteOnly?: boolean;
@@ -26,4 +27,5 @@ export interface JobSearchResult {
   label: string;
   listings: NormalizedJobListing[];
   error?: string;
+  errorDetails?: string;
 }

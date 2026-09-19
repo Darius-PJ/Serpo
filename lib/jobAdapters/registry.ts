@@ -13,7 +13,7 @@
 import type { Adapter } from "./types";
 import { isAdapterConfigured } from "./config";
 import { arbeitnowAdapter } from "./adapters/arbeitnow";
-import { jobSpyAdapter } from "./adapters/jobspy";
+import { jobSpyAdapters } from "./adapters/jobspy";
 import { remoteOkAdapter } from "./adapters/remoteok";
 import { adzunaAdapter } from "./adapters/adzuna";
 import { remotiveAdapter } from "./adapters/remotive";
@@ -26,7 +26,7 @@ import { leverAdapter } from "./adapters/lever";
 
 const ADAPTERS: Adapter[] = [
   arbeitnowAdapter,
-  jobSpyAdapter,
+  ...jobSpyAdapters,
   remoteOkAdapter,
   adzunaAdapter,
   remotiveAdapter,

@@ -1,6 +1,27 @@
 import { test, expect } from "@playwright/test";
 import { resetWorkspace } from "./helpers";
 
+test("Quit is accessible in the collapsed rail and requests shutdown", async ({ page }) => {
+  await resetWorkspace(page.context().request);
+  await page.addInitScript(() => { window.close = () => {}; });
+  let calls = 0;
+  await page.route("**/api/app/quit", async (route) => { calls++; await route.fulfill({ json: { stopping: true } }); });
+  await page.goto("/dashboard");
+  await page.getByRole("button", { name: "Collapse navigation" }).click();
+  await page.getByRole("button", { name: "Quit Serpo" }).click();
+  await expect(page.getByRole("status")).toContainText("Closing Serpo");
+  expect(calls).toBe(1);
+});
+
+test("a refused Quit keeps the app open and explains how to relaunch", async ({ page }) => {
+  await resetWorkspace(page.context().request);
+  await page.route("**/api/app/quit", async (route) => route.fulfill({ status: 409, json: { error: "Open Serpo using the updated shortcut." } }));
+  await page.goto("/dashboard");
+  await page.getByRole("button", { name: "Quit Serpo" }).click();
+  await expect(page.getByRole("complementary").getByRole("alert")).toContainText("updated shortcut");
+  await expect(page.getByRole("button", { name: "Quit Serpo" })).toBeEnabled();
+});
+
 test("Sourcing sits directly after Dashboard in the primary navigation", async ({ page }) => {
   await resetWorkspace(page.context().request);
   await page.goto("/dashboard");

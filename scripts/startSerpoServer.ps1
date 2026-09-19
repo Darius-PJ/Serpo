@@ -2,7 +2,8 @@ param(
   [Parameter(Mandatory = $true)]
   [ValidateRange(1, 65535)]
   [int]$Port,
-  [switch]$NonInteractive
+  [switch]$NonInteractive,
+  [switch]$SkipBrowser
 )
 
 $ErrorActionPreference = "Stop"
@@ -34,8 +35,10 @@ try {
     throw "Setup failed with exit code $LASTEXITCODE."
   }
 
-  Write-Host "Starting the local server. Keep this window open while using Serpo." -ForegroundColor Green
-  & npm.cmd run dev -- -p $Port
+  Write-Host "Starting Serpo. Use Quit in the app to stop this session." -ForegroundColor Green
+  $hostArguments = @("scripts/serpoHost.mjs", "$Port")
+  if ($SkipBrowser) { $hostArguments += "--skip-browser" }
+  & node.exe @hostArguments
   exit $LASTEXITCODE
 } catch {
   Write-Host "Serpo could not start: $($_.Exception.Message)" -ForegroundColor Red

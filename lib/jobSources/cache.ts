@@ -31,6 +31,14 @@ export async function getCachedListings<T = NormalizedJobListing>(source: string
   }
 }
 
+/** Stale fallback is explicit and age-labelled by the caller; never a fresh cache hit. */
+export async function getStaleListings<T>(source: string, criteria: object): Promise<{ listings: T[]; fetchedAt: string } | null> {
+  const row = await prisma.jobSourceCache.findUnique({ where: { source_criteriaHash: { source, criteriaHash: hashCriteria(criteria) } } });
+  if (!row || Date.now() - row.fetchedAt.getTime() > 24 * 60 * 60_000) return null;
+  try { return { listings: JSON.parse(row.listingsJson) as T[], fetchedAt: row.fetchedAt.toISOString() }; }
+  catch { return null; }
+}
+
 /** Stores this source+criteria's normalized results, resetting the TTL clock. Only call this after a successful fetch — never cache an empty/error result. */
 export async function setCachedListings<T = NormalizedJobListing>(
   source: string,

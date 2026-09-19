@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { JOBSPY_BOARDS, selectedJobSpySites } from "@/lib/jobSpyBoards";
 
 interface Listing {
   id: string;
@@ -12,12 +13,12 @@ interface Listing {
   url: string;
   postedAt?: string;
   description?: string;
-  tracked?: boolean;
   /** Tier from the search route; "family" listings group under "related titles". */
   relevance?: "exact" | "strong" | "alias" | "family";
 }
 
 interface SearchResult {
+  errorDetails?: string;
   source: string;
   label: string;
   listings: Listing[];
@@ -37,6 +38,7 @@ export function JobSearchForm() {
   const [keywords, setKeywords] = useState(searchParams.get("keywords") ?? "");
   const [location, setLocation] = useState(searchParams.get("location") ?? "");
   const [remoteOnly, setRemoteOnly] = useState(searchParams.get("remoteOnly") === "true");
+  const [jobSpySites, setJobSpySites] = useState(() => selectedJobSpySites(searchParams.has("jobSpySites") ? searchParams.get("jobSpySites")!.split(",") : undefined));
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
@@ -50,6 +52,9 @@ export function JobSearchForm() {
   const [searched, setSearched] = useState(false);
   const [tracked, setTracked] = useState<Set<string>>(new Set());
   const [tracking, setTracking] = useState<string | null>(null);
+  const [eliminated, setEliminated] = useState<Set<string>>(new Set());
+  const [eliminating, setEliminating] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState<string | null>(null);
   const [generatingResumeFor, setGeneratingResumeFor] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,7 +76,7 @@ export function JobSearchForm() {
       const res = await fetch("/api/jobs/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keywords: kw, location: loc, remoteOnly: remote }),
+        body: JSON.stringify({ keywords: kw, location: loc, remoteOnly: remote, jobSpySites }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -85,6 +90,7 @@ export function JobSearchForm() {
       setPageBySource({});
       setSearched(true);
       const params = new URLSearchParams({ keywords: kw, location: loc, remoteOnly: String(remote) });
+      params.set("jobSpySites", jobSpySites.join(","));
       router.replace(`/sourcing?${params.toString()}`, { scroll: false });
     } catch {
       setError("Search could not be completed. Check your connection and try again.");
@@ -130,6 +136,69 @@ export function JobSearchForm() {
       setError("This job could not be added. Check your connection and try again.");
     } finally {
       setTracking(null);
+    }
+  }
+
+  async function eliminate(listing: Listing) {
+    setEliminating(listing.id);
+    setError(null);
+    setEliminated((prev) => new Set(prev).add(listing.id));
+    try {
+      const res = await fetch("/api/jobs/eliminate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: listing.url,
+          company: listing.company,
+          role: listing.role,
+          source: listing.source,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "This job could not be eliminated.");
+        setEliminated((prev) => {
+          const next = new Set(prev);
+          next.delete(listing.id);
+          return next;
+        });
+      }
+    } catch {
+      setError("This job could not be eliminated. Check your connection and try again.");
+      setEliminated((prev) => {
+        const next = new Set(prev);
+        next.delete(listing.id);
+        return next;
+      });
+    } finally {
+      setEliminating(null);
+    }
+  }
+
+  async function restoreEliminated(listing: Listing) {
+    if (restoring === listing.id) return;
+    setRestoring(listing.id);
+    setError(null);
+    try {
+      const res = await fetch("/api/jobs/eliminate", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: listing.url }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "This job could not be restored.");
+        return;
+      }
+      setEliminated((prev) => {
+        const next = new Set(prev);
+        next.delete(listing.id);
+        return next;
+      });
+    } catch {
+      setError("This job could not be restored. Check your connection and try again.");
+    } finally {
+      setRestoring(null);
     }
   }
 
@@ -180,7 +249,7 @@ export function JobSearchForm() {
     setGeneratingResumeFor(listing.id);
     setError(null);
     try {
-      const originSearchQuery = new URLSearchParams({ keywords, location, remoteOnly: String(remoteOnly) }).toString();
+      const originSearchQuery = new URLSearchParams({ keywords, location, remoteOnly: String(remoteOnly), jobSpySites: jobSpySites.join(",") }).toString();
       const res = await fetch("/api/resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -208,6 +277,18 @@ export function JobSearchForm() {
   }
 
   function renderListing(listing: Listing, showAddAlias: boolean) {
+    if (eliminated.has(listing.id)) {
+      return (
+        <li key={listing.id} className="flex flex-wrap items-center gap-2 rounded-2xl border border-border-soft bg-surface p-3 text-base">
+          <span className="text-foreground-muted line-through">{listing.role}</span>
+          <span className="text-foreground-muted">· {listing.company}</span>
+          <span className="text-foreground-muted">— eliminated</span>
+          <button onClick={() => restoreEliminated(listing)} disabled={restoring === listing.id} className="btn-secondary px-3 text-sm">
+            {restoring === listing.id ? "Restoring…" : "Undo"}
+          </button>
+        </li>
+      );
+    }
     return (
       <li key={listing.id} className="rounded-2xl border border-border-soft bg-surface p-3 text-base">
         <div className="font-semibold text-foreground">{listing.role}</div>
@@ -221,10 +302,10 @@ export function JobSearchForm() {
           </a>
           <button
             onClick={() => track(listing)}
-            disabled={listing.tracked || tracked.has(listing.id) || tracking === listing.id}
+            disabled={tracked.has(listing.id) || tracking === listing.id}
             className="btn-primary px-3 text-sm"
           >
-            {listing.tracked || tracked.has(listing.id) ? "Tracked" : tracking === listing.id ? "Tracking..." : "Track"}
+            {tracked.has(listing.id) ? "Tracked" : tracking === listing.id ? "Tracking..." : "Track"}
           </button>
           <button
             onClick={() => openResume(listing)}
@@ -244,6 +325,14 @@ export function JobSearchForm() {
               {savingAlias === listing.id ? "Saving…" : "Add alias"}
             </button>
           )}
+          <button
+            onClick={() => eliminate(listing)}
+            disabled={eliminating === listing.id}
+            className="btn-secondary px-3 text-sm"
+            title="Hide this job from future searches"
+          >
+            {eliminating === listing.id ? "Eliminating…" : "Eliminate"}
+          </button>
         </div>
       </li>
     );
@@ -287,6 +376,19 @@ export function JobSearchForm() {
         <button type="submit" disabled={loading} className="btn-primary px-4 py-2 text-base">
           {loading ? "Searching…" : "Search"}
         </button>
+        <fieldset disabled={loading} className="w-full border-t border-foreground-muted/20 pt-3">
+          <legend className="text-sm font-medium text-foreground-muted">Search with JobSpy</legend>
+          <div className="mt-2 flex flex-wrap gap-4">
+            {JOBSPY_BOARDS.map(({ site, label }) => (
+              <label key={site} className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={jobSpySites.includes(site)} className="accent-primary"
+                  onChange={(event) => setJobSpySites((current) => event.target.checked ? [...current, site] : current.filter((value) => value !== site))} />
+                {label}
+              </label>
+            ))}
+          </div>
+          <p className="mt-2 text-sm text-foreground-muted">Uncheck boards you do not need to reduce requests. Searches reuse cached results; new requests are paced and blocked boards pause automatically.</p>
+        </fieldset>
       </form>
 
       {error && <p role="alert" className="mb-4 text-base text-danger-dark">{error}</p>}
@@ -336,6 +438,7 @@ export function JobSearchForm() {
                   </h2>
                 </div>
                 {group.error && <p className="mb-2 text-sm text-danger-dark">{group.error}</p>}
+                {group.errorDetails && <details className="mb-2 text-sm text-foreground-muted"><summary className="cursor-pointer">Error details</summary><pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words">{group.errorDetails}</pre></details>}
 
                 <ul className="max-h-96 space-y-2 overflow-y-auto pr-1">
                   {pageItems.map((listing) => renderListing(listing, false))}

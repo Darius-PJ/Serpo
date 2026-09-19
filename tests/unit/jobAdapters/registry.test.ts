@@ -6,7 +6,7 @@ import { listAdapters, listConfiguredAdapters, findAdapterById, listEnumerateTar
 // this test previously asserted, back when only the harness existed).
 const ALL_SOURCE_IDS = [
   "arbeitnow",
-  "jobspy",
+  "jobspy:indeed", "jobspy:linkedin", "jobspy:zip_recruiter", "jobspy:glassdoor", "jobspy:google",
   "remoteok",
   "adzuna",
   "remotive",
@@ -19,7 +19,7 @@ const ALL_SOURCE_IDS = [
 ];
 
 describe("job adapter registry", () => {
-  it("has all 11 migrated sources registered", () => {
+  it("registers each JobSpy board separately alongside the other sources", () => {
     const ids = listAdapters().map((adapter) => adapter.metadata.id);
     expect(ids.sort()).toEqual([...ALL_SOURCE_IDS].sort());
   });
