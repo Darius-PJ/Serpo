@@ -41,8 +41,8 @@ all on your own machine.
   discovery and an AI-drafted outreach message addressed to the best contact
   found, saved for your review. Nothing sends without you.
 - **Sourcing** — federated job search across Adzuna, USAJobs, Jooble, the
-  keyless boards above, and JobSpy (set up automatically by the one-click
-  installer), with dedup and relevance tiers.
+  keyless boards above, and five individually selectable JobSpy boards (set up
+  automatically by the one-click installer), with dedup and relevance tiers.
 - **Résumé workspace** — keep a template, tailor per application, export DOCX.
 
 ## Getting started
@@ -97,6 +97,33 @@ npm run dev
 
 Then open http://127.0.0.1:3000/dashboard.
 
+### JobSpy setup and search behavior
+
+JobSpy supplies Indeed, LinkedIn, ZipRecruiter, Glassdoor, and Google Jobs. Each
+board has its own results, errors, cache, and cooldown; select the boards you want
+in the search form. Serpo runs one JobSpy subprocess at a time. Each board gets
+its full execution timeout (90 seconds by default) when dequeued, so searching
+several boards can take longer than 90 seconds overall.
+
+The supported dependency is **`python-jobspy==1.1.82`**. On Windows, provision or
+repair the private Python 3.12 environment from the project root:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setupJobSpy.ps1
+```
+
+Command-line setup (`npm run setup`) does not provision JobSpy. For a custom
+Python 3.10–3.12 environment, install `python-jobspy==1.1.82` there and set
+`JOBSPY_PYTHON` in `.env.local` to that interpreter's path. Before scraping, the
+helper checks the version and private request-hook signatures; incompatible
+environments fail with repair instructions rather than sending requests.
+
+Board-reported failures retain protective cooldowns. Local timeouts, aborts,
+setup failures, and malformed helper output do **not** trigger the 30-minute
+board-failure cooldown; normal request spacing remains. Existing cooldowns
+survive restarts. See [JobSpy request controls](docs/jobspy-request-controls.md)
+for settings, cached-result behavior, and troubleshooting.
+
 ## Development
 
 Built with Next.js (App Router), Prisma + better-sqlite3, Tailwind CSS,
@@ -107,8 +134,8 @@ layers, key modules, cross-cutting concerns, durable state, and how the scripts
 and launch lifecycle fit together.
 
 - `npm run verify` — the full release gate: lint, typecheck, deployment-config
-  check, production build, unit tests, e2e tests. CI runs the same steps.
-- `npm run test:unit` / `npm run test:e2e` — the test suites individually.
+  check, production build, unit tests, script tests, e2e tests. CI runs the same steps.
+- `npm run test:unit` / `npm run test:scripts` / `npm run test:e2e` — the suites individually.
   The e2e suite needs browsers once: `npx playwright install`.
 - `npm run db:upgrade-and-verify` — applies pending hand-written SQL
   migrations to the live database, fail-closed: each migration is replayed

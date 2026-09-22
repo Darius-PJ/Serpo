@@ -1,14 +1,15 @@
 """
 Helper invoked by lib/jobAdapters/adapters/jobspy/index.ts. Requires
-`pip install python-jobspy`; set JOBSPY_PYTHON when that package lives in a
+`pip install python-jobspy==1.1.82`; set JOBSPY_PYTHON when that package lives in a
 dedicated interpreter or venv (see .env.example). Scrapes one selected board
 and prints a JSON envelope containing items, status, and diagnostic details.
 
-Importable without python-jobspy installed: the scrape import lives inside
-main() so tests can exercise the pure helpers below on any Python.
+Importable without python-jobspy installed: package imports happen only during
+setup so tests can exercise the pure helpers below on any Python.
 """
 
 import argparse
+import inspect
 import json
 import sys
 import logging
@@ -16,8 +17,10 @@ import re
 import time
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from importlib import metadata
 
 SITES = ["indeed", "linkedin", "zip_recruiter", "glassdoor", "google"]
+JOBSPY_VERSION = "1.1.82"
 
 
 def classify_failure(message):
@@ -69,10 +72,45 @@ class RequestGuard:
         return response
 
 
+def validate_jobspy():
+    installed = metadata.version("python-jobspy")
+    if installed != JOBSPY_VERSION:
+        raise RuntimeError(f"Expected python-jobspy=={JOBSPY_VERSION}, found {installed}")
+
+    from jobspy import scrape_jobs
+    from jobspy.util import RequestsRotating, TLSRotating
+
+    if not callable(scrape_jobs):
+        raise RuntimeError("jobspy.scrape_jobs is not callable")
+    # These private hooks are verified against 1.1.82. Ignore annotations (the
+    # inherited requests.Session.send is annotated), but reject shape changes.
+    for owner, name, expected in (
+        (RequestsRotating, "setup_session", "(self, has_retry, delay)"),
+        (RequestsRotating, "send", "(self, request, **kwargs)"),
+        (TLSRotating, "execute_request", "(self, *args, **kwargs)"),
+    ):
+        target = getattr(owner, name, None)
+        label = f"{owner.__name__}.{name}"
+        if not callable(target):
+            raise RuntimeError(f"{label} is missing or not callable")
+        try:
+            signature = inspect.signature(target)
+        except (TypeError, ValueError) as error:
+            raise RuntimeError(f"Cannot inspect {label}") from error
+        signature = signature.replace(
+            parameters=[p.replace(annotation=inspect.Parameter.empty) for p in signature.parameters.values()],
+            return_annotation=inspect.Signature.empty,
+        )
+        if str(signature) != expected:
+            raise RuntimeError(f"Incompatible {label}{signature}; expected {expected}")
+    return scrape_jobs, RequestsRotating, TLSRotating
+
+
 def install_request_guard(guard):
     # Runtime wrappers only; do not modify the installed JobSpy package. Disable
     # its hidden urllib3 retry loop so one 429 doesn't produce three more calls.
-    from jobspy.util import RequestsRotating, TLSRotating
+    # Validate every hook before mutating any of them or starting a scrape.
+    scrape_jobs, RequestsRotating, TLSRotating = validate_jobspy()
     from requests.adapters import HTTPAdapter
     original_setup = RequestsRotating.setup_session
     original_send = RequestsRotating.send
@@ -93,6 +131,7 @@ def install_request_guard(guard):
     RequestsRotating.setup_session = setup
     RequestsRotating.send = send
     TLSRotating.execute_request = execute
+    return scrape_jobs
 
 
 class ErrorCapture(logging.Handler):
@@ -167,15 +206,6 @@ def build_google_search_term(keywords, location, remote_only):
 
 
 def main():
-    try:
-        from jobspy import scrape_jobs
-    except ImportError:
-        print(
-            "python-jobspy is not installed. Run: pip install python-jobspy",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", required=True, choices=SITES)
     parser.add_argument("--results-wanted", type=int, default=10)
@@ -186,7 +216,15 @@ def main():
     args = parser.parse_args()
 
     guard = RequestGuard(max(1, args.request_delay))
-    install_request_guard(guard)
+    try:
+        scrape_jobs = install_request_guard(guard)
+    except Exception as error:
+        print(
+            f"JobSpy setup is incompatible: {error}. "
+            f'Run: "{sys.executable}" -m pip install --force-reinstall python-jobspy=={JOBSPY_VERSION}',
+            file=sys.stderr,
+        )
+        sys.exit(1)
     result = scrape_board(scrape_jobs, args.site, args.keywords, args.location,
                           args.remote_only, max(1, min(25, args.results_wanted)), guard)
     print(json.dumps(result, default=str, allow_nan=False))

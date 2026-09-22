@@ -7,6 +7,12 @@
 > `searchAllSources`/`searchPoolBoards`, and `detectIntegration.ts` this document
 > describes have been deleted. See `docs/decisions.md`'s Phase 4/5 entries for what
 > changed and why, and `docs/adding-a-source.md` for how the codebase works now.
+>
+> **JobSpy update (2026-09-21):** the all-boards subprocess and installation blocker
+> described below are historical. Current sourcing uses five board adapters, a
+> shared serial queue with per-execution deadlines, board-only failure cooldowns,
+> and validated `python-jobspy==1.1.82`. See [request controls](jobspy-request-controls.md)
+> and the [current architecture](ARCHITECTURE.md).
 
 Scope: this document is a read-only inventory of how `job-tracker` fetches, filters,
 dedups, and returns job/contract listings today. No application code was changed to

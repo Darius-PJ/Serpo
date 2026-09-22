@@ -148,8 +148,11 @@ The most involved area, split into two trees with a clear division of labor:
   adapters with `Promise.all`, giving each a per-call `context.ts`
   (`services/`: `cache`, `rateLimiter`, `circuitBreaker`, `httpClient`,
   `scrapeScheduler`, `logger`) and returning a `{ results, errors, meta }`
-  envelope — one slow/broken source degrades its cell, never the whole search
-  (per-source timeout + circuit breaker). Listings are normalized to the rich
+  envelope — a broken source returns its own error rather than failing the
+  whole search (per-source timeout + circuit breaker). The response still waits
+  for all selected adapters; it does not stream fast-source results separately.
+  Context deadlines start on first `signal`/`deadline` access, not creation.
+  Queued JobSpy adapters defer that access until execution. Listings are normalized to the rich
   `NormalizedJobListing` Zod schema in `types.ts`.
 - **`lib/jobSources/` — shared, source-agnostic post-processing.** Title
   relevance tiers (`titleMatch`, `roleFamilies`, `titleAliases`), location/remote
@@ -169,27 +172,36 @@ flowchart TD
   D --> E["envelope: results, errors, meta"]
   E --> F["scoreTitleRelevance / isSeniorTitle / locationFilter"]
   F --> G["dedupeListings (SimHash, DB fingerprints)"]
-  G --> H["annotate tracked (existing Application.url) -> JSON"]
+  G --> H["exclude tracked + eliminated URLs for this user -> JSON"]
 ```
 
 Sources: keyless (Remotive, Himalayas, Jobicy, Arbeitnow, RemoteOK), keyed
-(Adzuna, USAJobs, Jooble), per-company ATS (Greenhouse, Lever), and **JobSpy**
-(LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google) via a Python subprocess. See
-`docs/adding-a-source.md` and `docs/adapter-interface.md`.
+(Adzuna, USAJobs, Jooble), per-company ATS (Greenhouse, Lever), and five **JobSpy**
+adapters generated from `lib/jobSpyBoards.ts`: `jobspy:indeed`,
+`jobspy:linkedin`, `jobspy:zip_recruiter`, `jobspy:glassdoor`, `jobspy:google`.
+The search form selects boards individually; each has separate cache/error state.
+`services/scrapeScheduler.ts` serializes their subprocesses across searches,
+joins identical in-flight queries, and persists per-board request reservations
+before starting work. A local failure propagates without adding a board-failure
+cooldown; only a valid failure envelope from the helper can add one. Abort/timeout
+errors retain their type, and the queue stays occupied until the child closes.
+See [request controls](jobspy-request-controls.md),
+[source authoring](adding-a-source.md), and [adapter design](adapter-interface.md).
 
 ## Durable state
 
-Everything persists in **one SQLite file** (`data/app.db`) through
+Domain records persist in **one SQLite file** (`data/app.db`) through
 `lib/db/prisma.ts` — a process-global Prisma client (reused across dev hot
 reloads) over the `better-sqlite3` adapter, path resolved from `DATABASE_URL`
-(default `file:./data/app.db`).
+(default `file:./data/app.db`). JobSpy request limits are a separate JSON sidecar
+beside that database; résumé artifacts are separate files.
 
 Model groups (`prisma/schema.prisma`):
 
 - **Identity:** `User` (the lone owner).
 - **Pipeline:** `Application`, `ApplyRun`, `Message`, `AuditEvent`.
 - **CRM:** `Contact`, `ContactApplication`, `Interaction`, `Task`.
-- **Sourcing:** `JobBoard`, `JobBoardPin`, `TitleAlias`, and the **global**
+- **Sourcing:** `JobBoard`, `JobBoardPin`, `TitleAlias`, `EliminatedJob`, and the **global**
   `JobSourceCache` + `JobListingFingerprint`.
 - **Résumé/leads:** `ResumeTemplate`, `ResumeWorkspace`, `ProfileField`,
   `RaekwonReport`, `RaekwonLead`.
@@ -243,8 +255,9 @@ drift or ledger disagreement.
 | `lint` | ESLint |
 | `verify:deployment` | `scripts/verifyDeploymentConfig.mjs` |
 | `db:upgrade-and-verify` | `scripts/dbUpgradeAndVerify.mjs` (fail-closed migrate) |
-| `test:unit` / `test:e2e` / `test` | Vitest / Playwright / both |
-| `verify` | Full release gate: lint + `tsc --noEmit` + deployment check + build + unit + e2e (CI runs the same) |
+| `test:unit` / `test:scripts` / `test:e2e` | Vitest / Node script tests / Playwright |
+| `test` | Unit + script + e2e suites |
+| `verify` | Full release gate: lint + `tsc --noEmit` + deployment check + build + unit + script + e2e tests (CI runs the same) |
 | `build:installer` / `build:icon` | `scripts/buildInstaller.ps1` / `scripts/buildIcon.mjs` |
 
 **First-run setup** (`scripts/setup.mjs`, safe to re-run): checks Node ≥ 20.9,
@@ -266,12 +279,20 @@ PID. Logs go to `%LOCALAPPDATA%\Serpo`. `scripts/install.ps1` /
 `buildInstaller.ps1` produce the one-click installer; `createShortcut.ps1` makes
 the desktop shortcut.
 
-**JobSpy sidecar:** `scripts/setupJobSpy.ps1` provisions a private venv
-(`.venv-jobspy`, Python ≤ 3.12) with `python-jobspy`. The JobSpy adapter spawns
-`scripts/jobspy_search.py` per search; it scrapes the five sites, paces requests
-with cooldowns persisted to `data/app.db.jobspy-state.json`, and prints a small
-JSON projection (`ADAPTER_FIELDS`) to stdout. Tunables:
-`JOBSPY_*` in `.env.example`.
+**JobSpy sidecar:** `scripts/setupJobSpy.ps1` provisions a private Python 3.12 venv
+(`.venv-jobspy`) pinned to `python-jobspy==1.1.82`. Readiness validates the installed
+version and private request-hook signatures, not just package presence.
+The adapter's cheap dependency probe only checks package availability; each
+invocation of `scripts/jobspy_search.py` validates compatibility before installing
+request guards or scraping. Setup failures exit nonzero with actionable stderr.
+Each subprocess scrapes **one selected board** and returns an envelope containing
+`site`, `items` (the `ADAPTER_FIELDS` projection), `status`, `details`, and
+`retryAfterSeconds`. Requests are paced and hidden urllib3 retries are disabled.
+`JOBSPY_TIMEOUT_MS` applies separately to each dequeued board, excluding queue wait.
+Normal spacing and board-failure cooldowns persist in `<database>.jobspy-state.json`;
+local process/parse failures do not create a failure cooldown or clear existing
+reservations. Tunables and repair guidance: [JobSpy request controls](jobspy-request-controls.md)
+and `.env.example`.
 
 ## Testing topology
 
@@ -280,6 +301,9 @@ JSON projection (`ADAPTER_FIELDS`) to stdout. Tunables:
   — zero live network. `tests/setup/` provides the migrated `test.db`, a
   `server-only` stub, and global setup. Adapter conformance:
   `lib/jobAdapters/testing/contractSuite.ts`.
+  JobSpy adapter/scheduler regressions use controlled subprocess responses;
+  `tests/unit/scripts/jobspySearchScript.test.ts` exercises helper behavior through
+  Python without live job-board traffic.
 - **E2E** (`tests/e2e/`, Playwright, `playwright.config.ts`): full-stack UI flows
   against a built app using `e2e.db`.
 - **Scripts** (`tests/scripts/`): the launcher (`serpoHost.test.mjs`).

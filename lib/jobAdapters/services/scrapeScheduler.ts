@@ -54,23 +54,25 @@ async function save() {
 }
 
 export async function scheduleScrape<T>(options: {
-  site: string; key: string; minIntervalMs: number; signal: AbortSignal;
-  run: () => Promise<T>;
+  site: string; key: string; minIntervalMs: number;
+  getSignal: () => AbortSignal;
+  run: (signal: AbortSignal) => Promise<T>;
   cooldown: (result: T) => { milliseconds: number; reason: string } | null;
 }): Promise<T> {
   const key = `${options.site}:${options.key}`;
   const pending = state.pending.get(key);
   if (pending) return pending as Promise<T>;
   const task = state.tail.then(async () => {
-    options.signal.throwIfAborted();
+    const signal = options.getSignal();
+    signal.throwIfAborted();
     await load();
     const previous = state.reservations[options.site];
     if (previous && previous.until > Date.now()) throw new ScrapePausedError(previous.until, previous.reason);
     // Persist before making requests, including on crashes/timeouts.
     state.reservations[options.site] = { until: Date.now() + options.minIntervalMs, reason: "Requests are spaced out to reduce blocking." };
     await save();
-    options.signal.throwIfAborted();
-    const result = await options.run();
+    signal.throwIfAborted();
+    const result = await options.run(signal);
     state.reservations[options.site].until = Date.now() + options.minIntervalMs;
     const pause = options.cooldown(result);
     if (pause) {

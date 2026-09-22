@@ -24,10 +24,16 @@ function defaultTimeoutForLatencyClass(latencyClass: AdapterCapabilities["latenc
 
 export function createAdapterContext(adapter: Adapter, correlationId: string, timeoutMs?: number): AdapterContext {
   const resolvedTimeoutMs = timeoutMs ?? defaultTimeoutForLatencyClass(adapter.capabilities.latencyClass);
-  const deadline = Date.now() + resolvedTimeoutMs;
-  return {
+  // Queued adapters must not spend their I/O budget waiting for another source.
+  // Start once, on first signal/deadline access at execution, never on creation.
+  let timing: { signal: AbortSignal; deadline: number } | undefined;
+  const start = () => timing ??= {
     signal: AbortSignal.timeout(resolvedTimeoutMs),
-    deadline,
+    deadline: Date.now() + resolvedTimeoutMs,
+  };
+  return {
+    get signal() { return start().signal; },
+    get deadline() { return start().deadline; },
     logger: createLogger({ correlationId, sourceId: adapter.metadata.id }),
     rateLimiter: createRateLimiterHandle(adapter.metadata.id, adapter.capabilities.cost),
     cache: createCacheHandle(adapter.metadata.id, adapter.capabilities),

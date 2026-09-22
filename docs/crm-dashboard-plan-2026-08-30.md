@@ -4,6 +4,14 @@
 **Status:** Approved design. Phases 0–5 are implemented (JobSpy repair; attention-first dashboard with the board at /pipeline; drag-and-drop kanban recording status_changed audit events; user tasks with due/snooze joining the attention queue and pipeline cards; DecisionMaker promoted to reusable Contact records with an Interaction log and /contacts page — merge decided: auto-merge on exact name+company; unified per-application timeline). Phase 6 (metrics) is next.
 **Goal:** Evolve the app from a job list with tools attached into a CRM for one job seeker: the home screen answers "what needs my attention today?", and every entity — application, contact, task, message — hangs off the pipeline.
 
+> **JobSpy follow-up (2026-09-21):** Phase 0's findings and work items below are
+> historical, not current setup instructions. Use
+> [JobSpy request controls](jobspy-request-controls.md): the supported package is
+> `python-jobspy==1.1.82`, with five separately selectable boards, a shared serial
+> queue, execution budgets excluding queue wait, and no board-failure cooldown
+> for local timeout/setup/parse errors. Version and request-hook validation runs
+> before scraping.
+
 The app stays local and privacy-minded. Every dependency below is a vendored npm/pip package; nothing calls an external service at runtime beyond the existing job-source adapters.
 
 ## Current State and Gaps

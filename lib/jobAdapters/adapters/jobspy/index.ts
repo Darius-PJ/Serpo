@@ -86,14 +86,16 @@ function runPythonScript(scriptPath: string, args: string[], signal: AbortSignal
 
     let stdout = "";
     let stderr = "";
+    let processError: unknown;
     child.stdout.on("data", (chunk) => (stdout += chunk));
     child.stderr.on("data", (chunk) => (stderr = (stderr + chunk).slice(-8000)));
 
     child.on("error", (err) => {
-      if (err.name === "AbortError") reject(new Error("jobspy_search.py timed out"));
-      else reject(err);
+      processError = err.name === "AbortError" ? signal.reason ?? err : err;
     });
     child.on("close", (code) => {
+      // Keep the serial queue occupied until the aborted child has actually closed.
+      if (processError) { reject(processError); return; }
       if (code !== 0) reject(new Error(`jobspy_search.py exited ${code}: ${stderr.trim()}`));
       else resolve(stdout);
     });
@@ -137,7 +139,7 @@ return {
     // the full search cost.
     return isPythonJobSpyInstalled()
       ? { ok: true }
-      : { ok: false, detail: "python-jobspy is not installed for the probed interpreter — pip install python-jobspy, or point JOBSPY_PYTHON at an interpreter that has it" };
+      : { ok: false, detail: "python-jobspy is not installed for the probed interpreter — run scripts/setupJobSpy.ps1, or point JOBSPY_PYTHON at an interpreter with the supported version (docs/jobspy-request-controls.md)" };
   },
 
   async *search(query, ctx): AsyncGenerator<AdapterPage<JobSpyRawResult>> {
@@ -151,16 +153,13 @@ return {
     if (query.remoteOnly) args.push("--remote-only");
 
     const result = await scheduleScrape<BoardResult>({
-      site, key: JSON.stringify(query), signal: ctx.signal,
+      site, key: JSON.stringify(query), getSignal: () => ctx.signal,
       minIntervalMs: positiveSetting(site === "google" ? "JOBSPY_GOOGLE_INTERVAL_SECONDS" : "JOBSPY_MIN_INTERVAL_SECONDS", site === "google" ? 900 : 60) * 1000,
-      run: async () => {
-        try {
-          const parsed = JSON.parse(await runPythonScript(scriptPath, args, ctx.signal)) as BoardResult;
-          if (parsed.site !== site || !Array.isArray(parsed.items) || !["ok", "rate-limited", "blocked", "invalid-request", "error"].includes(parsed.status)) throw new Error("Invalid response from JobSpy helper");
-          return parsed;
-        } catch (error) {
-          return { site, items: [], status: "error", details: error instanceof Error ? error.message : String(error), retryAfterSeconds: 0 };
-        }
+      run: async (signal) => {
+        // Local failures propagate; only a valid board response may set a cooldown.
+        const parsed = JSON.parse(await runPythonScript(scriptPath, args, signal)) as BoardResult;
+        if (!parsed || parsed.site !== site || !Array.isArray(parsed.items) || !["ok", "rate-limited", "blocked", "invalid-request", "error"].includes(parsed.status)) throw new SyntaxError("Invalid response from JobSpy helper");
+        return parsed;
       },
       cooldown: (response) => response.status === "ok" ? null : {
         milliseconds: Math.max(positiveSetting("JOBSPY_FAILURE_COOLDOWN_SECONDS", 1800), Number.isFinite(response.retryAfterSeconds) ? response.retryAfterSeconds : 0) * 1000,

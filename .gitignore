@@ -71,3 +71,6 @@ next-env.d.ts
 
 # editor/scratch backups (e.g. design/decisions.md.backup)
 *.backup
+
+# Local decision log, kept out of the repo
+docs/decisions.md

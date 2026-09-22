@@ -94,8 +94,8 @@ export interface CircuitBreakerHandle {
 }
 
 export interface AdapterContext {
-  signal: AbortSignal;
-  deadline: number; // epoch ms
+  signal: AbortSignal; // first signal/deadline access starts the execution timeout
+  deadline: number; // epoch ms; same execution timeout as signal
   logger: Logger;
   rateLimiter: RateLimiterHandle;
   cache: CacheHandle;

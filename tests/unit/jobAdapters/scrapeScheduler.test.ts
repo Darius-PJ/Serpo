@@ -7,7 +7,7 @@ vi.mock("node:fs/promises", () => ({
 }));
 import { scheduleScrape, resetScrapeSchedulerForTests } from "@/lib/jobAdapters/services/scrapeScheduler";
 
-const options = (site: string, key = "same") => ({ site, key, minIntervalMs: 60_000, signal: new AbortController().signal, cooldown: () => null });
+const options = (site: string, key = "same") => ({ site, key, minIntervalMs: 60_000, getSignal: () => new AbortController().signal, cooldown: () => null });
 
 beforeEach(() => { resetScrapeSchedulerForTests(); disk.saved = "{}"; });
 
@@ -46,7 +46,7 @@ describe("shared scrape scheduler", () => {
     await expect(scheduleScrape({ ...options("google"), run: async () => { throw new Error("crashed"); } })).rejects.toThrow("crashed");
     const controller = new AbortController(); controller.abort();
     const run = vi.fn();
-    await expect(scheduleScrape({ ...options("indeed"), signal: controller.signal, run })).rejects.toThrow();
+    await expect(scheduleScrape({ ...options("indeed"), getSignal: () => controller.signal, run })).rejects.toThrow();
     expect(run).not.toHaveBeenCalled();
     expect(await scheduleScrape({ ...options("glassdoor"), run: async () => "jobs" })).toBe("jobs");
   });

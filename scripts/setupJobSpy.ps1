@@ -1,7 +1,7 @@
 # Provisions the JobSpy job-source: an app-private uv, a managed Python 3.12,
 # and python-jobspy in <project>\.venv-jobspy - the conventional path the
 # adapter probes when JOBSPY_PYTHON is unset. No admin rights, nothing touches
-# the system. Idempotent: a working venv short-circuits. install.ps1 runs this
+# the system. Idempotent: a compatible venv short-circuits. install.ps1 runs this
 # hidden in the background so the app is usable while it downloads.
 param([string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot))
 
@@ -10,11 +10,18 @@ $ErrorActionPreference = "Stop"
 $stateRoot = Join-Path $env:LOCALAPPDATA "Serpo"
 $venv = Join-Path $ProjectRoot ".venv-jobspy"
 $venvPython = Join-Path $venv "Scripts\python.exe"
+$jobSpyVersion = "1.1.82"
 
 function Test-JobSpyReady {
   if (-not (Test-Path $venvPython)) { return $false }
-  & $venvPython -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('jobspy') else 1)" 2>$null
-  return $LASTEXITCODE -eq 0
+  try {
+    & $venvPython -c "import sys; sys.path.insert(0, sys.argv[1]); from jobspy_search import validate_jobspy; validate_jobspy()" (Join-Path $ProjectRoot "scripts") 2>$null
+    return $LASTEXITCODE -eq 0
+  } catch {
+    # PowerShell 5 can turn native stderr into a terminating error. An
+    # incompatible environment still needs reprovisioning, not an early exit.
+    return $false
+  }
 }
 
 if (Test-JobSpyReady) {
@@ -79,9 +86,9 @@ if (Test-Path $venv) {
 & (Join-Path $pythonDir.FullName "python.exe") -m venv $venv
 if ($LASTEXITCODE -ne 0) { throw "python -m venv failed with exit code $LASTEXITCODE." }
 
-Write-Host "Installing python-jobspy (a few hundred MB of scientific packages - takes a few minutes)..."
-& $uvExe pip install --python $venvPython python-jobspy
+Write-Host "Installing python-jobspy==$jobSpyVersion (a few hundred MB of scientific packages - takes a few minutes)..."
+& $uvExe pip install --python $venvPython "python-jobspy==$jobSpyVersion"
 if ($LASTEXITCODE -ne 0) { throw "uv pip install failed with exit code $LASTEXITCODE." }
 
-if (-not (Test-JobSpyReady)) { throw "python-jobspy installed but the import probe still fails." }
+if (-not (Test-JobSpyReady)) { throw "python-jobspy==$jobSpyVersion installed but its compatibility probe still fails. Run scripts/jobspy_search.py with this environment for diagnostics." }
 Write-Host "JobSpy is ready. Searches pick it up automatically within a few minutes (no restart needed)." -ForegroundColor Green

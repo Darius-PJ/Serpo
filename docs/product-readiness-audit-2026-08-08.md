@@ -1,5 +1,14 @@
 # Product readiness audit — 2026-08-08
 
+> **JobSpy follow-up (2026-09-21):** this audit remains a record of August 8,
+> not a current release verdict. JobSpy now uses a shared serial scheduler,
+> separate board adapters, execution deadlines excluding queue wait, and pinned,
+> validated helper dependencies. Local process errors no longer impose the
+> board-failure cooldown. These changes address the JobSpy-specific execution
+> concerns, not every issue in P2-3/P2-7: the response still waits for all selected
+> sources, and this work adds neither streaming nor source-health telemetry.
+> See [request controls](jobspy-request-controls.md) for current behavior.
+
 ## Decision
 
 **Do not describe this as a finished one-stop job/contract product yet.** It is a

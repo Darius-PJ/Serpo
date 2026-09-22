@@ -21,8 +21,9 @@ else, which is the confirming evidence this checklist actually holds.
    - `metadata` — `id` (lowercase, matches the registry key), `displayName`,
      `homepage`, `tosNotes` (real ToS/robots constraints, attribution asks, scraping
      risk — whatever's actually true), `sourceKind`.
-   - `capabilities` — see `docs/adapter-interface.md` 2c for what each flag means and
-     `lib/jobAdapters/adapters/*/index.ts` for 11 real, working examples to copy from.
+   - `capabilities` — see `lib/jobAdapters/types.ts` for the current contract,
+     `docs/adapter-interface.md` 2c for rationale, and existing
+     `lib/jobAdapters/adapters/*/index.ts` implementations for examples.
      Get `queryModel` right: `"keyword-search"` only if you've actually verified the
      source filters server-side (a nonsense keyword should return zero/different
      results — don't just trust the docs, see the Remotive/Himalayas findings in
@@ -43,6 +44,14 @@ else, which is the confirming evidence this checklist actually holds.
      `lib/jobAdapters/search.ts` and the app's own post-fetch filter already re-check
      every source's listings uniformly regardless of source, so a local filter there
      is redundant, not protective.
+     For queued subprocess work, defer timing access with
+     `getSignal: () => ctx.signal` when using `scheduleScrape`; its `run(signal)`
+     callback receives the execution signal after dequeue. Reading `ctx.signal`,
+     `ctx.deadline`, or spreading the context before enqueue starts the timer too
+     early. Preserve local errors instead of converting them into board-failure
+     responses; wait for a killed subprocess to close before releasing the queue.
+     Pin dependencies when wrapping private APIs and validate those hooks before
+     network access. See [JobSpy request controls](jobspy-request-controls.md).
    - `normalize(rawItem, ctx)` — pure, no network, no `ctx.cache`/`ctx.rateLimiter`
      access. Missing data is `null`, never a guessed or invented value (see
      `docs/adapter-interface.md` 2a's rules). If this is an `enumerate-target` adapter,
@@ -60,7 +69,7 @@ else, which is the confirming evidence this checklist actually holds.
 3. **Capture real fixtures** under `tests/fixtures/<name>/`: a typical result, an
    empty result (a real query that legitimately returns nothing — not a fabricated
    one), and an error/rate-limited response, following the envelope shape used by the
-   other 11 sources (`{ status, capturedAt, note, body }`, see
+   existing sources (`{ status, capturedAt, note, body }`, see
    `tests/fixtures/loadFixture.ts`). If a fixture genuinely can't be captured (source
    unreachable, not configured, an install blocker) — record that honestly in a
    metadata-only file (see `tests/fixtures/jobspy/BLOCKED.json`,

@@ -1,10 +1,17 @@
 # Adapter interface design (Phase 2)
 
-Written proposal only — nothing in this document has been implemented. Every design
-choice below is checked against the concrete sources this app already has
-(`docs/architecture-audit.md`), not a generic plugin-architecture template. Where a
-choice affects already-shipped code (dedup, caching, board detection), that's called
-out explicitly rather than silently assumed away.
+This is the Phase 2 design record, not a verbatim copy of the current API. The
+adapter migration is implemented; historical rationale and legacy source citations
+below describe the code at design time. Current contracts live in
+[`lib/jobAdapters/types.ts`](../lib/jobAdapters/types.ts); use
+[Adding a job source](adding-a-source.md) for implementation guidance.
+
+**Execution update (2026-09-21):** JobSpy now has five per-board adapters sharing
+a serial scheduler, rather than one adapter scraping all boards. Context timers
+start on first signal/deadline access at execution; queue wait is excluded.
+Local subprocess/parse failures propagate without a board-failure cooldown.
+The helper validates pinned `python-jobspy==1.1.82` and its private request hooks
+before scraping. See [JobSpy request controls](jobspy-request-controls.md).
 
 ## 2a. The normalized job record
 
@@ -74,7 +81,7 @@ interface NormalizedJobListing {
 
 ```ts
 interface AdapterMetadata {
-  id: string;             // stable registry key, e.g. "adzuna", "jobspy"; board-scoped adapters (greenhouse/lever/ashby) register once and are parameterized per-board at query time (2d, outlier #4), not once per company
+  id: string;             // stable registry key, e.g. "adzuna", "jobspy:indeed"; company ATS adapters are parameterized by target at query time
   displayName: string;
   homepage: string;
   tosNotes: string;       // free text — ToS/robots.txt restrictions, attribution requirements, scraping risk, etc.
@@ -116,8 +123,8 @@ interface AdapterPage<TRaw> {
 }
 
 interface AdapterContext {
-  signal: AbortSignal;   // orchestration derives this from the search's overall deadline; already proven necessary in production (docs/decisions.md's 2026-07-29 timeout fix predates this interface but establishes the exact mechanism — AbortSignal.timeout(...) — this formalizes)
-  deadline: number;      // epoch ms this call must finish by; adapters MAY read it directly for adaptive behavior (e.g. requesting fewer results as the deadline nears) but are never required to
+  signal: AbortSignal;   // first signal/deadline access starts the per-adapter execution timeout; queued adapters defer access until dequeued
+  deadline: number;      // epoch ms for that same timeout; reading it starts the timer if signal has not been read
   logger: Logger;        // structured, pre-bound with correlationId + sourceId
   rateLimiter: RateLimiterHandle;
   cache: CacheHandle;
@@ -157,12 +164,12 @@ orchestration special-cases per adapter.
 | `queryModel` | The load-bearing flag — see outliers #1, #4, #5 in 2d. |
 | `paginationStyle` | `"none"` for every current connector except Adzuna, which hardcodes page 1 today (`adzuna.ts:38`) but is `"page"`-capable per its own API; migrating it can request further pages through the same generator contract other adapters already use, for free. |
 | `requiresDetailFetch` | `false` for every current connector — none of them today do a separate detail-page fetch; Greenhouse's `?content=true` (`greenhouseBoard.ts:23`) already gets the full description in the list call. Kept in the interface for a future source that only returns truncated descriptions in its list endpoint. |
-| `runtime` | `"node"` for the 10 fetch-based connectors, `"subprocess"` for JobSpy (`child_process.spawn`, `jobSpy.ts:19`), `"headless-browser"` reserved for a future JS-rendered JSON-LD crawler (outlier #5) that plain `fetch` can't handle. |
+| `runtime` | `"node"` for fetch-based adapters; `"subprocess"` for each JobSpy board (`lib/jobAdapters/adapters/jobspy/index.ts`); `"headless-browser"` reserved for future browser-backed sources. |
 | `cost` | Nothing today tracks quota (audit §7/Open Question #5) — every adapter's `cost` would be a **new** declaration sourced from each API's public docs, not derived from existing code. Adzuna: `{ tier: "quota-limited", quotaUnit: "calls", interval: "day" }` (exact number not in this repo — needs Adzuna's current published limit, a Phase 3 config-time fact, not guessed here). |
-| `latencyClass` | Also not measured anywhere today (audit §2). JobSpy is the one adapter with strong textual evidence of being slow (`"very-slow"`) — a single subprocess call scraping 5 sites. Everything else defaults to `"fast"` pending actual measurement in Phase 1's fixture capture. |
+| `latencyClass` | JobSpy boards declare `"very-slow"` and receive `JOBSPY_TIMEOUT_MS` each (90 seconds by default). `context.ts` derives the execution budget from this flag; queued scrapes start the timer when dequeued, not when their contexts are created. |
 | `cacheable` / `cacheTtlSeconds` | Already real, shipped infrastructure — every current connector is cached today via `lib/jobSources/cache.ts` with one global TTL (`JOB_CACHE_TTL_MINUTES`). This flag lets a future adapter opt out (`cacheable: false`) or use a different TTL, which the current one-size-fits-all cache can't express. |
 | `tosForbidsStorage` | `false` for everything today (no ToS in this repo's comments claims to forbid storage — several ask for attribution, which is a different constraint already satisfied by every connector's `label` + link-back). Exists for a hypothetical stricter future source. See outlier #10. |
-| `maxConcurrency` | Nothing enforces per-source concurrency today — `Promise.all` fires every configured connector at once with no cap. Matters most for `runtime: "subprocess"`/`"headless-browser"` adapters, which are expensive to run many of in parallel; a value of `1` for JobSpy would be the natural default. |
+| `maxConcurrency` | A capability declaration, not a generic semaphore in orchestration. JobSpy boards declare `1`; their shared `scrapeScheduler.ts` actually enforces one subprocess across all boards and searches, joining identical in-flight queries. |
 
 ## 2d. Proving the design against the outliers
 
@@ -194,22 +201,24 @@ orchestration special-cases per adapter.
    enforced by a shared `ctx.rateLimiter` keyed on `adapter.metadata.id` — generic
    quota-bucket logic in orchestration, zero Adzuna-specific code in core.
 
-3. **JobSpy — Python subprocess, 30-90s latency, partial per-board results, can fail
-   per-board while succeeding for others.** `runtime: "subprocess"`,
-   `latencyClass: "very-slow"`. This is "one adapter fronting many sub-sources" exactly
-   as the outlier names it — the per-item `site` field `python-jobspy` already returns
-   (`JobSpyRawResult.site`, mapped into the listing id today at `jobSpy.ts:62`) is
-   already enough raw material for the adapter to report, per page, which of its
-   requested sites (`indeed`, `linkedin`, `zip_recruiter`, `glassdoor`, `google`) are
-   actually represented in the results, and log a warning + set `partial: true` for any
-   that are entirely absent. Whether an absent site means "zero real matches" or "that
-   site's scrape actually failed" isn't resolvable from this repo alone (audit's Open
-   Question #3 — `python-jobspy`'s internals aren't vendored here) — a concrete,
-   scoped follow-up when this connector is actually migrated (Phase 4, deliberately the
-   *second* source migrated, per the task's own migration order, specifically so this
-   gets found early rather than at source #8). The interface doesn't need a JobSpy-only
-   branch anywhere in core either way — `AdapterPage.partial` + the `errors[]` envelope
-   (2e) already carry a per-source partial-failure fact generically.
+3. **JobSpy — per-board subprocesses and partial results (updated 2026-09-21).**
+   `JOBSPY_BOARDS` in `lib/jobSpyBoards.ts` generates five adapters with
+   `runtime: "subprocess"` and `latencyClass: "very-slow"`. Each helper invocation
+   scrapes one board and returns `site`, `items`, `status`, `details`, and
+   `retryAfterSeconds`. Captured request failures and logged errors distinguish
+   failed/partial scrapes from successful empty results.
+
+   The scheduler receives `getSignal: () => ctx.signal` and calls it only after
+   dequeuing. Its `run(signal)` callback uses that same signal for the subprocess.
+   Context creation, cache checks, and queue wait do not consume the execution
+   budget. Do not read or spread the context before execution if the work is queued:
+   accessing either timing getter starts the timer.
+
+   Valid failure envelopes may extend a board cooldown. Local timeout, abort,
+   setup, JSON parse, or invalid-envelope errors instead propagate; normal request
+   spacing remains. An aborted child must close before the queue advances.
+   Partial pages carry a warning and do not replace the last successful cache;
+   failures may fall back to cached listings up to 24 hours old.
 
 4. **Greenhouse/Lever/Ashby — board-scoped, company slug required, no keyword search.**
    `queryModel: "enumerate-target"`, `NormalizedQuery = { kind: "target", target: <slug> }`.
@@ -305,12 +314,11 @@ orchestration special-cases per adapter.
     document — proposed here as the schema that makes it possible later, per your
     instruction to revisit dedup once this groundwork exists, not before.
 
-No outlier required a name-keyed branch in shared/core code to satisfy — the closest
-calls were #4/#5 (unified under one `queryModel` and target-list mechanism this repo
-already has a precedent for) and #3 (JobSpy's per-board accounting, which stays inside
-JobSpy's own adapter file). Where a genuine open question remains (JobSpy's true
-partial-failure granularity, Adzuna's exact quota number, real latency numbers), it's
-called out as deferred to Phase 1/3/4 rather than guessed.
+The original outlier analysis motivated the shared adapter contract. JobSpy's
+previously open per-board accounting question is now handled by separate adapters
+and explicit helper status envelopes, not inferred from missing board listings.
+The generic `AdapterPage.partial`/warning and `SearchEnvelope.errors` paths carry
+those outcomes. The remaining historical design rationale is preserved above.
 
 ## 2e. Failure semantics
 
@@ -347,4 +355,5 @@ the frontend a single boolean to show "results are partial" without inspecting
 
 ---
 
-🛑 **CHECKPOINT 2** — awaiting review. No implementation until this is approved.
+**Implementation status:** the Phase 2 review checkpoint is complete. See
+[the decision log](decisions.md) for the migration and later execution changes.
