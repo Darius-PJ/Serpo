@@ -88,7 +88,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         evidence: result.submissionEvidence,
         runData: { tailoredResumePath: resumePath, formAnswersSnapshot, error: null },
       });
-      if (confirmed.becameSubmitted) queueOutreachPreparation(userId, id);
+      if (confirmed.becameSubmitted) await queueOutreachPreparation(userId, id);
       return NextResponse.json({ run: confirmed.run, application: confirmed.application });
     }
 

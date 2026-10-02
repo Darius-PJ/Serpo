@@ -73,6 +73,10 @@ export async function wipeAllData(userId: string) {
     const tasks = await tx.task.deleteMany({ where: { userId } });
     const titleAliases = await tx.titleAlias.deleteMany({ where: { userId } });
     const eliminatedJobs = await tx.eliminatedJob.deleteMany({ where: { userId } });
+    const savedSearchHits = await tx.savedSearchHit.deleteMany({ where: { savedSearch: { userId } } });
+    const savedSearches = await tx.savedSearch.deleteMany({ where: { userId } });
+    const automationJobs = await tx.automationJob.deleteMany({ where: { userId } });
+    const automationSettings = await tx.automationSettings.deleteMany({ where: { userId } });
     const auditEvents = await tx.auditEvent.deleteMany({ where: { userId } });
     const deletedApplications = await tx.application.deleteMany({ where: { userId } });
     const resumeTemplates = await tx.resumeTemplate.deleteMany({ where: { userId } });
@@ -89,6 +93,10 @@ export async function wipeAllData(userId: string) {
       tasks: tasks.count,
       titleAliases: titleAliases.count,
       eliminatedJobs: eliminatedJobs.count,
+      savedSearches: savedSearches.count,
+      savedSearchHits: savedSearchHits.count,
+      automationJobs: automationJobs.count,
+      automationSettings: automationSettings.count,
       auditEvents: auditEvents.count,
       resumeTemplates: resumeTemplates.count,
       resumeWorkspaces: resumeWorkspaces.count,

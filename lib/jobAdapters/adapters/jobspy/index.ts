@@ -18,6 +18,34 @@ interface JobSpyRawResult {
   job_url: string;
   date_posted?: string;
   description?: string;
+  // JobSpy joins each listing's JobType values as "fulltime, contract".
+  job_type?: string | null;
+}
+
+// Boards where a contract search's results are the board's own assertion even
+// when a listing carries no type: LinkedIn (f_JT; its type is only on the detail
+// page, which this helper skips), ZipRecruiter (employment_type param) and
+// Glassdoor (jobType filterKey; its scraper never fills job_type). Indeed is left
+// out: its contract key filters the same attributes its per-listing type is parsed
+// from, so a genuine match already reports "contract", and a typeless one can only
+// have matched the remote key sharing that attribute list. Google only gets a
+// search-term hint.
+const STAMPS_CONTRACT_FILTER: Partial<Record<JobSpySite, true>> = { linkedin: true, zip_recruiter: true, glassdoor: true };
+
+// Order is precedence: a listing tagged "fulltime, contract" is contract work.
+const JOBSPY_TYPES = [
+  ["contract", "contract"], ["temporary", "temporary"], ["fulltime", "full-time"], ["parttime", "part-time"],
+] as const;
+
+function employmentType(site: JobSpySite, r: JobSpyRawResult, query: NormalizeContext["query"]): NormalizedJobListing["employment"]["type"] {
+  // JobSpy's Google scraper derives job_type by regex over the description, not
+  // from a source field.
+  if (site === "google") return null;
+  if (!r.job_type) {
+    return STAMPS_CONTRACT_FILTER[site] && query.kind === "keywords" && query.employmentType === "contract" ? "contract" : null;
+  }
+  const types = r.job_type.split(",").map((t) => t.trim());
+  return JOBSPY_TYPES.find(([value]) => types.includes(value))?.[1] ?? null;
 }
 
 interface BoardResult {
@@ -151,6 +179,7 @@ return {
       "--request-delay", String(positiveSetting("JOBSPY_REQUEST_DELAY_SECONDS", 3))];
     if (query.location) args.push("--location", query.location);
     if (query.remoteOnly) args.push("--remote-only");
+    if (query.employmentType === "contract") args.push("--job-type", "contract");
 
     const result = await scheduleScrape<BoardResult>({
       site, key: JSON.stringify(query), getSignal: () => ctx.signal,
@@ -192,7 +221,7 @@ return {
       fetchedAt: ctx.fetchedAt,
       location: { raw: r.location ?? null, remote: null, country: null, region: null, city: null },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentType(site, r, ctx.query), seniorityHint: null },
       provenance: { sourceKind: "scraped-board", posterIsLikelyAgency: null, originalSourceUrl: null },
       raw: r,
     };

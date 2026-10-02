@@ -99,7 +99,14 @@ test("Resume button snapshots the current search and navigates to the workspace"
     role: "Backend Engineer",
     jobDescription: "We need a backend engineer with TypeScript experience.",
     sourceUrl: "https://example.com/job/1",
-    originSearchQuery: "keywords=backend+engineer&location=Remote&remoteOnly=false",
+  });
+  // Everything the Back button needs to restore this exact search.
+  expect(Object.fromEntries(new URLSearchParams(String(lastBody?.originSearchQuery)))).toEqual({
+    keywords: "backend engineer",
+    location: "Remote",
+    remoteOnly: "false",
+    employmentType: "any",
+    jobSpySites: "indeed,linkedin,zip_recruiter,glassdoor,google",
   });
 
   await page.waitForURL("**/resume/fake-workspace-1");

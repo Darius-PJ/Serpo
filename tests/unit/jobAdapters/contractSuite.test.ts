@@ -13,7 +13,7 @@ for (const adapter of ALL_FIXTURE_ADAPTERS) {
 
 describe("assertHonorsAbortSignal", () => {
   it("fails against an adapter that ignores ctx.signal (proves the check has teeth)", async () => {
-    await expect(assertHonorsAbortSignal(signalIgnoringAdapter, { kind: "keywords", keywords: "HANG_TEST", location: null, remoteOnly: false }, 100)).rejects.toThrow(
+    await expect(assertHonorsAbortSignal(signalIgnoringAdapter, { kind: "keywords", keywords: "HANG_TEST", location: null, remoteOnly: false, employmentType: "any" }, 100)).rejects.toThrow(
       /did not terminate/
     );
   });

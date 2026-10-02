@@ -115,4 +115,53 @@ describe("attention queue", () => {
       { kind: "message_draft", company: "Busy Co", detail: "Outreach draft awaiting approval" },
     ]);
   });
+
+  it("ranks failed automation after apply runs and new listings last, with what the dashboard needs to act on them", async () => {
+    const user = await prisma.user.create({ data: { username: "attention-automation-user", passwordHash: "unused" } });
+    // Each kind is older than the kind ranked above it, so only kind priority yields this order.
+    const runStartedAt = new Date(Date.now() - 1 * DAY_MS);
+    const failedAt = new Date(Date.now() - 2 * DAY_MS);
+    const draftedAt = new Date(Date.now() - 3 * DAY_MS);
+    const appliedAt = new Date(Date.now() - 8 * DAY_MS);
+    const firstHitAt = new Date(Date.now() - 10 * DAY_MS);
+    const inboxViewedAt = new Date(Date.now() - 11 * DAY_MS);
+
+    const acme = await prisma.application.create({ data: { userId: user.id, company: "Acme", role: "Engineer", source: "manual" } });
+    await prisma.applyRun.create({ data: { applicationId: acme.id, status: "blocked", startedAt: runStartedAt } });
+    await prisma.message.create({
+      data: { applicationId: acme.id, type: "FOLLOW_UP", draftText: "draft", status: "DRAFT", createdAt: draftedAt },
+    });
+    await prisma.application.create({
+      data: { userId: user.id, company: "Gamma", role: "Technician", source: "manual", status: "Submitted", submissionState: "confirmed", appliedAt },
+    });
+    const delta = await prisma.application.create({ data: { userId: user.id, company: "Delta", role: "Designer", source: "manual" } });
+    const failedJob = await prisma.automationJob.create({
+      data: {
+        userId: user.id,
+        kind: "outreach.prepare",
+        idempotencyKey: `outreach:${delta.id}`,
+        payload: JSON.stringify({ applicationId: delta.id }),
+        status: "dead",
+        attempts: 4,
+        lastError: "Hunter.io: HTTP 503",
+        finishedAt: failedAt,
+      },
+    });
+    const search = await prisma.savedSearch.create({
+      data: { userId: user.id, name: "Remote frontend", keywords: "frontend engineer", lastViewedAt: inboxViewedAt },
+    });
+    for (const [n, firstSeenAt] of [[1, firstHitAt], [2, new Date(firstHitAt.getTime() + DAY_MS)]] as const) {
+      await prisma.savedSearchHit.create({
+        data: { savedSearchId: search.id, listingId: `remotive:${n}`, familyId: `remotive:${n}`, url: `https://remotive.test/jobs/${n}`, listingJson: "{}", firstSeenAt },
+      });
+    }
+
+    const items = await listAttentionItems(user.id);
+
+    expect(items.map((item) => item.kind)).toEqual(["apply_run", "automation_failed", "message_draft", "follow_up_due", "new_listings"]);
+    expect(items[1]).toMatchObject({ jobId: failedJob.id, applicationId: delta.id, company: "Delta", role: "Designer", since: failedAt });
+    expect(items[4]).toMatchObject({ savedSearchId: search.id, applicationId: null, since: firstHitAt });
+    expect(items[4].detail).toMatch(/\b2\b/);
+    expect(items[4].detail).toContain("Remote frontend");
+  });
 });

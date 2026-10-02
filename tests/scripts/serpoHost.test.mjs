@@ -1,11 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { EventEmitter } from "node:events";
-import { mkdtemp, rm } from "node:fs/promises";
+import { EventEmitter, once } from "node:events";
+import { mkdtemp, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { startSerpoHost, stopOwnedProcess } from "../../scripts/serpoHost.mjs";
 import { spawn } from "node:child_process";
+import { setTimeout as delay } from "node:timers/promises";
 
 async function fixture(overrides = {}) {
   const stateRoot = await mkdtemp(path.join(tmpdir(), "serpo-host-test-"));
@@ -77,4 +78,59 @@ test("Windows shutdown stops an owned Node process and its descendant", { skip: 
     try { process.kill(descendant); } catch { /* already stopped */ }
     try { child.kill(); } catch { /* already stopped */ }
   }
+});
+
+// Stands in for the Next server, which hosts the automation ticker in-process:
+// it appends a heartbeat every 20 ms and says so once the interval is running.
+const BEATING_SERVER = "const fs=require('node:fs');let beats=0;setInterval(()=>{fs.appendFileSync(process.env.SERPO_TEST_HEARTBEAT,'.');if(++beats===2)console.log('beating')},20)";
+
+// A host whose owned server is a real process, stopped by the real default stopChild (stopOwnedProcess).
+async function hostWithBeatingServer() {
+  const stateRoot = await mkdtemp(path.join(tmpdir(), "serpo-host-test-"));
+  const heartbeat = path.join(stateRoot, "heartbeat.log");
+  const browser = new EventEmitter();
+  const page = new EventEmitter();
+  browser.close = async () => {};
+  browser.pages = () => [page];
+  let child;
+  let beating;
+  const host = await startSerpoHost({ port: 3999, stateRoot, ready: async () => true, openWindow: async () => browser,
+    startChild: (env) => {
+      child = spawn(process.execPath, ["-e", BEATING_SERVER], { env: { ...env, SERPO_TEST_HEARTBEAT: heartbeat }, stdio: ["ignore", "pipe", "ignore"], windowsHide: true });
+      beating = once(child.stdout, "data", { signal: AbortSignal.timeout(5000) });
+      return child;
+    } });
+  const cleanup = async () => {
+    await host.stop().catch(() => {});
+    if (child.exitCode === null && child.signalCode === null) child.kill();
+    await rm(stateRoot, { recursive: true, force: true, maxRetries: 5 });
+  };
+  try { await beating; } catch (error) { await cleanup(); throw error; }
+  return { host, page, heartbeat, cleanup };
+}
+
+async function assertStoppedBeating(heartbeat) {
+  const size = (await stat(heartbeat)).size;
+  // A real process on the real clock: only waiting can show it no longer beats. Ten heartbeats' worth.
+  await delay(200);
+  assert.equal((await stat(heartbeat)).size, size);
+}
+
+test("Quit leaves no automation running: the server hosting the ticker stops", async () => {
+  const f = await hostWithBeatingServer();
+  try {
+    const res = await fetch(`http://127.0.0.1:${f.host.controlPort}/quit`, { method: "POST", headers: { Authorization: `Bearer ${f.host.token}` } });
+    assert.equal(res.status, 202);
+    await f.host.done;
+    await assertStoppedBeating(f.heartbeat);
+  } finally { await f.cleanup(); }
+});
+
+test("closing the app window leaves no automation running: the server hosting the ticker stops", async () => {
+  const f = await hostWithBeatingServer();
+  try {
+    f.page.emit("close");
+    await f.host.done;
+    await assertStoppedBeating(f.heartbeat);
+  } finally { await f.cleanup(); }
 });

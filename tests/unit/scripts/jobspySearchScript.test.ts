@@ -168,7 +168,7 @@ describe.skipIf(!pythonAvailable)("scripts/jobspy_search.py", () => {
       `}])`,
       `print(json.dumps(records))`,
     ]) as Array<Record<string, unknown>>;
-    expect(Object.keys(records[0]).sort()).toEqual(["company", "date_posted", "description", "id", "job_url", "location", "site", "title"]);
+    expect(Object.keys(records[0]).sort()).toEqual(["company", "date_posted", "description", "id", "job_type", "job_url", "location", "site", "title"]);
   });
 
   it("build_google_search_term composes keywords, location, and remote", () => {
@@ -180,5 +180,21 @@ describe.skipIf(!pythonAvailable)("scripts/jobspy_search.py", () => {
       `]))`,
     ]);
     expect(terms).toEqual(["python developer jobs", "python developer jobs near Atlanta, GA", "python developer jobs remote"]);
+  });
+
+  it.each([
+    ["contract", ["--job-type", "contract"], "contract", "network engineer contract jobs near Atlanta, GA"],
+    ["any", [], null, "network engineer jobs near Atlanta, GA"],
+  ])("forwards the %s job type to scrape_jobs and into Google's search term", (_mode, flag, jobType, googleTerm) => {
+    const argv = ["--site", "google", "--keywords", "network engineer", "--location", "Atlanta, GA", ...flag];
+    expect(runPy([
+      ...compatibleJobSpy,
+      `import io, contextlib`,
+      `seen = []`,
+      `jobspy.scrape_jobs = lambda **kwargs: seen.append(kwargs) or SimpleNamespace(to_dict=lambda **kw: [])`,
+      `sys.argv = ['jobspy_search.py', *${JSON.stringify(argv)}]`,
+      `with contextlib.redirect_stdout(io.StringIO()): m.main()`,
+      `print(json.dumps([seen[0]['job_type'], seen[0]['google_search_term']]))`,
+    ])).toEqual([jobType, googleTerm]);
   });
 });

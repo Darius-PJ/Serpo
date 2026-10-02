@@ -1,4 +1,5 @@
 // Migrated from lib/jobSources/jobicy.ts (kept, untouched, as the legacy path).
+import { employmentTypeFromLabels } from "../../services/employmentLabels";
 import { fetchWithRetry } from "../../services/httpClient";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
@@ -11,6 +12,9 @@ interface JobicyJob {
   jobExcerpt?: string;
   jobDescription?: string;
   pubDate?: string;
+  // e.g. ["Full-Time"], ["Contract"]. The JSON API takes no job-type param (only its
+  // RSS feed does), and 400s on unknown params such as jobType.
+  jobType?: string[];
 }
 
 interface JobicyResponse {
@@ -82,7 +86,7 @@ export const jobicyAdapter: Adapter<JobicyJob> = {
       fetchedAt: ctx.fetchedAt,
       location: { raw: job.jobGeo ?? "Remote", remote: true, country: null, region: null, city: null },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentTypeFromLabels(job.jobType ?? []), seniorityHint: null },
       provenance: { sourceKind: "aggregator", posterIsLikelyAgency: null, originalSourceUrl: null },
       raw: job,
     };

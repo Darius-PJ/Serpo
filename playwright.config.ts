@@ -39,6 +39,15 @@ export default defineConfig({
       HUNTER_API_KEY: "",
       ENABLE_AI_ASSISTANCE: "false",
       ANTHROPIC_API_KEY: "",
+      // Keyed job sources stay unconfigured too, so a real search reaches only
+      // the keyless sources, whose results tests/e2e/saved-searches.spec.ts
+      // seeds in the source cache: no search leaves this machine.
+      ADZUNA_APP_ID: "",
+      ADZUNA_APP_KEY: "",
+      USAJOBS_API_KEY: "",
+      USAJOBS_USER_AGENT: "",
+      JOOBLE_API_KEY: "",
+      CAREERJET_API_KEY: "",
     },
   },
 });

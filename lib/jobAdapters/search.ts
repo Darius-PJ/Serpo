@@ -7,7 +7,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { runAdapterSearch } from "./runSearch";
 import { listConfiguredAdapters, findAdapterById } from "./registry";
-import type { NormalizedJobListing as NewListing } from "./types";
+import type { NormalizedJobListing as NewListing, NormalizedQuery } from "./types";
 import type { JobSearchCriteria, JobSearchResult, NormalizedJobListing as OldListing } from "@/lib/jobSources/types";
 import { selectedJobSpySites } from "@/lib/jobSpyBoards";
 
@@ -21,6 +21,7 @@ function toLegacyListing(l: NewListing): OldListing {
     url: l.canonicalUrl,
     postedAt: l.postedAt ?? undefined,
     description: l.descriptionText ?? l.descriptionHtml ?? undefined,
+    employmentType: l.employment.type ?? undefined,
   };
 }
 
@@ -29,11 +30,12 @@ export async function searchAllAdapters(criteria: JobSearchCriteria, correlation
   const selected = selectedJobSpySites(criteria.jobSpySites);
   const adapters = listConfiguredAdapters().filter((adapter) => adapter.capabilities.queryModel !== "enumerate-target"
     && (!adapter.metadata.id.startsWith("jobspy:") || selected.some((site) => adapter.metadata.id === `jobspy:${site}`)));
-  const query = {
-    kind: "keywords" as const,
+  const query: NormalizedQuery = {
+    kind: "keywords",
     keywords: criteria.keywords,
     location: criteria.location ?? null,
     remoteOnly: Boolean(criteria.remoteOnly),
+    employmentType: criteria.employmentType ?? "any",
   };
   const envelope = await runAdapterSearch(query, adapters, correlationId);
 

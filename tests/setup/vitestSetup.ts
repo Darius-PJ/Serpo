@@ -21,5 +21,9 @@ afterEach(async () => {
   await prisma.resumeTemplate.deleteMany();
   await prisma.profileField.deleteMany();
   await prisma.eliminatedJob.deleteMany();
+  await prisma.savedSearchHit.deleteMany();
+  await prisma.savedSearch.deleteMany();
+  await prisma.automationJob.deleteMany();
+  await prisma.automationSettings.deleteMany();
   await prisma.user.deleteMany();
 });

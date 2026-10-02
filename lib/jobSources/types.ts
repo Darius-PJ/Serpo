@@ -1,8 +1,11 @@
+import type { EmploymentTypeFilter, NormalizedJobListing as AdapterListing } from "@/lib/jobAdapters/types";
+
 export interface JobSearchCriteria {
   jobSpySites?: string[];
   keywords: string;
   location?: string;
   remoteOnly?: boolean;
+  employmentType?: EmploymentTypeFilter;
 }
 
 export interface NormalizedJobListing {
@@ -16,6 +19,8 @@ export interface NormalizedJobListing {
   url: string;
   postedAt?: string;
   description?: string;
+  /** Employment type as the source states it (or as its server-side filter guaranteed); absent when unknown. */
+  employmentType?: NonNullable<AdapterListing["employment"]["type"]>;
   /** Search-relevance tier (lib/jobSources/titleMatch.ts) — set by the search
    * route so the UI can group family matches separately. Absent tiers render
    * as primary matches. */

@@ -143,7 +143,7 @@ class ErrorCapture(logging.Handler):
         self.messages.append(record.getMessage())
 
 
-def scrape_board(scrape_jobs, site, keywords, location, remote_only, results_wanted, guard):
+def scrape_board(scrape_jobs, site, keywords, location, remote_only, results_wanted, guard, job_type=None):
     capture = ErrorCapture()
     loggers = [logging.getLogger(name) for name in logging.Logger.manager.loggerDict if name.startswith("JobSpy")]
     for logger in loggers:
@@ -151,10 +151,13 @@ def scrape_board(scrape_jobs, site, keywords, location, remote_only, results_wan
     records = []
     exception = None
     try:
+        # Indeed accepts only one of hours_old / job_type+is_remote / easy_apply
+        # per search; this helper sends neither hours_old nor easy_apply, so its
+        # job_type filter always applies.
         jobs = scrape_jobs(
             site_name=[site], search_term=keywords,
-            google_search_term=build_google_search_term(keywords, location, remote_only),
-            location=location, is_remote=remote_only, country_indeed="usa",
+            google_search_term=build_google_search_term(keywords, location, remote_only, job_type),
+            location=location, is_remote=remote_only, job_type=job_type, country_indeed="usa",
             results_wanted=results_wanted, linkedin_fetch_description=False, verbose=0,
         )
         records = sanitize_records(jobs.to_dict(orient="records"))
@@ -173,7 +176,7 @@ def scrape_board(scrape_jobs, site, keywords, location, remote_only, results_wan
 # The only fields the Node adapter reads (JobSpyRawResult in
 # lib/jobAdapters/adapters/jobspy/index.ts). Projecting to these keeps the
 # stdout payload small and every value JSON-safe.
-ADAPTER_FIELDS = ["site", "id", "company", "title", "location", "job_url", "date_posted", "description"]
+ADAPTER_FIELDS = ["site", "id", "company", "title", "location", "job_url", "date_posted", "description", "job_type"]
 
 
 def _null_if_na(value):
@@ -194,10 +197,11 @@ def sanitize_records(records):
     return [{field: _null_if_na(record.get(field)) for field in ADAPTER_FIELDS} for record in records]
 
 
-def build_google_search_term(keywords, location, remote_only):
+def build_google_search_term(keywords, location, remote_only, job_type=None):
     """Google for Jobs ignores the structured params and honors only
-    google_search_term, so compose a natural query from the same criteria."""
-    term = f"{keywords} jobs"
+    google_search_term, so compose a natural query from the same criteria —
+    including the job type, which JobSpy would otherwise drop for Google."""
+    term = f"{keywords} {job_type} jobs" if job_type else f"{keywords} jobs"
     if location:
         term += f" near {location}"
     if remote_only:
@@ -213,6 +217,7 @@ def main():
     parser.add_argument("--keywords", required=True)
     parser.add_argument("--location", default=None)
     parser.add_argument("--remote-only", action="store_true")
+    parser.add_argument("--job-type", choices=["contract"], default=None)
     args = parser.parse_args()
 
     guard = RequestGuard(max(1, args.request_delay))
@@ -226,7 +231,7 @@ def main():
         )
         sys.exit(1)
     result = scrape_board(scrape_jobs, args.site, args.keywords, args.location,
-                          args.remote_only, max(1, min(25, args.results_wanted)), guard)
+                          args.remote_only, max(1, min(25, args.results_wanted)), guard, args.job_type)
     print(json.dumps(result, default=str, allow_nan=False))
 
 

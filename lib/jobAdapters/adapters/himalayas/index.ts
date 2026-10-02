@@ -1,4 +1,5 @@
 // Migrated from lib/jobSources/himalayas.ts (kept, untouched, as the legacy path).
+import { employmentTypeFromLabels } from "../../services/employmentLabels";
 import { fetchWithRetry } from "../../services/httpClient";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
@@ -11,6 +12,8 @@ interface HimalayasJob {
   excerpt?: string;
   pubDate?: string;
   applicationLink: string;
+  // "Full Time" | "Part Time" | "Contractor" | "Temporary" | "Intern" | "Volunteer" | "Other"
+  employmentType?: string;
 }
 
 interface HimalayasSearchResponse {
@@ -62,6 +65,9 @@ export const himalayasAdapter: Adapter<HimalayasJob> = {
     // `country`/`location` deliberately never sent — see tosNotes; this app's own
     // uniform post-filter (isUsOrRemoteListing) covers it instead, same as legacy.
     const params = new URLSearchParams({ q: keywords });
+    // Unlike `q`, employment_type was live-verified to filter: comma-separated values
+    // are ORed (Contractor 2195 + Temporary 29 = 2224 total for q=engineer, 2026-09-27).
+    if (query.kind === "keywords" && query.employmentType === "contract") params.set("employment_type", "Contractor,Temporary");
     const res = await fetchWithRetry(`https://himalayas.app/jobs/api/search?${params}`, {}, ctx);
     if (!res.ok) throw new Error(`HTTP ${res.status}: Himalayas search failed`);
     const data = (await res.json()) as HimalayasSearchResponse;
@@ -85,7 +91,7 @@ export const himalayasAdapter: Adapter<HimalayasJob> = {
       fetchedAt: ctx.fetchedAt,
       location: { raw: locationRaw, remote: true, country: null, region: null, city: null },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentTypeFromLabels([job.employmentType]), seniorityHint: null },
       provenance: { sourceKind: "aggregator", posterIsLikelyAgency: null, originalSourceUrl: null },
       raw: job,
     };

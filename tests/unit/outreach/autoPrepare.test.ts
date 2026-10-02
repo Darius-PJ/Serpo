@@ -12,7 +12,9 @@ vi.mock("@/lib/osint", () => ({
 const generateMessageMock = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/ai/generateMessage", () => ({ generateMessage: generateMessageMock }));
 
-import { prepareOutreach } from "@/lib/outreach/autoPrepare";
+import { prepareOutreach, queueOutreachPreparation } from "@/lib/outreach/autoPrepare";
+import { JOB_HANDLERS } from "@/lib/automation/handlers";
+import { runDueJobs } from "@/lib/automation/runner";
 
 let seq = 0;
 async function makeApplication() {
@@ -137,5 +139,58 @@ describe("prepareOutreach", () => {
     expect(events).toHaveLength(1);
     expect(events[0].action).toBe("application.outreach_failed");
     expect(JSON.parse(events[0].details!).error).toMatch(/429/);
+  });
+
+  it("rethrows a retryable failure for the runner, recording it only on the final attempt", async () => {
+    const { user, application } = await makeApplication();
+    configuredOsintConnectorsMock.mockReturnValue([]);
+    const unavailable = Object.assign(new Error("503 Service Unavailable"), { status: 503 });
+    generateMessageMock.mockRejectedValue(unavailable);
+
+    await expect(prepareOutreach(user.id, application.id, { finalAttempt: false })).rejects.toBe(unavailable);
+    await expect(auditEvents(user.id, application.id)).resolves.toHaveLength(0);
+
+    await expect(prepareOutreach(user.id, application.id, { finalAttempt: true })).rejects.toBe(unavailable);
+    const events = await auditEvents(user.id, application.id);
+    expect(events.map((event) => event.action)).toEqual(["application.outreach_failed"]);
+  });
+
+  it("records a failure no retry can fix on the first attempt, without throwing", async () => {
+    const { user, application } = await makeApplication();
+    configuredOsintConnectorsMock.mockReturnValue([]);
+    generateMessageMock.mockRejectedValue(Object.assign(new Error("400 prompt too long"), { status: 400 }));
+
+    await expect(prepareOutreach(user.id, application.id, { finalAttempt: false })).resolves.toBeUndefined();
+
+    const events = await auditEvents(user.id, application.id);
+    expect(events.map((event) => event.action)).toEqual(["application.outreach_failed"]);
+  });
+});
+
+describe("queueOutreachPreparation", () => {
+  beforeEach(() => {
+    configuredOsintConnectorsMock.mockReset().mockReturnValue([]);
+    generateMessageMock.mockReset().mockResolvedValue({ id: "queued-draft" });
+    vi.stubEnv("ENABLE_AI_ASSISTANCE", "true");
+  });
+
+  it("queues one preparation job per application, which the runner carries out, and re-arms it once it finished", async () => {
+    const { user, application } = await makeApplication();
+
+    await queueOutreachPreparation(user.id, application.id);
+    await queueOutreachPreparation(user.id, application.id);
+    const [job, ...duplicates] = await prisma.automationJob.findMany({ where: { userId: user.id } });
+    expect(duplicates).toEqual([]);
+    expect(job).toMatchObject({ kind: "outreach.prepare", status: "queued" });
+
+    await expect(runDueJobs(JOB_HANDLERS)).resolves.toBe(1);
+    expect(generateMessageMock).toHaveBeenCalledWith(application.id, "IMMEDIATE");
+    await expect(auditEvents(user.id, application.id)).resolves.toMatchObject([{ action: "application.outreach_prepared" }]);
+
+    // Moved back into Submitted later: the finished job is queued again.
+    await queueOutreachPreparation(user.id, application.id);
+    await expect(prisma.automationJob.findMany({ where: { userId: user.id } })).resolves.toMatchObject([
+      { id: job.id, status: "queued", attempts: 0 },
+    ]);
   });
 });

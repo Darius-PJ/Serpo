@@ -14,8 +14,9 @@ function createClient() {
   return new PrismaClient({ adapter });
 }
 
-// Reused across hot reloads in dev so we don't open a new SQLite connection per request.
+// One client per process, kept on globalThis: dev hot reloads would otherwise
+// open a new SQLite connection per reload, and the automation ticker started
+// from instrumentation.ts loads in a separate bundle from the routes. A second
+// connection in the same process could block on the other's open transaction.
 export const prisma = globalThis.__prisma ?? createClient();
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__prisma = prisma;
-}
+globalThis.__prisma = prisma;

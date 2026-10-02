@@ -16,6 +16,7 @@ const ALL_SOURCE_IDS = [
   "jooble",
   "greenhouse",
   "lever",
+  "careerjet",
 ];
 
 describe("job adapter registry", () => {

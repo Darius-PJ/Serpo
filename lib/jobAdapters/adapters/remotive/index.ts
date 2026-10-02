@@ -1,4 +1,5 @@
 // Migrated from lib/jobSources/remotive.ts (kept, untouched, as the legacy path).
+import { employmentTypeFromLabels } from "../../services/employmentLabels";
 import { fetchWithRetry } from "../../services/httpClient";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
@@ -11,6 +12,9 @@ interface RemotiveJob {
   publication_date?: string;
   candidate_required_location?: string;
   description?: string;
+  // "full_time" | "part_time" | "contract" | "freelance" | "internship" | "" ... — the
+  // API has no job-type request param (job_type=contract was ignored when tried live).
+  job_type?: string;
 }
 
 interface RemotiveResponse {
@@ -85,7 +89,7 @@ export const remotiveAdapter: Adapter<RemotiveJob> = {
       fetchedAt: ctx.fetchedAt,
       location: { raw: job.candidate_required_location ?? "Remote", remote: true, country: null, region: null, city: null },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentTypeFromLabels([job.job_type]), seniorityHint: null },
       provenance: { sourceKind: "aggregator", posterIsLikelyAgency: null, originalSourceUrl: null },
       raw: job,
     };

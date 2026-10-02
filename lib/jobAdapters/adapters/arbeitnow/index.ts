@@ -1,6 +1,7 @@
 // Migrated from lib/jobSources/arbeitnow.ts (kept, untouched, as the legacy path).
 // First source migrated, per the task's own migration order: simplest source, proves
 // the plumbing.
+import { employmentTypeFromLabels } from "../../services/employmentLabels";
 import { fetchWithRetry } from "../../services/httpClient";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
@@ -12,6 +13,9 @@ interface ArbeitnowJob {
   remote?: boolean;
   url: string;
   tags?: string[];
+  // Free-text mix of type and level: "Full Time", "fulltime fixed term", "Permanent",
+  // "berufserfahren", "Internship", ...
+  job_types?: string[];
   description?: string;
   created_at?: number; // unix seconds
 }
@@ -95,7 +99,7 @@ export const arbeitnowAdapter: Adapter<ArbeitnowJob> = {
         city: null,
       },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentTypeFromLabels(job.job_types ?? []), seniorityHint: null },
       provenance: { sourceKind: "aggregator", posterIsLikelyAgency: null, originalSourceUrl: null },
       raw: job,
     };

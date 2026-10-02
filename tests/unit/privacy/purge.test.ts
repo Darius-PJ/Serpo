@@ -114,6 +114,35 @@ describe("lib/privacy/purge", () => {
     await expect(prisma.auditEvent.findMany({ where: { userId: a.user.id } })).resolves.toHaveLength(0);
   });
 
+  it("wipeAllData removes the account's saved searches, their hits, automation jobs, and settings, and no one else's", async () => {
+    const a = await seedUserWithData("purge-automation-a");
+    const b = await seedUserWithData("purge-automation-b");
+    const seedAutomation = async (userId: string) => {
+      const search = await prisma.savedSearch.create({ data: { userId, name: "Remote frontend", keywords: "frontend engineer" } });
+      await prisma.savedSearchHit.create({
+        data: { savedSearchId: search.id, listingId: "remotive:1", familyId: "remotive:1", url: "https://remotive.test/jobs/1", listingJson: "{}" },
+      });
+      await prisma.automationJob.create({
+        data: { userId, kind: "saved_search.run", idempotencyKey: `saved_search:${search.id}:2026-09-28T04:00:00.000Z` },
+      });
+      await prisma.automationSettings.create({ data: { userId, enabled: true } });
+      return search.id;
+    };
+    const aSearchId = await seedAutomation(a.user.id);
+    const bSearchId = await seedAutomation(b.user.id);
+    const automationRows = async (userId: string, savedSearchId: string) => [
+      await prisma.savedSearch.count({ where: { userId } }),
+      await prisma.savedSearchHit.count({ where: { savedSearchId } }),
+      await prisma.automationJob.count({ where: { userId } }),
+      await prisma.automationSettings.count({ where: { userId } }),
+    ];
+
+    await wipeAllData(a.user.id);
+
+    await expect(automationRows(a.user.id, aSearchId)).resolves.toEqual([0, 0, 0, 0]);
+    await expect(automationRows(b.user.id, bSearchId)).resolves.toEqual([1, 1, 1, 1]);
+  });
+
   it("purgeContactResearch removes this application's links but deletes only fully-orphaned contacts", async () => {
     const a = await seedUserWithData("purge-research-user");
     const second = await prisma.application.create({

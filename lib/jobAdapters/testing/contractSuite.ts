@@ -17,7 +17,7 @@ export interface ContractFixtures {
 function tokenQuery(adapter: Adapter, token: string): NormalizedQuery {
   return adapter.capabilities.queryModel === "enumerate-target"
     ? { kind: "target", target: token }
-    : { kind: "keywords", keywords: token, location: null, remoteOnly: false };
+    : { kind: "keywords", keywords: token, location: null, remoteOnly: false, employmentType: "any" };
 }
 
 function defaultFixtures(adapter: Adapter): ContractFixtures {

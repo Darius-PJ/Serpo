@@ -112,7 +112,7 @@ describe("jobspy adapter dependency probe", () => {
 });
 
 describe("jobspy execution and cooldowns", () => {
-  const query = { kind: "keywords" as const, keywords: "engineer", location: null, remoteOnly: false };
+  const query = { kind: "keywords" as const, keywords: "engineer", location: null, remoteOnly: false, employmentType: "any" as const };
   const response = (site: string, status = "ok") => JSON.stringify({
     site, status, details: status === "ok" ? "" : "HTTP 429", retryAfterSeconds: 0,
     items: status === "ok" ? [{ site, title: "Engineer", job_url: "https://example.com/job" }] : [],
@@ -185,6 +185,13 @@ describe("jobspy execution and cooldowns", () => {
     expect((await search()).value?.items[0].title).toBe("Engineer");
   });
 
+  it.each([["any", false], ["contract", true]] as const)("asks the helper for contract jobs only in contract mode (%s)", async (employmentType, requested) => {
+    spawnMock.mockImplementationOnce(() => reply(response("indeed")));
+    await jobSpyAdapter.search({ ...query, employmentType }, createAdapterContext(jobSpyAdapter, "type")).next();
+    const args: string[] = spawnMock.mock.calls[0][1];
+    expect(args.join(" ").includes("--job-type contract")).toBe(requested);
+  });
+
   it("retains a persisted failure cooldown for an actual board rejection", async () => {
     spawnMock.mockImplementationOnce(() => reply(response("indeed", "rate-limited")));
     await expect(search()).rejects.toThrow("Rate limited");
@@ -231,5 +238,32 @@ describe("jobspy execution and cooldowns", () => {
     } finally {
       timeout.mockRestore();
     }
+  });
+});
+
+describe("jobspy employment type", () => {
+  function typeOf(site: string, jobType: string | null, employmentType: "any" | "contract") {
+    const adapter = jobSpyAdapters.find((a) => a.metadata.id === `jobspy:${site}`)!;
+    const query = { kind: "keywords" as const, keywords: "network engineer", location: "Atlanta, GA", remoteOnly: false, employmentType };
+    return adapter.normalize({ site, title: "Network Engineer", job_url: "https://example.com/job", job_type: jobType }, { fetchedAt: "2026-09-27T00:00:00.000Z", query }).employment.type;
+  }
+
+  it("maps JobSpy's joined job_type, contract taking precedence", () => {
+    expect(typeOf("zip_recruiter", "fulltime, contract", "any")).toBe("contract");
+    expect(typeOf("indeed", "temporary", "any")).toBe("temporary");
+    expect(typeOf("indeed", "internship", "any")).toBeNull();
+    // The listing's own type beats the contract filter the search asked for.
+    expect(typeOf("zip_recruiter", "parttime", "contract")).toBe("part-time");
+  });
+
+  it("stamps untyped listings as contract only from boards whose contract filter is server-side", () => {
+    expect(typeOf("linkedin", null, "contract")).toBe("contract");
+    expect(typeOf("linkedin", null, "any")).toBeNull();
+    expect(typeOf("indeed", null, "contract")).toBeNull();
+    expect(typeOf("google", null, "contract")).toBeNull();
+  });
+
+  it("ignores Google's job_type, which JobSpy derives from description text", () => {
+    expect(typeOf("google", "contract", "contract")).toBeNull();
   });
 });

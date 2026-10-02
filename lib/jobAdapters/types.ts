@@ -56,8 +56,14 @@ export const normalizedJobListingSchema = z.object({
 
 export type NormalizedJobListing = z.infer<typeof normalizedJobListingSchema>;
 
+// "contract" asks for contract or temporary work. Adapters whose upstream can filter
+// by job type send it there; every listing is re-checked by the search route
+// (lib/jobSources/employmentType.ts), so an adapter without such a filter needs no
+// local one — it only reports employment.type when its source states it.
+export type EmploymentTypeFilter = "any" | "contract";
+
 export type NormalizedQuery =
-  | { kind: "keywords"; keywords: string; location: string | null; remoteOnly: boolean }
+  | { kind: "keywords"; keywords: string; location: string | null; remoteOnly: boolean; employmentType: EmploymentTypeFilter }
   | { kind: "target"; target: string };
 
 export interface AdapterPage<TRaw> {

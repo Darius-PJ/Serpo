@@ -11,12 +11,21 @@ interface UsaJobsSearchResultItem {
     PositionLocationDisplay?: string;
     PublicationStartDate?: string;
     UserArea?: { Details?: { JobSummary?: string } };
+    // Only the Codes are reliable: agencies fill Name with free text or leave it ""
+    // (tests/fixtures/usajobs/contract-filter.json).
+    PositionOfferingType?: { Name: string; Code: string }[];
+    PositionSchedule?: { Name: string; Code: string }[];
   };
 }
 
 interface UsaJobsResponse {
   SearchResult: { SearchResultItems: UsaJobsSearchResultItem[] };
 }
+
+// PositionOfferingType codes for time-limited appointments
+// (https://data.usajobs.gov/api/codelist/positionofferingtypes): Temporary and Term.
+// USAJobs lists federal appointments, not contracts, so these are what a contract search can mean here.
+const TIME_LIMITED_OFFERING_CODES = ["15318", "15319"];
 
 export const usaJobsAdapter: Adapter<UsaJobsSearchResultItem> = {
   metadata: {
@@ -74,6 +83,7 @@ export const usaJobsAdapter: Adapter<UsaJobsSearchResultItem> = {
     const params = new URLSearchParams({ Keyword: query.keywords });
     if (query.location) params.set("LocationName", query.location);
     if (query.remoteOnly) params.set("RemoteIndicator", "true");
+    if (query.employmentType === "contract") params.set("PositionOfferingTypeCode", TIME_LIMITED_OFFERING_CODES.join(";"));
 
     const res = await fetchWithRetry(
       `https://data.usajobs.gov/api/search?${params}`,
@@ -102,7 +112,7 @@ export const usaJobsAdapter: Adapter<UsaJobsSearchResultItem> = {
       fetchedAt: ctx.fetchedAt,
       location: { raw: d.PositionLocationDisplay ?? null, remote: null, country: "US", region: null, city: null },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentType(d, ctx.query), seniorityHint: null },
       // Every USAJobs posting is a federal agency hiring directly — never a
       // third-party staffing agency, a fact this adapter can declare with certainty
       // rather than leaving it to dedupe's generic name-heuristic fallback.
@@ -111,3 +121,18 @@ export const usaJobsAdapter: Adapter<UsaJobsSearchResultItem> = {
     };
   },
 };
+
+function employmentType(
+  d: UsaJobsSearchResultItem["MatchedObjectDescriptor"],
+  query: NormalizeContext["query"]
+): NormalizedJobListing["employment"]["type"] {
+  const offerings = d.PositionOfferingType ?? [];
+  if (offerings.some((o) => TIME_LIMITED_OFFERING_CODES.includes(o.Code))) return "temporary";
+  // A result of the PositionOfferingTypeCode filter is USAJobs' own time-limited assertion.
+  if (offerings.length === 0 && query.kind === "keywords" && query.employmentType === "contract") return "temporary";
+  // PositionScheduleTypeCode: 1 Full-Time, 2 Part-Time (the rest are shift/intermittent/job-sharing/multiple).
+  const schedules = (d.PositionSchedule ?? []).map((s) => s.Code);
+  if (schedules.includes("1")) return "full-time";
+  if (schedules.includes("2")) return "part-time";
+  return null;
+}

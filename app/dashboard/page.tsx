@@ -2,12 +2,13 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { prisma } from "@/lib/db/prisma";
 import { requireUserIdForPage } from "@/lib/auth/session";
-import { listStaleApplications, runStaleCheck } from "@/lib/scheduler/staleCheck";
+import { listStaleApplications } from "@/lib/scheduler/staleCheck";
 import { listAttentionItems, type AttentionKind } from "@/lib/dashboard/attention";
 import { listRecentActivity } from "@/lib/dashboard/activity";
 import { StaleReviewPanel } from "@/components/StaleReviewPanel";
 import { TaskQuickAdd } from "@/components/TaskQuickAdd";
 import { TaskActions } from "@/components/TaskActions";
+import { AutomationRetryButton } from "@/components/AutomationRetryButton";
 import { APPLICATION_STATUSES } from "@/lib/applicationStatus";
 import { NewApplicationForm } from "@/components/NewApplicationForm";
 import { JobSearchForm } from "@/components/JobSearchForm";
@@ -18,8 +19,10 @@ export const dynamic = "force-dynamic";
 const KIND_BADGES: Record<AttentionKind, string> = {
   task: "Task",
   apply_run: "Apply run",
+  automation_failed: "Automation",
   message_draft: "Draft",
   follow_up_due: "Follow-up",
+  new_listings: "New listings",
 };
 
 // Search is the front door (design/decisions.md, direction A). With nothing
@@ -28,9 +31,8 @@ const KIND_BADGES: Record<AttentionKind, string> = {
 export default async function DashboardPage() {
   const userId = await requireUserIdForPage();
 
-  // Reading the dashboard must never call an AI provider or create outreach.
-  await runStaleCheck(userId);
-
+  // Reading the dashboard never flags, drafts, or calls an AI provider: the
+  // daily stale.scan and followup.scan automation jobs do that (lib/automation).
   const [attentionItems, staleApplications, statusCounts, activity, metrics] = await Promise.all([
     listAttentionItems(userId),
     listStaleApplications(userId),
@@ -49,7 +51,7 @@ export default async function DashboardPage() {
         Needs attention
       </h2>
       <p className="mb-3 text-base text-foreground-muted">
-        Follow-ups due, drafts waiting for your review, and tasks you set yourself.
+        Follow-ups due, drafts waiting for your review, new listings from your saved searches, and tasks you set yourself.
       </p>
       <div className="mb-3">
         <TaskQuickAdd />
@@ -75,11 +77,16 @@ export default async function DashboardPage() {
                     <span className="text-foreground-muted"> — {item.role}</span>
                     <span className="block text-foreground-muted">{item.detail}</span>
                   </>
+                ) : item.kind === "new_listings" && item.savedSearchId ? (
+                  <Link href={`/sourcing?savedSearch=${encodeURIComponent(item.savedSearchId)}`} className="link-accent font-semibold">
+                    {item.detail}
+                  </Link>
                 ) : (
                   <span className="font-semibold text-foreground">{item.detail}</span>
                 )}
               </span>
               {item.kind === "task" && item.taskId && <TaskActions taskId={item.taskId} title={item.detail} />}
+              {item.kind === "automation_failed" && item.jobId && <AutomationRetryButton jobId={item.jobId} label={item.detail} />}
               <span className="shrink-0 text-sm text-foreground-muted">since {item.since.toLocaleDateString()}</span>
             </li>
           ))}

@@ -2,13 +2,15 @@
 // lib/jobSources/leverBoard.ts (kept, untouched, as the legacy path). Also part of
 // "the remainder" of the static-connector-adjacent sources, migrated using the same
 // bridge machinery Greenhouse's validation exercise proved out.
+import { employmentTypeFromLabels } from "../../services/employmentLabels";
 import { fetchWithRetry } from "../../services/httpClient";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
 interface LeverPosting {
   id: string;
   text: string;
-  categories?: { location?: string; team?: string };
+  // commitment is free text each company sets: "Full-time", "Contract", "Part-time", "Intern", ...
+  categories?: { location?: string; team?: string; commitment?: string };
   hostedUrl: string;
   workplaceType?: "unspecified" | "on-site" | "remote" | "hybrid";
   descriptionPlain?: string;
@@ -102,7 +104,7 @@ export const leverAdapter: Adapter<LeverPosting> = {
         city: null,
       },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentTypeFromLabels([posting.categories?.commitment]), seniorityHint: null },
       // A company's own Lever board is definitionally never agency-posted.
       provenance: { sourceKind: "ats", posterIsLikelyAgency: false, originalSourceUrl: null },
       raw: posting,

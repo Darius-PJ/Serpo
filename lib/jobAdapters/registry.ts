@@ -2,8 +2,8 @@
 // (and every consumer outside it) must go through the functions exported here —
 // enforced by tests/unit/jobAdapters/noAdapterImportsOutsideRegistry.test.ts.
 //
-// All 11 sources are migrated here (Phase 4/5 — see docs/architecture-audit.md and
-// docs/decisions.md); the legacy lib/jobSources/ connector registry this replaced is
+// All 11 original sources were migrated here (Phase 4/5 — see docs/architecture-audit.md
+// and docs/decisions.md); the legacy lib/jobSources/ connector registry this replaced is
 // gone. "Dynamic discovery" means discovered/filtered at call time (never cached
 // across requests, config re-checked on every read) rather than Node runtime
 // filesystem scanning — a literal fs.readdir + dynamic import() can't be statically
@@ -23,6 +23,7 @@ import { usaJobsAdapter } from "./adapters/usajobs";
 import { joobleAdapter } from "./adapters/jooble";
 import { greenhouseAdapter } from "./adapters/greenhouse";
 import { leverAdapter } from "./adapters/lever";
+import { careerjetAdapter } from "./adapters/careerjet";
 
 const ADAPTERS: Adapter[] = [
   arbeitnowAdapter,
@@ -36,6 +37,7 @@ const ADAPTERS: Adapter[] = [
   joobleAdapter,
   greenhouseAdapter,
   leverAdapter,
+  careerjetAdapter,
 ];
 
 export function listAdapters(): Adapter[] {

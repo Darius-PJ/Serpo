@@ -2,6 +2,7 @@
 // Third source group, second half: multi-country (hardcoded to "us" here, same as
 // legacy), quota-limited, real page-numbered pagination — the other structurally
 // distinct case the task's migration order calls for alongside RemoteOK.
+import { employmentTypeFromLabels } from "../../services/employmentLabels";
 import { fetchWithRetry } from "../../services/httpClient";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
@@ -13,6 +14,8 @@ interface AdzunaResult {
   redirect_url: string;
   created?: string;
   description?: string;
+  contract_type?: "permanent" | "contract";
+  contract_time?: "full_time" | "part_time";
 }
 
 interface AdzunaResponse {
@@ -82,6 +85,8 @@ export const adzunaAdapter: Adapter<AdzunaResult> = {
       results_per_page: "20",
     });
     if (query.location) params.set("where", query.location);
+    // Adzuna's contract=1 matches contract_type "contract"; it has no temporary type.
+    if (query.employmentType === "contract") params.set("contract", "1");
 
     const res = await fetchWithRetry(`https://api.adzuna.com/v1/api/jobs/${COUNTRY}/search/1?${params}`, {}, ctx);
     if (!res.ok) throw new Error(`HTTP ${res.status}: Adzuna search failed`);
@@ -105,9 +110,16 @@ export const adzunaAdapter: Adapter<AdzunaResult> = {
       fetchedAt: ctx.fetchedAt,
       location: { raw: item.location?.display_name ?? null, remote: null, country: "US", region: null, city: null },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentType(item, ctx.query), seniorityHint: null },
       provenance: { sourceKind: "aggregator", posterIsLikelyAgency: null, originalSourceUrl: null },
       raw: item,
     };
   },
 };
+
+function employmentType(item: AdzunaResult, query: NormalizeContext["query"]): NormalizedJobListing["employment"]["type"] {
+  // contract=1 filters on contract_type, so a filtered result that omits it is still
+  // Adzuna's own contract assertion. contract_time is only full/part time.
+  if (!item.contract_type && query.kind === "keywords" && query.employmentType === "contract") return "contract";
+  return employmentTypeFromLabels([item.contract_type, item.contract_time]);
+}

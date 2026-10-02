@@ -83,10 +83,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return NextResponse.json({ error: "not found" }, { status: 404 });
     }
     application = changed;
-    // Entering Submitted kicks off contact discovery + an outreach draft in
-    // the background, after this response is sent.
+    // Entering Submitted queues contact discovery + an outreach draft as an
+    // automation job; the runner picks it up within a minute.
     if (body.status === "Submitted" && existing.status !== "Submitted") {
-      queueOutreachPreparation(userId, id);
+      await queueOutreachPreparation(userId, id);
     }
   }
 

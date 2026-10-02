@@ -113,8 +113,11 @@ interface AdapterConfigField {
 }
 
 type NormalizedQuery =
-  | { kind: "keywords"; keywords: string; location: string | null; remoteOnly: boolean }
+  | { kind: "keywords"; keywords: string; location: string | null; remoteOnly: boolean; employmentType: "any" | "contract" }
   | { kind: "target"; target: string }; // a company slug/token (Greenhouse/Lever/Ashby) OR an arbitrary URL (JSON-LD crawl) — which one is up to the adapter that declared queryModel: "enumerate-target"; orchestration doesn't need to know which
+// employmentType "contract" means contract OR temporary work (amendment 2026-09-27, docs/decisions.md).
+// Send it upstream only where the source really filters by job type; the search route
+// re-checks every listing, so no adapter needs a local job-type filter.
 
 interface AdapterPage<TRaw> {
   items: TRaw[];

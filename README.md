@@ -6,7 +6,7 @@
 
 A local-first, single-user CRM for a job search. Track applications through a
 pipeline, keep contacts and interaction history, queue follow-ups and tasks,
-source listings from a dozen job boards, and tailor a résumé per application —
+source listings from over a dozen job boards, and tailor a résumé per application —
 all on your own machine.
 
 ## Privacy by design
@@ -27,9 +27,10 @@ all on your own machine.
 
 ## Features
 
-- **Dashboard** — a needs-attention queue (tasks, apply runs, drafts, due
-  follow-ups), pipeline metrics (funnel counts, submission/interview rates,
-  median stage age, source effectiveness), and a recent-activity feed.
+- **Dashboard** — a needs-attention queue (tasks, apply runs, failed automation,
+  drafts, due follow-ups, new listings from saved searches), pipeline metrics
+  (funnel counts, submission/interview rates, median stage age, source
+  effectiveness), and a recent-activity feed.
 - **Pipeline board** — drag-and-drop stages; every status change writes an
   audit event.
 - **Applications** — per-application record with tasks, contacts, message
@@ -37,12 +38,25 @@ all on your own machine.
 - **Contacts** — reusable, company-grouped contacts with an interaction log;
   Hunter.io-powered discovery of likely decision-makers, run manually or
   automatically.
-- **Auto-outreach** — submitting an application kicks off background contact
+- **Auto-outreach** — submitting an application queues background contact
   discovery and an AI-drafted outreach message addressed to the best contact
-  found, saved for your review. Nothing sends without you.
-- **Sourcing** — federated job search across Adzuna, USAJobs, Jooble, the
-  keyless boards above, and five individually selectable JobSpy boards (set up
-  automatically by the one-click installer), with dedup and relevance tiers.
+  found, saved for your review. Network failures are retried. Nothing sends
+  without you.
+- **Sourcing** — federated job search across Adzuna, USAJobs, Jooble, Careerjet,
+  the keyless boards above, and five individually selectable JobSpy boards (set up
+  automatically by the one-click installer), with dedup and relevance tiers. A
+  "Contract & temp only" switch asks each board that supports it for contract
+  work and keeps only contract, contract-to-hire, and temporary listings.
+- **Saved searches** — save any search with a cadence (daily, weekdays, or every
+  6 or 12 hours) and review what it finds in its own inbox on Sourcing: Open,
+  Track, or Dismiss each listing. A listing counts as new only once, even when
+  it is reposted, and the Sourcing nav item shows how many are waiting.
+- **Automation while Serpo is open** — with the switch on in Settings, saved
+  searches re-run on their cadence in your timezone. Stale applications are
+  flagged daily, and with AI assistance on, 7-day follow-up drafts are written
+  for your review. Nothing runs while Serpo is closed: whatever came due runs
+  once the next time it opens. Automation searches, flags, and drafts; it never
+  tracks a job, applies, or sends a message.
 - **Résumé workspace** — keep a template, tailor per application, export DOCX.
 
 ## Getting started
@@ -123,6 +137,83 @@ setup failures, and malformed helper output do **not** trigger the 30-minute
 board-failure cooldown; normal request spacing remains. Existing cooldowns
 survive restarts. See [JobSpy request controls](docs/jobspy-request-controls.md)
 for settings, cached-result behavior, and troubleshooting.
+
+## Job Board Setup
+
+Serpo searches many job boards at once. Most of them work the moment you open
+the app — there is nothing to set up. Four optional boards need a quick, free
+sign-up to switch on. This section walks through it in plain steps; you can do
+it now or any time later, and you only ever do it once.
+
+### What already works, with nothing to set up
+
+These boards are on from the start — no account, no key:
+
+- **Remotive, Himalayas, Jobicy, Arbeitnow, RemoteOK** — remote-focused boards,
+  always searched.
+- **LinkedIn, Indeed, Glassdoor, ZipRecruiter, Google Jobs** (via JobSpy) — if
+  you installed with `Install-Serpo.cmd`, these quietly set themselves up in the
+  background the first time you run the app. If you installed another way, run
+  the one-time command in
+  [JobSpy setup and search behavior](#jobspy-setup-and-search-behavior) above.
+
+If that covers you, you're done — open the app and search.
+
+### Optional boards that need a free key
+
+Four more boards each need a short, free sign-up. They are all optional: Serpo
+simply leaves out any board you haven't set up and keeps searching the rest.
+
+| Board | What it adds | Sign up at |
+| --- | --- | --- |
+| **Adzuna** | A large general job aggregator (US and many other countries) | https://developer.adzuna.com/ |
+| **USAJobs** | Official US federal government jobs | https://developer.usajobs.gov/ |
+| **Jooble** | A broad "aggregator of aggregators"; instant sign-up, no card | https://jooble.org/api/about |
+| **Careerjet** | A worldwide aggregator that also returns contract and temp work | https://www.careerjet.com/partners/api |
+
+### How to add a key
+
+Every key goes in one file called **`.env.local`**, which lives in Serpo's
+folder (the folder created when you installed — for the installer, that's inside
+your Documents folder). Setup already created this file for you. To add a key:
+
+1. Open the Serpo folder and find the file named **`.env.local`**. (If Windows
+   hides file extensions, it may appear simply as `.env`.)
+2. Open it with a plain text editor — **Notepad** is fine: right-click the file,
+   choose **Open with**, then **Notepad**.
+3. Find the line for your board (for example `ADZUNA_APP_ID=`) and type or paste
+   the value right after the `=`, with no spaces and no quotation marks:
+
+   ```
+   ADZUNA_APP_ID=your-application-id
+   ADZUNA_APP_KEY=your-application-key
+   ```
+4. **Save** the file, then **close and reopen Serpo**. The newly set-up boards
+   are now included in every search.
+
+Keep this file to yourself — it holds your personal keys. Serpo never sends it
+anywhere; it stays on your machine and is kept out of version control.
+
+### Where each key comes from
+
+- **Adzuna** — Register at https://developer.adzuna.com/, then open your API
+  dashboard. It shows an **Application ID** and an **Application Key**. Put them
+  on the `ADZUNA_APP_ID=` and `ADZUNA_APP_KEY=` lines.
+- **USAJobs** — Request a key at https://developer.usajobs.gov/ (they email it
+  to you). Put the key on `USAJOBS_API_KEY=` and the **email address you signed
+  up with** on `USAJOBS_USER_AGENT=` — USAJobs needs both to answer.
+- **Jooble** — Sign up at https://jooble.org/api/about. It's instant and asks
+  for no card. Copy the key onto `JOOBLE_API_KEY=`.
+- **Careerjet** — Apply for a free publisher key at
+  https://www.careerjet.com/partners/api. The form asks you to name a website
+  and to list the public IP address(es) this computer searches from (up to 8 —
+  search "what is my IP" in a browser to find yours). Put the key on
+  `CAREERJET_API_KEY=`.
+
+Two other optional features use the same `.env.local` file in the same way: AI
+assistance (an Anthropic/Claude key) and automatic contact discovery (a free
+Hunter.io key). They are not job boards, but if you want them, the comments next
+to each line in `.env.local` explain what to paste.
 
 ## Development
 

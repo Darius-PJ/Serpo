@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { requestJson } from "@/lib/http/requestJson";
 
 const STORAGE_KEY = "serpo-nav-collapsed";
 
@@ -28,6 +29,44 @@ function readCollapsed() {
   } catch {
     return false;
   }
+}
+
+const NEW_LISTINGS_EVENT = "serpo:new-listings-changed";
+const NEW_LISTINGS_POLL_MS = 60_000;
+
+/**
+ * Tells the Sourcing badge that saved-search new-listing counts may have
+ * changed (a run, an inbox viewed), so it refetches now instead of at its
+ * next poll.
+ */
+export function announceNewListingsChanged() {
+  window.dispatchEvent(new Event(NEW_LISTINGS_EVENT));
+}
+
+// New saved-search listings for the Sourcing badge: fetched on mount, on every
+// navigation, once a minute, and whenever a change is announced.
+function useNewListingCount(pathname: string): number {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const data = await requestJson<{ count?: unknown }>("/api/saved-searches/new-count", { cache: "no-store" });
+        if (!cancelled && typeof data.count === "number") setCount(data.count);
+      } catch {
+        // Keep the last count; the next poll tries again.
+      }
+    }
+    void load();
+    const timer = window.setInterval(load, NEW_LISTINGS_POLL_MS);
+    window.addEventListener(NEW_LISTINGS_EVENT, load);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+      window.removeEventListener(NEW_LISTINGS_EVENT, load);
+    };
+  }, [pathname]);
+  return count;
 }
 
 type IconName = "dashboard" | "sourcing" | "pipeline" | "work" | "contacts" | "resume" | "settings" | "quit";
@@ -116,6 +155,7 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName; className?: str
 export function SideNav() {
   const pathname = usePathname();
   const collapsed = useSyncExternalStore(subscribeToCollapse, readCollapsed, () => false);
+  const newListings = useNewListingCount(pathname);
   const [quitting, setQuitting] = useState(false);
   const [quitError, setQuitError] = useState<string | null>(null);
 
@@ -176,14 +216,17 @@ export function SideNav() {
       <nav aria-label="Primary navigation" className="mt-2 flex w-full flex-1 flex-col gap-1 px-2 py-1">
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const badge = item.href === "/sourcing" ? newListings : 0;
+          // With nothing new the name stays exactly the item's label.
+          const label = badge > 0 ? `${item.label} (${badge} new)` : item.label;
           return (
             <Link
               key={item.href}
               href={item.href}
-              aria-label={item.label}
+              aria-label={label}
               aria-current={active ? "page" : undefined}
-              title={item.label}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-base transition-colors ${
+              title={label}
+              className={`relative flex items-center gap-3 rounded-xl px-3 py-2 text-base transition-colors ${
  collapsed ? "justify-center" : "justify-center md:justify-start"
               } ${
                 active
@@ -193,6 +236,18 @@ export function SideNav() {
             >
               <Icon name={item.icon} className={collapsed ? "h-8 w-8" : "h-5 w-5"} />
               <span className={`truncate ${collapsed ? "hidden" : "hidden md:inline"}`}>{item.label}</span>
+              {badge > 0 && (
+                // Over the icon when the label is hidden; after the label when it shows.
+                // Inverted on the active item so it keeps its shape against the fill.
+                <span
+                  aria-hidden="true"
+                  className={`absolute right-1 top-0.5 min-w-6 rounded-full px-1.5 text-center text-sm font-bold leading-6 ${
+                    active ? "bg-primary-ink text-primary" : "bg-foreground text-background"
+                  } ${collapsed ? "" : "md:static md:ml-auto"}`}
+                >
+                  {badge > 99 ? "99+" : badge}
+                </span>
+              )}
             </Link>
           );
         })}

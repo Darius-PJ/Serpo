@@ -26,6 +26,9 @@ model User {
   contacts        Contact[]
   interactions    Interaction[]
   eliminatedJobs  EliminatedJob[]
+  savedSearches   SavedSearch[]
+  automationJobs  AutomationJob[]
+  automationSettings AutomationSettings?
 }
 
 // A person in the job search — recruiter, hiring manager, referral. Promoted
@@ -144,6 +147,87 @@ model EliminatedJob {
 
   @@unique([userId, url])
   @@index([userId])
+}
+
+// A search saved from Sourcing and re-run on a cadence while Serpo is open
+// (lib/automation). The criteria mirror the search form field for field, so
+// a saved run and a manual search of the same criteria share cache entries.
+model SavedSearch {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  keywords       String
+  location       String    @default("")
+  remoteOnly     Boolean   @default(false)
+  employmentType String    @default("any") // "any" | "contract"
+  jobSpySites    String    @default("[]") // JSON array of JobSpySite, as selected on the form
+  cadence        String    @default("daily") // "daily" | "weekdays" | "every_6h" | "every_12h"
+  enabled        Boolean   @default(true)
+  lastRunAt      DateTime?
+  nextRunAt      DateTime  @default(now()) // next scheduled slot; unattended runs only
+  lastViewedAt   DateTime  @default(now()) // hits first seen after this count as new
+  createdAt      DateTime  @default(now())
+  hits           SavedSearchHit[]
+
+  @@unique([id, userId])
+  @@index([userId])
+  @@index([enabled, nextRunAt])
+}
+
+// One listing a saved search surfaced: the search's triage inbox. A listing
+// is new to a search only when neither its id nor its dedupe family
+// (JobListingFingerprint.familyId) has a hit there yet, so a repost of a
+// listing already seen is not new. Dismissed hits stay to keep blocking it.
+model SavedSearchHit {
+  id            String      @id @default(cuid())
+  savedSearchId String
+  savedSearch   SavedSearch @relation(fields: [savedSearchId], references: [id], onDelete: Cascade)
+  listingId     String // NormalizedJobListing.id, e.g. "remotive:123"
+  familyId      String
+  url           String
+  listingJson   String // the listing as the search returned it, for display and Track
+  firstSeenAt   DateTime    @default(now())
+  dismissedAt   DateTime?
+
+  @@unique([savedSearchId, listingId])
+  @@index([savedSearchId, familyId])
+  @@index([savedSearchId, firstSeenAt])
+}
+
+// The durable automation queue (lib/automation/runner.ts). One row per unit of
+// work; idempotencyKey makes enqueueing the same slot or event twice a no-op.
+model AutomationJob {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind           String // "saved_search.run" | "stale.scan" | "followup.scan" | "outreach.prepare"
+  payload        String    @default("{}") // JSON
+  idempotencyKey String    @unique
+  runAt          DateTime  @default(now())
+  status         String    @default("queued") // queued | running | done | failed (awaiting retry) | dead
+  attempts       Int       @default(0)
+  maxAttempts    Int       @default(4)
+  lastError      String?
+  lockedAt       DateTime?
+  finishedAt     DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@unique([id, userId])
+  @@index([status, runAt])
+  @@index([userId, status])
+}
+
+// Per-account automation preferences; no row means the defaults below.
+model AutomationSettings {
+  userId        String  @id
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Master switch for unattended saved-search runs. Off by default: they
+  // contact job boards and APIs, and integrations are opt-in.
+  enabled       Boolean @default(false)
+  timezone      String? // IANA zone for slot math; null = this computer's zone
+  // JobSpy boards unattended runs may scrape. Google Jobs is left out by default.
+  jobSpyConsent String  @default("[\"indeed\",\"linkedin\",\"zip_recruiter\",\"glassdoor\"]")
 }
 
 model AuditEvent {

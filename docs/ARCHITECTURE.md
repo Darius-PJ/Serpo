@@ -88,13 +88,13 @@ all routes in `next.config.ts`.
 |---|---|
 | `/` , `/login` | Redirect to `/dashboard` (single-user, no auth) |
 | `/dashboard` | Needs-attention queue, pipeline metrics, activity feed |
-| `/sourcing` | Federated job search form + saved job-board panel |
+| `/sourcing` | Federated job search form, saved-search inboxes, saved job-board panel |
 | `/pipeline` | Drag-and-drop status board (`@dnd-kit`) |
 | `/work` | Task + apply-run work queue |
 | `/contacts` | Company-grouped contacts + interaction log |
 | `/resume`, `/resume/[id]` | Résumé workspace (benchmark/improved/melded) |
 | `/raekwon` | AI "lead report" batch generator (not in the main nav) |
-| `/settings` | Profile answers, wipe-everything purge |
+| `/settings` | Automation switch, timezone, and JobSpy consent; profile answers; wipe-everything purge |
 | `/applications/[id]` | Per-application record + unified timeline |
 
 ### API surface (`app/api/**`)
@@ -103,7 +103,9 @@ Grouped; every mutating route runs `requireJsonRequest` + `requireApiUserId`.
 
 | Group | Endpoints (method varies) | Backed by |
 |---|---|---|
-| Sourcing | `POST /jobs/search` | `lib/jobAdapters/search.ts` + `lib/jobSources/*` |
+| Sourcing | `POST /jobs/search` | `lib/jobSources/runJobSearch.ts` (over `lib/jobAdapters/search.ts` + `lib/jobSources/*`) |
+| Saved searches | `/saved-searches`, `/saved-searches/[id]`, `.../run`, `.../viewed`, `.../hits`, `.../hits/[hitId]`, `/saved-searches/new-count` | `lib/savedSearches/savedSearches.ts` |
+| Automation | `/automation/settings`, `/automation/jobs/[id]/retry` | `lib/automation/*` |
 | Lead reports | `/raekwon` | `lib/raekwon/*` (Claude + web_search) |
 | Applications | `/applications`, `/applications/[id]`, `.../apply`, `.../apply/[runId]/confirm`, `.../contacts`, `.../messages`, `.../resume` | `lib/applications/*`, `lib/apply/*` |
 | Messages | `/messages/[id]/approve`, `/messages/[id]/sent` | `Message` model lifecycle |
@@ -121,11 +123,13 @@ Grouped; every mutating route runs `requireJsonRequest` + `requireApiUserId`.
 |---|---|
 | `applications/` | `changeApplicationStatus` (the one stage-move write path; emits audit + Submitted side effects); `timeline` (merges audit/interactions/messages/apply-runs) |
 | `apply/` | Apply-run workflow: `browserApply`, `tailorResume`, `renderDocx`, `resumeArtifacts`, submission signals/state machine |
-| `outreach/` | `queueOutreachPreparation`/`prepareOutreach` — after an app hits Submitted, discover contacts + draft an AI outreach message (never sends) |
+| `outreach/` | `queueOutreachPreparation` enqueues an `outreach.prepare` job when an app hits Submitted; `prepareOutreach` discovers contacts + drafts an AI outreach message; `draftDueFollowUps` writes 7-day follow-up drafts. Never sends |
 | `osint/` | Contact discovery connectors (Hunter.io); domain guessing |
 | `contacts/` | Reusable, company-grouped contacts; find-or-create + link-to-application |
 | `tasks/` | User-created tasks (the only persisted "to-do"; other signals are derived) |
-| `scheduler/` | Derived signals computed on demand: `staleCheck` (90-day flag), `followUpCheck` (7-day due). Not cron — run at request time |
+| `scheduler/` | Signal queries: `staleCheck` (90-day flag) and `followUpCheck` (7-day due). The daily `stale.scan` / `followup.scan` automation jobs call them |
+| `automation/` | Durable job queue + in-process ticker: `schedule` (`enqueueDue`), `runner` (claim/retry/dead), `handlers`, `slots` (timezone slot math), `settings`, `ticker` (started by `instrumentation.ts`) |
+| `savedSearches/` | Saved searches and their hit inboxes: run through the shared search pipeline, family-aware hit diffing, new-since-viewed counts |
 | `dashboard/` | `attention` (needs-attention queue), `metrics` (funnel), `activity` feed |
 | `pipeline/` | Board data + stage-age helpers |
 | `resume/` | Benchmark / improved / melded résumé generation (Claude), DOCX export, Zod schemas |
@@ -163,20 +167,23 @@ The most involved area, split into two trees with a clear division of labor:
 `lib/jobAdapters/search.ts` bridges the two, translating the new schema back to
 the flat listing shape and exposing `searchAllAdapters` (static sources) and
 `searchPoolBoardAdapters` (a user's live-pinned Greenhouse/Lever boards).
+`lib/jobSources/runJobSearch.ts` is the one pipeline over both, shared by the
+search route and saved-search runs.
 
 ```mermaid
 flowchart TD
-  A["POST /api/jobs/search"] --> B["searchAllAdapters + searchPoolBoardAdapters"]
+  A["POST /api/jobs/search or a saved-search run"] --> R["runJobSearch"]
+  R --> B["searchAllAdapters + searchPoolBoardAdapters"]
   B --> C["runAdapterSearch — Promise.all over configured Adapters"]
   C --> D["per-adapter: cache -> rateLimiter -> search() -> normalize()"]
   D --> E["envelope: results, errors, meta"]
-  E --> F["scoreTitleRelevance / isSeniorTitle / locationFilter"]
+  E --> F["scoreTitleRelevance / isSeniorTitle / locationFilter / isContractListing"]
   F --> G["dedupeListings (SimHash, DB fingerprints)"]
-  G --> H["exclude tracked + eliminated URLs for this user -> JSON"]
+  G --> H["exclude tracked + eliminated URLs for this user"]
 ```
 
 Sources: keyless (Remotive, Himalayas, Jobicy, Arbeitnow, RemoteOK), keyed
-(Adzuna, USAJobs, Jooble), per-company ATS (Greenhouse, Lever), and five **JobSpy**
+(Adzuna, USAJobs, Jooble, Careerjet), per-company ATS (Greenhouse, Lever), and five **JobSpy**
 adapters generated from `lib/jobSpyBoards.ts`: `jobspy:indeed`,
 `jobspy:linkedin`, `jobspy:zip_recruiter`, `jobspy:glassdoor`, `jobspy:google`.
 The search form selects boards individually; each has separate cache/error state.
@@ -188,11 +195,62 @@ errors retain their type, and the queue stays occupied until the child closes.
 See [request controls](jobspy-request-controls.md),
 [source authoring](adding-a-source.md), and [adapter design](adapter-interface.md).
 
+**Contract searches.** The keyword query carries `employmentType: "any" | "contract"`
+("contract" = contract or temporary work). Adapters whose source filters by job
+type send it upstream, and adapters report `employment.type` when their source states it.
+The search route then keeps only contract/temporary listings or titles that say so
+(`lib/jobSources/employmentType.ts`); untyped listings are dropped. See the
+2026-09-27 entry in [decisions](decisions.md).
+
+## Automation
+
+While the Serpo server runs, an in-process ticker does recurring work; nothing
+runs while it is closed. `instrumentation.ts` calls `startAutomation()`
+(`lib/automation/ticker.ts`) once per server process, without awaiting it. A
+`globalThis` guard keeps dev hot reload from starting a second timer, and the
+timer is `unref()`'d. The first tick fires at start and is the catch-up for
+everything that came due while the app was closed.
+
+```mermaid
+flowchart LR
+  T["tick: at start, then every 60 s"] --> S["recoverStaleLocks, enqueueDue(now)"]
+  S --> Q[("AutomationJob<br/>idempotencyKey unique")]
+  Q --> R["runDueJobs: claim, run, retry or dead"]
+  R --> H1["saved_search.run: runSavedSearch"]
+  R --> H2["stale.scan: runStaleCheck"]
+  R --> H3["followup.scan: draftDueFollowUps"]
+  R --> H4["outreach.prepare: prepareOutreach"]
+  H1 & H2 & H3 & H4 --> N["attention queue + Sourcing badge (in-app only)"]
+```
+
+- **Enqueue** (`schedule.ts`): daily `stale.scan` and `followup.scan` jobs per
+  account, keyed by local date, always. With the automation switch on
+  (Settings, off by default), one `saved_search.run` per enabled search whose
+  `nextRunAt` passed, keyed to the current cadence slot. However many slots
+  passed while closed, a search runs once. Slots align to local midnight in the
+  account's IANA timezone (`slots.ts`, DST-aware).
+- **Run** (`runner.ts`): a conditional update claims one due job at a time.
+  Failures retry after 5 min, 30 min, and 2 h; after 4 attempts, or on a
+  `PermanentJobError`, the job is `dead` and appears in the attention queue with
+  a Retry button. A job still `running` an hour after its claim belonged to a
+  server that died, and goes back to the queue. Done jobs are pruned after 30 days.
+- **Handlers** (`handlers.ts`) call existing domain code. Unattended searches
+  scrape only the JobSpy boards consented to in Settings, and a search with any
+  JobSpy board runs at most daily. Outreach preparation is queued on entering
+  Submitted and retried on network/5xx failures. Follow-up drafts are written
+  only with AI assistance on. Automation searches, flags, and drafts; it never
+  tracks a job, applies, or sends.
+- **Saved-search inboxes** (`lib/savedSearches`): each run records hits that
+  are new to that search: neither the listing nor its dedupe family has a hit
+  there yet. "New" means first seen after the inbox was last opened, and a
+  listing since tracked or eliminated drops out.
+
 ## Durable state
 
 Domain records persist in **one SQLite file** (`data/app.db`) through
-`lib/db/prisma.ts` — a process-global Prisma client (reused across dev hot
-reloads) over the `better-sqlite3` adapter, path resolved from `DATABASE_URL`
+`lib/db/prisma.ts` — one Prisma client per process, kept on `globalThis` so dev
+hot reloads and the separately bundled automation ticker share it — over the
+`better-sqlite3` adapter, path resolved from `DATABASE_URL`
 (default `file:./data/app.db`). JobSpy request limits are a separate JSON sidecar
 beside that database; résumé artifacts are separate files.
 
@@ -201,8 +259,10 @@ Model groups (`prisma/schema.prisma`):
 - **Identity:** `User` (the lone owner).
 - **Pipeline:** `Application`, `ApplyRun`, `Message`, `AuditEvent`.
 - **CRM:** `Contact`, `ContactApplication`, `Interaction`, `Task`.
-- **Sourcing:** `JobBoard`, `JobBoardPin`, `TitleAlias`, `EliminatedJob`, and the **global**
-  `JobSourceCache` + `JobListingFingerprint`.
+- **Sourcing:** `JobBoard`, `JobBoardPin`, `TitleAlias`, `EliminatedJob`,
+  `SavedSearch`, `SavedSearchHit`, and the **global** `JobSourceCache` +
+  `JobListingFingerprint`.
+- **Automation:** `AutomationJob` (the durable queue), `AutomationSettings`.
 - **Résumé/leads:** `ResumeTemplate`, `ResumeWorkspace`, `ProfileField`,
   `RaekwonReport`, `RaekwonLead`.
 
@@ -238,10 +298,10 @@ drift or ledger disagreement.
 | Validation | `lib/validators.ts` + inline Zod | Route-level input parsing |
 | AI gating | `lib/ai/claudeClient.ts` | Proxy that throws unless `ENABLE_AI_ASSISTANCE=true`; model `CLAUDE_MODEL` |
 | Audit | `AuditEvent` model | Written at status change / submission / outreach; feeds metrics + timeline |
-| Derived signals | `lib/scheduler/*` | Stale (90d) + follow-up (7d) computed on demand, not persisted as tasks |
+| Derived signals | `lib/scheduler/*` | Stale (90d) flags + follow-up (7d) queries; run by the daily automation scans, not by page renders |
 | Privacy purge | `lib/privacy/purge.ts` | `wipeAllData` keeps shared infra; `purgeContactResearch` spares contacts with history |
 | Config / secrets | `.env.local` (see `.env.example`) | Read at point of use; per-feature knobs in `lib/jobSources/{timeoutConfig,dedupeConfig}.ts`, `lib/jobAdapters/config.ts` |
-| Boot check | `instrumentation.ts` | On start, warns about unconfigured adapters (never crashes) |
+| Boot | `instrumentation.ts` | On start, warns about unconfigured adapters (never crashes) and starts the automation ticker (skipped during `next build`) |
 
 ## Operations & scripts
 
@@ -274,8 +334,8 @@ falling back to Chrome) with a separate profile under
 **control server**. The in-app **Quit** button (`components/SideNav.tsx`) POSTs
 `/api/app/quit`, which relays a bearer-authenticated shutdown to that control
 server (`SERPO_CONTROL_PORT`/`SERPO_CONTROL_TOKEN`) so only the owned server tree
-(including in-flight JobSpy subprocesses) is stopped — never processes by name or
-PID. Logs go to `%LOCALAPPDATA%\Serpo`. `scripts/install.ps1` /
+(including in-flight JobSpy subprocesses and the automation ticker) is stopped —
+never processes by name or PID. Logs go to `%LOCALAPPDATA%\Serpo`. `scripts/install.ps1` /
 `buildInstaller.ps1` produce the one-click installer; `createShortcut.ps1` makes
 the desktop shortcut.
 
@@ -306,7 +366,8 @@ and `.env.example`.
   Python without live job-board traffic.
 - **E2E** (`tests/e2e/`, Playwright, `playwright.config.ts`): full-stack UI flows
   against a built app using `e2e.db`.
-- **Scripts** (`tests/scripts/`): the launcher (`serpoHost.test.mjs`).
+- **Scripts** (`tests/scripts/`): the launcher (`serpoHost.test.mjs`), including
+  that Quit and closing the window leave no automation running.
 
 ## Extending Serpo
 

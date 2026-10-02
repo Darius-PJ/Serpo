@@ -18,7 +18,7 @@ afterEach(() => {
 
 describe("runAdapterSearch", () => {
   it("preserves successful boards and stale listings when a subprocess fails", async () => {
-    const query = { kind: "keywords" as const, keywords: "engineer", location: null, remoteOnly: false };
+    const query = { kind: "keywords" as const, keywords: "engineer", location: null, remoteOnly: false, employmentType: "any" as const };
     const good = withId("independent-good");
     const failing: Adapter = { ...withId("independent-failing"), capabilities: { ...good.capabilities, runtime: "subprocess", cacheable: true },
       async *search() { throw Object.assign(new Error("Google blocked this request"), { details: "HTTP 429 /sorry/index" }); yield { items: [], partial: false, nextCursor: null }; } };
@@ -40,7 +40,7 @@ describe("runAdapterSearch", () => {
       async *search(query, ctx) {
         for await (const page of base.search(query, ctx)) yield { ...page, partial: true, warning: "Page two was blocked", details: "HTTP 403" };
       } };
-    const result = await runAdapterSearch({ kind: "keywords", keywords: "engineer", location: null, remoteOnly: false }, [adapter], "partial");
+    const result = await runAdapterSearch({ kind: "keywords", keywords: "engineer", location: null, remoteOnly: false, employmentType: "any" }, [adapter], "partial");
     expect(result.results[0].listings.length).toBeGreaterThan(0);
     expect(result.results[0].warning).toBe("Page two was blocked");
     expect(result.meta.degraded).toBe(true);
@@ -48,7 +48,7 @@ describe("runAdapterSearch", () => {
   });
   it("returns a populated result group and no errors on the happy path", async () => {
     const adapter = withId("run-search-happy");
-    const envelope = await runAdapterSearch({ kind: "keywords", keywords: "engineer", location: null, remoteOnly: false }, [adapter], "corr-1");
+    const envelope = await runAdapterSearch({ kind: "keywords", keywords: "engineer", location: null, remoteOnly: false, employmentType: "any" }, [adapter], "corr-1");
 
     expect(envelope.errors).toEqual([]);
     expect(envelope.meta.degraded).toBe(false);
@@ -60,7 +60,7 @@ describe("runAdapterSearch", () => {
 
   it("degrades gracefully: a failing source produces an errors[] entry, empty listings, and never rejects the overall search", async () => {
     const adapter = withId("run-search-error");
-    const envelope = await runAdapterSearch({ kind: "keywords", keywords: "ERROR_TEST", location: null, remoteOnly: false }, [adapter], "corr-2");
+    const envelope = await runAdapterSearch({ kind: "keywords", keywords: "ERROR_TEST", location: null, remoteOnly: false, employmentType: "any" }, [adapter], "corr-2");
 
     expect(envelope.meta.degraded).toBe(true);
     expect(envelope.results[0].listings).toEqual([]);
@@ -72,7 +72,7 @@ describe("runAdapterSearch", () => {
   it("opens the circuit breaker after 3 consecutive failures and skips calling search() on the 4th", async () => {
     const adapter = withId("run-search-circuit");
     const searchSpy = vi.spyOn(adapter, "search");
-    const query = { kind: "keywords" as const, keywords: "ERROR_TEST", location: null, remoteOnly: false };
+    const query = { kind: "keywords" as const, keywords: "ERROR_TEST", location: null, remoteOnly: false, employmentType: "any" as const };
 
     await runAdapterSearch(query, [adapter], "corr-3a");
     await runAdapterSearch(query, [adapter], "corr-3b");

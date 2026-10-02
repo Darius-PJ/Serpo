@@ -1,23 +1,27 @@
 import "server-only";
-import { after } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { configuredOsintConnectors, researchAllTools } from "@/lib/osint";
 import { findOrCreateContact, linkContactToApplication, listContactsForApplication } from "@/lib/contacts/contacts";
 import { generateMessage } from "@/lib/ai/generateMessage";
 import { AiAssistanceDisabledError } from "@/lib/ai/claudeClient";
+import { enqueueJob } from "@/lib/automation/jobs";
+import { isRetryableError } from "@/lib/automation/errors";
 
 // Auto-discovery attaches at most this many people per source — outreach wants
 // the few most likely decision-makers, not the manual flow's 50-contact sweep.
 const MAX_AUTO_CONTACTS_PER_SOURCE = 10;
 
 /**
- * Schedule outreach preparation to run after the response is sent. Called by
- * every route that can move an application into Submitted; keeping the
- * `after()` call here (request scope) lets prepareOutreach stay a plain
- * testable function.
+ * Queue outreach preparation as a durable automation job (lib/automation),
+ * which the runner picks up within a minute and retries on network failures.
+ * Called by every route that can move an application into Submitted. One job
+ * per application: a later move back into Submitted re-arms a finished job.
  */
-export function queueOutreachPreparation(userId: string, applicationId: string): void {
-  after(() => prepareOutreach(userId, applicationId));
+export async function queueOutreachPreparation(userId: string, applicationId: string): Promise<void> {
+  await enqueueJob(
+    { userId, kind: "outreach.prepare", idempotencyKey: `outreach:${applicationId}`, payload: { applicationId } },
+    { rearmFinished: true },
+  );
 }
 
 /**
@@ -25,10 +29,16 @@ export function queueOutreachPreparation(userId: string, applicationId: string):
  * company (Hunter, by user-entered company name — never a guessed domain),
  * link them to the application, and generate an IMMEDIATE outreach draft
  * addressed to the best one. The draft lands in the review queue; nothing is
- * ever sent automatically. Idempotent, and never throws — failures become an
- * outreach_failed audit event on the application's timeline.
+ * ever sent automatically. Idempotent. A failure becomes an outreach_failed
+ * audit event on the application's timeline and is not thrown, except a
+ * retryable one (network, 5xx): that is rethrown so the runner retries it,
+ * and reaches the timeline only on the final attempt.
  */
-export async function prepareOutreach(userId: string, applicationId: string): Promise<void> {
+export async function prepareOutreach(
+  userId: string,
+  applicationId: string,
+  { finalAttempt = true }: { finalAttempt?: boolean } = {},
+): Promise<void> {
   try {
     const application = await prisma.application.findUnique({ where: { id_userId: { id: applicationId, userId } } });
     if (!application) return;
@@ -89,8 +99,10 @@ export async function prepareOutreach(userId: string, applicationId: string): Pr
       },
     });
   } catch (err) {
-    // Background preparation must never break a status change; the failure
-    // surfaces on the application's timeline instead.
+    // A retryable failure goes back to the runner, which tries again with
+    // backoff; only the final attempt's failure reaches the timeline.
+    const retryable = isRetryableError(err);
+    if (retryable && !finalAttempt) throw err;
     try {
       await prisma.auditEvent.create({
         data: {
@@ -104,5 +116,7 @@ export async function prepareOutreach(userId: string, applicationId: string): Pr
     } catch (auditErr) {
       console.error("outreach preparation failed and the failure could not be recorded", err, auditErr);
     }
+    // Out of retries: the job goes dead and surfaces in the attention queue.
+    if (retryable) throw err;
   }
 }

@@ -73,7 +73,7 @@ else, which is the confirming evidence this checklist actually holds.
    `tests/fixtures/loadFixture.ts`). If a fixture genuinely can't be captured (source
    unreachable, not configured, an install blocker) — record that honestly in a
    metadata-only file (see `tests/fixtures/jobspy/BLOCKED.json`,
-   `tests/fixtures/usajobs/UNCONFIGURED.json` for the pattern) rather than skip
+   `tests/fixtures/careerjet/UNCONFIGURED.json` for the pattern) rather than skip
    silently or fabricate one.
 
 4. **Write contract tests** using `lib/jobAdapters/testing/contractSuite.ts`'s

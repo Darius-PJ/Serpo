@@ -1,4 +1,0 @@
-{
-  "configured": false,
-  "note": "JOOBLE_API_KEY is not present at all in this environment's .env.local (unlike the other keyed sources). Jooble's own docs describe an instant, free, no-card self-serve signup, so this is just a key nobody has requested for this deployment yet, not a broken or paid-tier source. No live fixtures captured; per the task's own rule, recording this rather than fabricating one."
-}

@@ -1,4 +1,5 @@
 // Migrated from lib/jobSources/jooble.ts (kept, untouched, as the legacy path).
+import { employmentTypeFromLabels } from "../../services/employmentLabels";
 import { fetchWithRetry } from "../../services/httpClient";
 import type { Adapter, AdapterPage, NormalizedJobListing, NormalizeContext } from "../../types";
 
@@ -10,6 +11,8 @@ interface JoobleJob {
   link: string;
   snippet?: string;
   updated?: string;
+  // "Full-time", "Part-time", ... — or "" for most jobs (tests/fixtures/jooble/typical.json).
+  type?: string;
 }
 
 interface JoobleResponse {
@@ -60,8 +63,10 @@ export const joobleAdapter: Adapter<JoobleJob> = {
   async *search(query, ctx): AsyncGenerator<AdapterPage<JoobleJob>> {
     if (query.kind !== "keywords") throw new Error("jooble requires a keyword query");
 
-    // Jooble has no structured "remote" field — closest available signal is passing
-    // "Remote" as the location when remoteOnly is asked for and no location was given.
+    // Jooble's request body has no job-type field, so a contract search relies on each
+    // job's own `type`. It has no structured "remote" field either — closest available
+    // signal is passing "Remote" as the location when remoteOnly is asked for and no
+    // location was given.
     const location = query.location ?? (query.remoteOnly ? "Remote" : undefined);
 
     const res = await fetchWithRetry(
@@ -90,7 +95,7 @@ export const joobleAdapter: Adapter<JoobleJob> = {
       fetchedAt: ctx.fetchedAt,
       location: { raw: job.location ?? null, remote: null, country: null, region: null, city: null },
       compensation: { min: null, max: null, currency: null, period: null, isEstimate: false },
-      employment: { type: null, seniorityHint: null },
+      employment: { type: employmentTypeFromLabels([job.type]), seniorityHint: null },
       // No reliable per-listing signal — left null so dedupe's generic
       // company-name heuristic (lib/jobSources/staffingAgencies.ts) is the fallback,
       // same as every other genuine aggregator here.
