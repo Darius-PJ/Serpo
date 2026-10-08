@@ -13,7 +13,8 @@ See `README.md` for the product tour and `INTENT.md` for the "why".
 
 These are load-bearing; changes that violate them are almost always wrong.
 
-- **Local-only, offline-capable.** No cloud dependency. Servers bind
+- **Local storage; loopback serving.** Core records are stored locally.
+  Searches and enabled AI/contact research need external providers. Servers bind
   `127.0.0.1` (`package.json` `dev`/`start` use `-H 127.0.0.1`). Public
   deployment fails closed (`scripts/verifyDeploymentConfig.mjs` rejects
   `DEPLOYMENT_MODE=public`).
@@ -21,10 +22,11 @@ These are load-bearing; changes that violate them are almost always wrong.
   (`getLocalUserId`) returns the sole owner row, creating one on first run;
   `/` and `/login` just `redirect("/dashboard")`. `User.passwordHash` is a
   schema vestige set to a disabled sentinel.
-- **Integrations are opt-in and degrade gracefully.** Every external key lives
-  in `.env.local` (all optional). Absent key ⇒ that feature is silently skipped,
-  never a crash. AI is double-gated: it needs `ANTHROPIC_API_KEY` **and**
-  `ENABLE_AI_ASSISTANCE=true` (default-deny proxy in `lib/ai/claudeClient.ts`).
+- **Optional keyed services; explicit AI enablement.** External keys live
+  in `.env.local`. Keyless boards still make network requests during searches.
+  AI needs provider credentials (`ANTHROPIC_API_KEY` in the documented setup) and
+  `ENABLE_AI_ASSISTANCE=true`, enforced by the default-deny proxy in
+  `lib/ai/claudeClient.ts`. The SDK can also resolve alternate authentication.
 - **Your data is destroyable.** `lib/privacy/purge.ts` `wipeAllData` clears this
   account's PII but preserves shared infrastructure (curated boards, the global
   search cache/fingerprints).
@@ -79,7 +81,7 @@ Pages under `app/` are **server components**: they call `lib/*` directly (no
 self-fetch), then render client components that mutate via `app/api`. The root
 `app/layout.tsx` keeps `SideNav`, `WorkspaceHeader`, and `SerpoWallpaper` mounted
 outside the page-content transition. Navigation covers Dashboard, Sourcing,
-Pipeline, Work, Contacts, Résumé and Settings, plus the **Quit** button.
+Pipeline, Work, Contacts, Résumé, Settings, and Privacy, plus the **Quit** button.
 Security headers (`nosniff`, `X-Frame-Options: DENY`, `no-referrer`) are set for
 all routes in `next.config.ts`.
 
@@ -109,6 +111,7 @@ Reduced motion cancels an active reveal and shows settled surfaces immediately.
 | `/resume`, `/resume/[id]` | Résumé workspace (benchmark/improved/melded) |
 | `/raekwon` | AI "lead report" batch generator (not in the main nav) |
 | `/settings` | Automation switch, timezone, and JobSpy consent; profile answers; wipe-everything purge |
+| `/privacy` | Local storage, external processing, automation, deletion limits, and legal/source notices |
 | `/applications/[id]` | Per-application record + unified timeline |
 
 ### API surface (`app/api/**`)

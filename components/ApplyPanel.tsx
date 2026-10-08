@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import type { ApplyRun } from "@/generated/prisma";
@@ -103,8 +104,9 @@ export function ApplyPanel({
     <section className="card-soft mb-6 p-4">
       <h2 className="mb-2 font-bold text-heading">Application assistant</h2>
       <p className="mb-3 text-sm text-foreground-muted">
-        Tailor a resume for this posting, open a visible browser, and fill supported fields from your saved profile.
-        You review every form and choose whether to submit it.
+        Tailoring sends your stored résumé and job context to Anthropic, then opens the employer form and fills supported
+        fields from saved answers. The website can access attached files and filled values before you click Submit.{" "}
+        <Link href="/privacy#external-services" className="link-accent">Provider and employer data use</Link>.
       </p>
       <p className="mb-3 text-sm font-medium text-foreground">
         The assistant never clicks Submit or reports an application as sent without an employer confirmation or your explicit attestation.
@@ -140,7 +142,7 @@ export function ApplyPanel({
       <ConfirmDialog
         open={confirmOpen}
         title="Start application assistance?"
-        description={`This opens a real browser, tailors your resume, and fills out the application for ${role} at ${company}. You review it and decide whether to submit; automation will not click Submit.`}
+        description={`This sends your stored résumé and job context to Anthropic, opens a real browser for ${role} at ${company}, and attaches/fills your data. The website may process it before Submit. You review the form; automation will not click Submit.`}
         confirmLabel="Start"
         busy={applying}
         onConfirm={startApply}
@@ -150,7 +152,7 @@ export function ApplyPanel({
       <ConfirmDialog
         open={attestationOpen}
         title="Confirm your submission?"
-        description="Only choose this if you personally submitted the application in the browser. This updates the tracker and enables follow-up reminders."
+        description="Only choose this if you personally submitted the application in the browser. This updates the tracker and can queue configured Hunter contact research and AI drafting, as well as follow-up reminders."
         confirmLabel="I submitted it"
         busy={applying}
         onConfirm={attestSubmission}

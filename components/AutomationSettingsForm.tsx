@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { JOBSPY_BOARDS, type JobSpySite } from "@/lib/jobSpyBoards";
@@ -67,6 +68,10 @@ export function AutomationSettingsForm({
         />
         Run saved searches automatically while Serpo is open
       </label>
+      <p className="text-sm text-foreground-muted">
+        This switch controls unattended saved searches only, not Submitted contact research or AI follow-up drafting.{" "}
+        <Link href="/privacy#automation" className="link-accent">Privacy and disable controls</Link>.
+      </p>
 
       <label className="flex flex-wrap items-center gap-2 text-base text-foreground">
         Time zone
@@ -107,8 +112,8 @@ export function AutomationSettingsForm({
           ))}
         </div>
         <p className="mt-2 text-sm text-foreground-muted">
-          Automatic runs scrape only the boards checked here; Run now uses every board the search selected. Google Jobs
-          is off by default: it already spaces requests 15 minutes apart and pauses after a /sorry/ block.
+          These permissions restrict automatic JobSpy runs only; manual searches and Run now use the boards selected in
+          that search. For automatic runs, Google Jobs is unchecked by default; it spaces requests 15 minutes apart and pauses after a /sorry/ block.
         </p>
       </fieldset>
 

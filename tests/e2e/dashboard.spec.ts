@@ -17,7 +17,6 @@ test("a fresh dashboard leads with the search and grows metrics once something i
   await expect(page.getByRole("heading", { name: "Recent activity" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Sourced 0" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Open board" })).toBeVisible();
-  await expect(page.getByText("Everything here is stored in one file on this computer.", { exact: false })).toBeVisible();
 
   const created = await page.context().request.post("/api/applications", {
     headers: { "Content-Type": "application/json" },

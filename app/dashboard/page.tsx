@@ -103,7 +103,7 @@ export default async function DashboardPage() {
       <p className="mb-3 text-base text-foreground-muted">
         {hasTracked
           ? "Search the live sources. A result you keep goes straight onto the pipeline."
-          : "Type the role you want and where. Results you keep become applications on your pipeline, and everything stays on this computer."}
+          : "Type the role you want and where. Live searches contact external job sources; results you keep become local application records."}
       </p>
       <Suspense fallback={null}>
         <JobSearchForm />
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
         <div>
           <h1 className="text-2xl font-extrabold text-heading">Dashboard</h1>
           <p className="page-lede mb-0">
-            Serpo keeps your job search on this computer: search for roles, track every application, and follow up on time.
+            Keep your application records on this computer: search live job sources, track applications, and follow up on time.
           </p>
         </div>
         <Link href="/sourcing" className="btn-secondary">
@@ -231,7 +231,9 @@ export default async function DashboardPage() {
 
       <footer className="border-t border-border-soft pt-4 text-sm text-foreground-muted">
         <p>
-          Everything here is stored in one file on this computer. AI features run only with a key you add. Nothing is sent to anyone without your review.
+          Records are stored locally; live searches and enabled AI/contact research can send data to external providers,
+          including in the background.{" "}
+          <Link href="/privacy" className="link-accent">Privacy and data use</Link> explains storage, automation and deletion limits.
         </p>
       </footer>
     </div>

@@ -125,8 +125,9 @@ export function ContactPanel({
         </div>
       </div>
       <p className="mb-3 text-sm text-foreground-muted">
-        Research may send the domain you approve to configured public-source tools. Discovered people are saved as
-        contacts linked to this application. No message is sent automatically.
+        Manual research can send the domain you confirm to Hunter. Marking an application Submitted can also research
+        the company automatically, without this dialog. Returned contacts are saved locally; Serpo does not send outreach.{" "}
+        <Link href="/privacy#external-services" className="link-accent">Provider and automation details</Link>.
       </p>
       {error && <p role="alert" className="mb-2 text-sm text-danger-dark">{error}</p>}
       {researchNotice && <p className="mb-2 text-sm text-foreground-muted">{researchNotice}</p>}
@@ -175,7 +176,7 @@ export function ContactPanel({
       <ConfirmDialog
         open={confirmOpen}
         title="Research this domain?"
-        description="The domain below will be sent to configured public-source research tools. Check it carefully: it was guessed from the company name. The app stores returned contacts locally and will not message anyone."
+        description="The domain below will be sent to Hunter if its API key is configured. Check it carefully: it was guessed from the company name. Returned contacts are saved locally; this does not send outreach."
         confirmLabel="Research"
         busy={loading}
         onConfirm={research}
@@ -194,7 +195,7 @@ export function ContactPanel({
         open={purgeOpen}
         tone="danger"
         title="Delete saved contact research?"
-        description="This removes this application's research links, and deletes discovered contacts that have no other links, logged interactions, or drafts. It does not change the application or its message drafts."
+        description="This removes all this application's contact links, including manually attached links, and deletes only contacts with no other application links, logged interactions or message drafts. It leaves the application and existing drafts."
         confirmLabel="Delete research"
         busy={loading}
         onConfirm={purgeResearch}

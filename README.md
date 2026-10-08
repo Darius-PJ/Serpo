@@ -7,23 +7,26 @@
 A local-first, single-user CRM for a job search. Track applications through a
 pipeline, keep contacts and interaction history, queue follow-ups and tasks,
 source listings from over a dozen job boards, and tailor a résumé per application —
-all on your own machine.
+with your workspace stored on your own machine.
 
 ## Privacy by design
 
-- **Everything stays local.** The entire dataset lives in one SQLite file
-  (`data/app.db`), which is git-ignored along with its backups and résumé
-  artifacts. The dev and production servers bind to `127.0.0.1` only.
+- **Local workspace, external integrations.** Records live in `data/app.db`
+  and associated files on your computer. Searches contact job providers;
+  enabled AI and contact research send relevant information to Anthropic and
+  Hunter. Local storage does not mean every feature works offline.
 - **No accounts, no login.** This is a deliberately password-free single-user
-  workspace. Deployment validation fails closed if you try to configure it for
-  public hosting.
-- **Integrations are opt-in.** AI assistance (Claude) and keyed job-search APIs
-  activate only when you add keys to `.env.local`; every feature degrades
-  gracefully without them. Keyless sources (Himalayas, Jobicy,
-  Arbeitnow, RemoteOK) work out of the box.
-- **Your data is yours to destroy.** Settings include a wipe-everything purge,
-  and per-application contact research can be deleted without touching
-  contacts you have a history with.
+  workspace. Servers bind to `127.0.0.1`; do not expose them to a network.
+- **Optional AI and keyed services.** AI needs provider credentials and explicit
+  enablement (the documented setup uses `.env.local`). Keyless job sources also
+  make external requests.
+- **Deletion has limits.** Settings can wipe account records and associated
+  artifacts, but not backups, credentials, browser data, or third-party copies.
+
+Read the dedicated [Privacy page](http://127.0.0.1:3000/privacy) while Serpo is
+running, or choose **Privacy** in the app if it uses another port. It explains
+what leaves the computer, automatic triggers, provider costs, and what survives
+deletion.
 
 ## Features
 
@@ -330,6 +333,9 @@ If that covers you, you're done — open the app and search.
 Four more boards each need a short, free sign-up. They are all optional: Serpo
 simply leaves out any board you haven't set up and keeps searching the rest.
 
+Adzuna and USAJobs are worth adding. Jooble has proved the least effective of
+these sources, and Careerjet is still under-tested.
+
 | Board | What it adds | Sign up at |
 | --- | --- | --- |
 | **Adzuna** | A large general job aggregator (US and many other countries) | https://developer.adzuna.com/ |
@@ -357,8 +363,9 @@ your Documents folder). Setup already created this file for you. To add a key:
 4. **Save** the file, then **close and reopen Serpo**. The newly set-up boards
    are now included in every search.
 
-Keep this file to yourself — it holds your personal keys. Serpo never sends it
-anywhere; it stays on your machine and is kept out of version control.
+Keep this file to yourself — it holds your personal keys and stays out of
+version control. Enabled integrations use those credentials to authenticate
+requests to their providers.
 
 ### Where each key comes from
 
@@ -407,3 +414,31 @@ and launch lifecycle fit together.
 Migrations are hand-written SQL under `prisma/migrations/` (no
 `prisma migrate dev`); the schema in `prisma/schema.prisma` is the source of
 truth for the generated client.
+
+## Support and contributions
+
+Serpo is **pre-release software** intended for a single user's local computer,
+not public hosting or a shared service. The desktop installer targets Windows;
+command-line development on other systems is not equivalent to a tested desktop
+installation. Job-board availability, quotas, and provider terms can change.
+
+For bugs and help, open a [GitHub issue](https://github.com/Darius-PJ/Serpo/issues).
+Include your version or commit, OS, Node version, and reproducible steps with
+invented data. Remove personal information from logs and screenshots; never
+upload `.env.local`, a database, backup, résumé, or browser profile.
+Support and contributions are best-effort, without guaranteed response times.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup and verification.
+
+Report vulnerabilities privately through
+[GitHub security advisories](https://github.com/Darius-PJ/Serpo/security/advisories/new),
+not public issues. See [SECURITY.md](SECURITY.md).
+
+## License
+
+Copyright (C) 2026 Serpo contributors.
+
+Serpo is licensed under the **GNU Affero General Public License, version 3 only**
+(`AGPL-3.0-only`). You may use, modify, and redistribute it under those terms.
+It is provided **without warranty**. See [LICENSE](LICENSE) for the full text.
+
+Third-party dependencies retain their own licenses.

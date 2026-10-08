@@ -69,7 +69,7 @@ function useNewListingCount(pathname: string): number {
   return count;
 }
 
-type IconName = "dashboard" | "sourcing" | "pipeline" | "work" | "contacts" | "resume" | "settings" | "quit";
+type IconName = "dashboard" | "sourcing" | "pipeline" | "work" | "contacts" | "resume" | "settings" | "privacy" | "quit";
 
 // Sourcing sits directly after Dashboard: feeding the pipeline is the daily
 // action this workspace exists to prompt, so it gets the second slot.
@@ -81,6 +81,7 @@ export const NAV_ITEMS: Array<{ href: string; label: string; icon: IconName }> =
   { href: "/contacts", label: "Contacts", icon: "contacts" },
   { href: "/resume", label: "Resume", icon: "resume" },
   { href: "/settings", label: "Settings", icon: "settings" },
+  { href: "/privacy", label: "Privacy", icon: "privacy" },
 ];
 
 function Icon({ name, className = "h-5 w-5" }: { name: IconName; className?: string }) {
@@ -133,6 +134,12 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName; className?: str
         <circle cx="9" cy="7" r="1.8" fill="currentColor" stroke="none" />
         <circle cx="15" cy="12" r="1.8" fill="currentColor" stroke="none" />
         <circle cx="7" cy="17" r="1.8" fill="currentColor" stroke="none" />
+      </>
+    ),
+    privacy: (
+      <>
+        <path d="M12 3 4 6v6c0 4.5 3.4 7.6 8 9 4.6-1.4 8-4.5 8-9V6z" />
+        <path d="m9 12 2 2 4-4" />
       </>
     ),
   };

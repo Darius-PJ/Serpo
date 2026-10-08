@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Message } from "@/generated/prisma";
@@ -96,7 +97,10 @@ export function MessagePanel({
         </div>
       </div>
       <p className="mb-3 text-sm text-foreground-muted">
-        Draft generation is optional. It sends the application and saved contact context to the configured AI provider, creates a local draft, and never sends an email or message.
+        Manual generation sends application and linked contact context to Anthropic when AI assistance is enabled.
+        Submitted preparation and daily follow-up jobs can also create drafts without this dialog. Drafts are saved
+        locally; Serpo does not send outreach.{" "}
+        <Link href="/privacy#automation" className="link-accent">AI data use and background triggers</Link>.
       </p>
       {!submissionConfirmed && <p className="mb-3 text-sm text-accent-light">Confirm the application submission before generating outreach.</p>}
       {submissionConfirmed && !followUpDue && <p className="mb-3 text-sm text-foreground-muted">Follow-up drafts become available seven days after confirmed submission.</p>}
@@ -148,7 +152,7 @@ export function MessagePanel({
       <ConfirmDialog
         open={requestedType !== null}
         title={`Generate ${requestedLabel} draft?`}
-        description="This sends the application and saved decision-maker context to the configured AI provider to create a local editable draft. It will not contact anyone or mark a message sent."
+        description="This sends application and linked contact context to Anthropic to create a local editable draft. It will not send outreach or mark a message sent."
         confirmLabel="Generate draft"
         busy={generating !== null}
         onConfirm={generate}
