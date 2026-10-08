@@ -329,23 +329,58 @@ drift or ledger disagreement.
 | `lint` | ESLint |
 | `verify:deployment` | `scripts/verifyDeploymentConfig.mjs` |
 | `db:upgrade-and-verify` | `scripts/dbUpgradeAndVerify.mjs` (fail-closed migrate) |
+| `backup` / `restore` | `scripts/workspace.mjs` — portable workspace snapshot and staged restore |
+| `uninstall` | Windows preserving uninstall of an installer-marked copy |
 | `test:unit` / `test:scripts` / `test:e2e` | Vitest / Node script tests / Playwright |
 | `test` | Unit + script + e2e suites |
 | `verify` | Full release gate: lint + `tsc --noEmit` + deployment check + build + unit + script + e2e tests (CI runs the same) |
 | `build:installer` / `build:icon` | `scripts/buildInstaller.ps1` / `scripts/buildIcon.mjs` |
 
-**First-run setup** (`scripts/setup.mjs`, safe to re-run): checks Node ≥ 20.9,
-installs npm deps (by lockfile hash), generates the Prisma client, copies
-`.env.example` → `.env.local`, then either creates `data/app.db` from migrations
-or runs the fail-closed upgrade on an existing one.
+**First-run setup** (`scripts/setup.mjs`, safe to re-run with Serpo closed):
+requires Node ≥ 24.18.0 and < 25 (`.node-version` pins the tested baseline),
+installs locked npm dependencies with `npm ci`, generates Prisma, creates
+`.env.local` if absent, and creates or fail-closed upgrades `data/app.db`.
+It prepares `next build`; receipts hash source, configuration, runtime,
+dependencies, and generated outputs so unchanged setup can reuse a complete
+production build. A failed run does not publish a successful receipt.
+
+**Maintenance and recovery:** `workspaceLock.mjs` supplies one exclusive
+project-root lease shared by setup, the managed host, backup/restore, installation,
+and uninstall. The lease stays outside `data/` and is held until owned children
+stop. Stale/ambiguous leases fail closed; direct development servers must be
+stopped separately. `workspace.mjs` snapshots SQLite through its backup API,
+copies owned artifacts, normalizes stored résumé paths in the snapshot, and
+records file hashes. Backup/restore refuse custom database configurations;
+their supported database is `<root>/data/app.db`. Restore validates and upgrades
+only in staging, preserves excluded local data, and retains `data.pre-restore-...`.
+Credentials, browser state, logs, and prior backups are not portable backup inputs.
+`dbUpgradeAndVerify.mjs` uses SQLite `VACUUM INTO` for migration recovery snapshots,
+including committed WAL contents.
+
+`installation.mjs` prepares a new app/data/config copy before rollback-capable
+cutover under the destination lease. Successful upgrades retain the prior full
+installation in a sibling `.serpo-before-upgrade-...` directory. A managed-install
+manifest identifies owned files; uninstall removes only unchanged listed files
+and preserves user data/configuration, modifications, and shared state.
+Unmarked directories and development checkouts are refused. The PowerShell
+installer uses the exact `.node-version` and verifies the official Node download
+checksum. It packages committed source, not uncommitted workspace changes.
 
 **Windows launch / quit lifecycle** (the least-technical path):
-`Serpo.vbs`/`Serpo.cmd` → `scripts/launchSerpo*.ps1` → `scripts/serpoHost.mjs`.
-`serpoHost` runs setup, starts the Next server on a free port with a hidden
-window, waits on `/api/health`, opens a dedicated Chromium window (installed Edge,
-falling back to Chrome) with a separate profile under
-`%LOCALAPPDATA%\Serpo\browser-profile`, and stands up a token-guarded local
-**control server**. The in-app **Quit** button (`components/SideNav.tsx`) blanks
+`Serpo.vbs`/`Serpo.cmd` → `scripts/launchSerpo*.ps1` →
+`scripts/startSerpoServer.ps1` → `scripts/serpoHost.mjs`.
+The runner owns the single setup pass for a new session, retaining all cache,
+database, and workspace-lease checks. A required per-launch Windows event arms
+the launcher's 120-second runtime watchdog only after setup; setup/build time
+is not charged to it. A post-setup port recheck leaves newly occupied ports
+untouched. The host starts production `next start`, requires a non-redirected
+`/api/health` response identifying `app: "serpo"` with healthy app/database
+status, then opens a dedicated Chromium window (Chrome, then Edge). The launcher
+uses the same branded health contract for reuse, and observes fresh matching
+host state for a new session instead of duplicating the host's health polling.
+The browser profile lives under `%LOCALAPPDATA%\Serpo\browser-profile`.
+`serpoHost` also runs a token-guarded local **control server**. The in-app
+**Quit** button (`components/SideNav.tsx`) blanks
 the interface immediately, restoring it and its inputs if the request fails.
 It POSTs `/api/app/quit`, which relays a bearer-authenticated shutdown to that control
 server (`SERPO_CONTROL_PORT`/`SERPO_CONTROL_TOKEN`) so only the owned server tree
@@ -353,6 +388,14 @@ server (`SERPO_CONTROL_PORT`/`SERPO_CONTROL_TOKEN`) so only the owned server tre
 never processes by name or PID. Logs go to `%LOCALAPPDATA%\Serpo`. `scripts/install.ps1` /
 `buildInstaller.ps1` produce the one-click installer; `createShortcut.ps1` makes
 the desktop shortcut.
+
+`showStartupProgress.ps1` renders native, indeterminate progress with elapsed
+time from a unique per-launch status file. `launcherSupport.ps1` and
+`startupProgress.mjs` report real setup/server phases without adding launch
+state to cache inputs. The dialog minimizes rather than cancelling active work,
+closes on readiness, and retains failure details with access to the log folder.
+Status is advisory: failure to publish a terminal update cannot keep the
+launcher waiting forever for its dialog.
 
 **JobSpy sidecar:** `scripts/setupJobSpy.ps1` provisions a private Python 3.12 venv
 (`.venv-jobspy`) pinned to `python-jobspy==1.1.82`. Readiness validates the installed

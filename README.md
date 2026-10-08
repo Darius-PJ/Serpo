@@ -68,57 +68,214 @@ all on your own machine.
 
 ## Getting started
 
-The only prerequisite is [Node.js](https://nodejs.org) 20.9 or newer — the
-one thing setup cannot install for you (it will tell you if it's missing).
-Clone or download this repository, then pick either path below. Both run the
-same first-run setup: it installs npm packages, generates the Prisma client,
-copies `.env.example` to `.env.local` (every key in it is optional), and
-creates the SQLite database — or fail-closed verifies and upgrades an
-existing one, with an automatic backup. Setup only does the missing work, so
-it is safe to run again any time, e.g. after `git pull`.
+**Choose one setup method — you do not need to do both.**
 
-### Easiest: the installer
+- **Windows desktop app:** use the [Windows installer](#windows-installer-recommended).
+- **No installer, or prefer a terminal?** Use [manual setup from source](#manual-setup-from-source).
 
-If someone sent you `Install-Serpo.cmd`, that one file is the whole
-install: double-click it and it puts the app in your Documents folder, gets
-Node.js if your machine has none (app-private, nothing installed
-system-wide), creates a desktop shortcut, and starts up — while the JobSpy
-job source (LinkedIn/Indeed/Glassdoor/ZipRecruiter/Google) sets itself up in
-the background. You need nothing else. (Maintainers build it with
-`npm run build:installer`.)
+API keys are optional. You can install Serpo and start using it without them.
 
-### Windows: double-click
+### Windows installer (recommended)
 
-Double-click `Serpo.vbs` or use the Serpo desktop shortcut. It installs
-anything missing, finds a free port, and opens a dedicated Serpo window with
-the server running in the background. No PowerShell window stays visible.
-`Serpo.cmd` also hands off to this hidden launcher, although Windows may briefly
-show its initial command window. To create or update the desktop shortcut, run
-`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/createShortcut.ps1`.
+**You need:** 64-bit Windows, an internet connection for setup, and Google Chrome
+or Microsoft Edge installed.
 
-**Quit**, at the bottom of the left rail, closes Serpo's dedicated browser window
-and stops its owned Node server tree (including in-flight JobSpy subprocesses).
-The interface blanks immediately during shutdown. If Quit fails, it returns
-with an error and preserves your current inputs.
-Closing the dedicated window with X also stops the session. Ordinary browser
-windows are untouched. The hidden server shell exits when its managed host ends.
-The app window uses installed Chrome, falling back to Edge, with a
-separate profile under `%LOCALAPPDATA%\Serpo\browser-profile`.
+**You do not need to install Node.js first.** The installer uses the required
+Node version if it is already available, or downloads a checksum-verified,
+private copy for Serpo. It does not replace your system-wide Node installation.
 
-Sessions started with an older launcher must be closed manually, then reopened
-from the updated shortcut to enable managed Quit. Servers started with
-`npm run dev` are intentionally not terminated by the Quit endpoint.
-Startup failures are logged in `%LOCALAPPDATA%\Serpo\launcher.log` and
-`server-<port>.log`. Windowless startup errors also show a short error dialog.
+1. Get **`Install-Serpo.cmd`** from the project's
+   [Releases page](https://github.com/Darius-PJ/Serpo/releases), if an installer
+   is listed, or use the copy supplied by the maintainer. This is a separately
+   built file, **not part of GitHub's source ZIP**. If you do not have it, follow
+   [manual setup](#manual-setup-from-source) instead.
+2. **Double-click `Install-Serpo.cmd`.** Leave its setup window open while it
+   downloads dependencies and prepares the app. First-time installation can take
+   several minutes.
+3. **Wait for Serpo to open.** The installer puts the app in a `Serpo` folder
+   inside Documents, creates a desktop shortcut, and starts the app for you.
+   You do not need to run any terminal commands afterward to start using it.
 
-### Any platform: the command line
+You can start searching Himalayas, Jobicy, Arbeitnow, and RemoteOK without keys.
+The installer also starts optional JobSpy setup in the background; its additional
+boards become available after that setup succeeds. See
+[Job Board Setup](#job-board-setup) when you want to add other providers.
 
-```bash
-npm run setup
-npm run dev
+#### Opening and closing Serpo after installation
+
+- **Open:** use the **Serpo desktop shortcut**. If the shortcut was not created,
+  open the installed Serpo folder inside Documents and double-click **`Serpo.vbs`**.
+  The launcher starts the background server and opens the app window for you.
+  Do not run the installer again just to open Serpo.
+  A startup window shows the current dependency, database, build, and server
+  checks with elapsed time. First launch or an update may take several minutes;
+  unchanged launches reuse cached packages and production output.
+  You can minimize this window; **X minimizes rather than cancelling setup**.
+  It closes automatically when Serpo is ready.
+- **Close:** choose **Quit** at the bottom of the left rail, or close the dedicated
+  app window with **X**. Both stop the app's background server and its in-flight
+  JobSpy searches. Your ordinary browser windows are not closed.
+
+Quit blanks the interface during shutdown. If shutdown fails, the app shows an
+error and restores your current inputs.
+
+<details>
+<summary>Windows launch details and troubleshooting</summary>
+
+The app uses installed Chrome, falling back to Edge, with a separate profile at
+`%LOCALAPPDATA%\Serpo\browser-profile`. The launcher chooses an available local
+port; no terminal needs to stay open.
+
+`Serpo.cmd` is another way to open the same launcher, but Windows may briefly
+show its initial command window. To create or repair the desktop shortcut, open
+a terminal in the installed Serpo folder and run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/createShortcut.ps1
 ```
 
-Then open http://127.0.0.1:3000/dashboard.
+Startup failures stay visible in the startup window with error details.
+**View logs** opens `%LOCALAPPDATA%\Serpo`, containing `launcher.log` and
+`server-<port>.log`. Close the failure window after reading it. If the startup
+window itself cannot run, the shortcut falls back to a short error dialog.
+
+</details>
+
+### Manual setup (from source)
+
+Use this alternative if you do not have the Windows installer, want to run
+Serpo from a terminal, or are using macOS or Linux. It does not create a desktop
+shortcut or automatically open an app window.
+
+1. **Install [Node.js](https://nodejs.org) 24 LTS**, version **24.18.0 or later
+   within the 24.x series**. Node 20 is not supported. Node includes `npm`, the
+   command used below. Unlike the Windows installer, this method requires you
+   to install Node yourself.
+2. **Download the source and extract it.** On this repository's GitHub page,
+   choose **Code → Download ZIP**, then extract the ZIP. Open a terminal in the
+   extracted folder that contains `package.json`, not its parent folder.
+   On Windows, open that folder in File Explorer, type `cmd` in the address
+   bar, and press Enter to open Command Prompt there.
+3. **Prepare the app** by running:
+
+   ```sh
+   npm run setup
+   ```
+
+   This downloads dependencies, creates the local configuration and database,
+   and prepares the production app. You do not need to create `.env.local` or
+   add API keys yourself.
+4. **Start Serpo** from the same folder:
+
+   ```sh
+   npm start
+   ```
+
+   Wait for the server to be ready, then open
+   **http://127.0.0.1:3000/dashboard** in your browser. Keep this terminal open
+   while you use Serpo.
+
+**To stop:** press **Ctrl+C** in that terminal. Closing the browser tab does not
+stop this manually started server, and the app's Quit button cannot stop it.
+**Next time:** open a terminal in the same folder and run `npm start` again.
+Repeat `npm run setup` after updating the source or changing configuration,
+with Serpo stopped.
+
+Manual setup does not install JobSpy. The keyless boards above work without it;
+follow [JobSpy setup](#jobspy-setup-and-search-behavior) if you want its extra
+boards. Developer hot reloading is covered under [Development](#development).
+
+## Updates and maintenance
+
+### Updating Serpo
+
+Before updating, close Serpo and make a backup using the instructions below.
+
+- **Installer users:** run the new `Install-Serpo.cmd`. It prepares the replacement
+  before changing the installed app, preserves data and `.env.local`, and retains
+  the previous full installation in a sibling `.serpo-before-upgrade-...` folder.
+- **Manual setup users:** keep `data/` and `.env.local` when updating your source
+  files, then run `npm run setup` before `npm start`. Setup verifies the database,
+  takes an automatic migration backup when an upgrade is needed, and rebuilds
+  the production app when its inputs have changed.
+
+The installer only upgrades copies marked by a previous installer run. It will
+not overwrite a source checkout or an older unmarked installation. Keep that
+older folder intact, install to a new folder, and use
+[backup and restore](#backup-restore-and-removal) to transfer its data.
+
+<details>
+<summary>Choosing a different install folder or transferring an older workspace</summary>
+
+Open Command Prompt in the folder containing the new installer and run:
+
+```bat
+Install-Serpo.cmd -ProjectRoot "C:\path\to\Serpo-new"
+```
+
+From the new installed folder, the backup command accepts
+`--root "C:\path\to\Serpo-old"` to snapshot a compatible older workspace. Follow
+the terminal preparation and backup instructions below.
+
+</details>
+
+### Backup, restore, and removal
+
+Close the desktop app with **Quit**. If you started it from a terminal, stop it
+with **Ctrl+C** instead. Run the following commands from your Serpo folder.
+
+**Windows installer users:** Node may be private to Serpo, so a new terminal
+will not necessarily recognize `npm`. Open the installed Serpo folder in File
+Explorer, type `cmd` in the address bar, and press Enter. Run this first to make
+the installer's Node available in **this Command Prompt only**:
+
+```bat
+for /f %v in (.node-version) do set "PATH=%LOCALAPPDATA%\Serpo\node-%v;%PATH%"
+```
+
+Manual setup users can use the terminal and Node installation from setup.
+Create a backup before updating:
+
+```sh
+npm run backup -- --output "../Serpo-backup-before-update"
+```
+
+To restore a backup when recovering or transferring a workspace:
+
+```sh
+npm run restore -- --input "../Serpo-backup-before-update"
+```
+
+Use a **new directory outside the app folder** for each backup. These commands
+support the default `data/app.db` workspace only; conflicting custom
+`DATABASE_URL` settings are refused rather than guessed. Back up a custom
+database and its associated files separately.
+
+The portable backup includes all SQLite records, résumé artifacts, report
+archives, and JobSpy cooldown state. It is **not encrypted or sanitized**.
+It excludes credentials/configuration, browser profiles, logs, dependencies,
+earlier backups, and unrecognized data files. Keep the whole backup directory
+private and intact; re-enter integration credentials on a new installation.
+
+Restore checks file hashes, SQLite integrity, and schema compatibility before
+replacing data. It supports transfer to another installation directory and
+retains the previous `data/` as `data.pre-restore-...`. Existing credentials and
+unrecognized local data are preserved. Restore only backups you trust:
+checksums detect changes, not who created a backup.
+
+On Windows, run `npm run uninstall` inside an installer-managed copy to remove
+unchanged installed application files and its matching desktop shortcut.
+Development/unmarked folders are refused. Data, configuration, edited or
+unknown files, recovery copies, and shared browser/runtime state are preserved;
+uninstall is **not a data wipe**. Review the printed residual paths before
+choosing what to delete yourself. See the app's **Privacy** page for Wipe limits.
+
+Setup, the managed app, and maintenance share `.serpo-workspace.lock`. Direct
+development servers are not covered by that lock. After a crash, a stale or
+ambiguous lock is deliberately refused: stop surviving Serpo processes (restart
+Windows if unsure), inspect any reported recovery directories, and only then
+remove the stale lock directory. Do not discard recovery copies until the
+replacement installation and your data have been checked.
 
 ### JobSpy setup and search behavior
 
@@ -233,6 +390,11 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for a map of the codebase —
 layers, key modules, cross-cutting concerns, durable state, and how the scripts
 and launch lifecycle fit together.
 
+- `npm run dev` — developer hot reloading after `npm run setup`; not needed for
+  normal use.
+- `npm run build:installer` — maintainer-only Windows packaging. Creates
+  `dist/Install-Serpo.cmd` from **committed source**, not uncommitted changes.
+  People installing Serpo do not need to build this file themselves.
 - `npm run verify` — the full release gate: lint, typecheck, deployment-config
   check, production build, unit tests, script tests, e2e tests. CI runs the same steps.
 - `npm run test:unit` / `npm run test:scripts` / `npm run test:e2e` — the suites individually.

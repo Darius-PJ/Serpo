@@ -10,7 +10,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .node-version
           cache: npm
 
       - run: npm ci
@@ -39,6 +39,10 @@ jobs:
       - run: npm run build
         env:
           DATABASE_URL: file:./data/ci.db
+
+      - run: npm run test:unit
+
+      - run: npm run test:scripts
 
       - run: npx playwright install --with-deps chromium
 

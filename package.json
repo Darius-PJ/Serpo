@@ -2,6 +2,10 @@
   "name": "serpo",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=24.18.0 <25"
+  },
   "scripts": {
     "setup": "node scripts/setup.mjs",
     "build:installer": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/buildInstaller.ps1",
@@ -12,6 +16,9 @@
     "lint": "eslint",
     "verify:deployment": "node scripts/verifyDeploymentConfig.mjs",
     "db:upgrade-and-verify": "node scripts/dbUpgradeAndVerify.mjs",
+    "backup": "node scripts/workspace.mjs backup",
+    "restore": "node scripts/workspace.mjs restore",
+    "uninstall": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/uninstall.ps1",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:scripts": "node --test \"tests/scripts/**/*.test.mjs\"",

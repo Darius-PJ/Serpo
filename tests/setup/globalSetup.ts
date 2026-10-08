@@ -1,4 +1,4 @@
-import { existsSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import { migrateTestDatabase } from "./migrateTestDatabase";
 
@@ -6,6 +6,7 @@ const ROOT = path.resolve(__dirname, "..", "..");
 const TEST_DB_PATH = path.resolve(ROOT, "data", "test.db");
 
 export default async function globalSetup() {
+  mkdirSync(path.dirname(TEST_DB_PATH), { recursive: true });
   for (const suffix of ["", "-journal", "-wal", "-shm"]) {
     const p = TEST_DB_PATH + suffix;
     if (existsSync(p)) rmSync(p);

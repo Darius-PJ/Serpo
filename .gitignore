@@ -58,10 +58,18 @@ CLAUDE.md
 # local database — this app's entire dataset; never goes to git
 /data/*.db
 /data/*.db-journal
+/data/*.db-wal
+/data/*.db-shm
 /data/*.jobspy-state.json*
 /data/*.backup-*
 /data/resumes/
 /data/raekwon-archive/
+
+# Local maintenance leases and retained recovery data/config
+/.serpo-workspace.lock*/
+/.serpo-install.json
+/.serpo-restore-*/
+/data.pre-restore-*/
 
 # vercel
 .vercel
