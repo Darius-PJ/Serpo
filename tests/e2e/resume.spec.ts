@@ -54,12 +54,12 @@ test("Resume button snapshots the current search and navigates to the workspace"
       json: {
         results: [
           {
-            source: "remotive",
-            label: "Remotive",
+            source: "remoteok",
+            label: "RemoteOK",
             listings: [
               {
-                id: "remotive:1",
-                source: "remotive",
+                id: "remoteok:1",
+                source: "remoteok",
                 company: "Acme",
                 role: "Backend Engineer",
                 location: "Remote",
@@ -128,12 +128,12 @@ test("landing on /sourcing with a search querystring restores results automatica
       json: {
         results: [
           {
-            source: "remotive",
-            label: "Remotive",
+            source: "remoteok",
+            label: "RemoteOK",
             listings: [
               {
-                id: "remotive:1",
-                source: "remotive",
+                id: "remoteok:1",
+                source: "remoteok",
                 company: "Acme",
                 role: "Backend Engineer",
                 location: "Remote",

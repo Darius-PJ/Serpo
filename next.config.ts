@@ -1,4 +1,6 @@
 import type { NextConfig } from "next";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { assertCwdCasing } from "./scripts/assertCwdCasing.mjs";
 
 const nextConfig: NextConfig = {
   // The dev-tools badge defaults to bottom-left, where it sits on top of the
@@ -31,4 +33,8 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default function config(phase: string): NextConfig {
+  // Only the build is known to break on a mis-cased cwd; dev and start are left alone.
+  if (phase === PHASE_PRODUCTION_BUILD) assertCwdCasing("next build");
+  return nextConfig;
+}

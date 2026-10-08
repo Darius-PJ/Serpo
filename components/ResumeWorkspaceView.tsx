@@ -92,17 +92,17 @@ export function ResumeWorkspaceView({
   const fileNameStem = isGeneral ? "resume" : `${sanitizeFilename(workspace.company ?? "")}-${sanitizeFilename(workspace.role ?? "")}`;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 break-words">
       {error && <p role="alert" className="text-base text-danger-dark">{error}</p>}
-      <div className="card-soft flex flex-wrap items-center justify-between gap-3 p-4">
+      <div className="page-heading flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-heading">Resume</h1>
           {isGeneral ? (
-            <p className="mt-1 text-base text-foreground-muted">
+            <p className="page-lede mb-0 mt-1">
               General resume improvement — not tied to a specific job posting.
             </p>
           ) : (
-            <p className="mt-1 text-base text-foreground-muted">
+            <p className="page-lede mb-0 mt-1">
               {workspace.role} <span className="font-medium">at</span> {workspace.company}
               {workspace.sourceUrl && (
                 <>
@@ -116,7 +116,7 @@ export function ResumeWorkspaceView({
           )}
         </div>
         {!isGeneral && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {workspace.originSearchQuery && (
               <Link href={`/sourcing?${workspace.originSearchQuery}`} className="btn-secondary ">
                 ← Back to search
@@ -196,7 +196,7 @@ export function ResumeWorkspaceView({
                 </button>
               </div>
               {templateReady ? (
-                <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap rounded-xl border border-border-soft bg-surface p-3 text-sm text-foreground">
+                <pre className="surface-inset max-h-64 overflow-y-auto whitespace-pre-wrap p-3 text-sm text-foreground">
                   {templateText}
                 </pre>
               ) : (

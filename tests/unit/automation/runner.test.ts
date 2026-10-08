@@ -231,9 +231,9 @@ describe("automation runner", () => {
       });
     const earlier = new Date(T0.getTime() - 60 * MINUTE_MS);
     const outreach = await dead(user.id, "outreach.prepare", { applicationId: application.id }, earlier, "Hunter.io: HTTP 503");
-    const run = await dead(user.id, "saved_search.run", { savedSearchId: search.id }, T0, "Every source failed: Remotive");
+    const run = await dead(user.id, "saved_search.run", { savedSearchId: search.id }, T0, "Every source failed: RemoteOK");
     await dead(user.id, "outreach.prepare", { applicationId: deletedApplication.id }, earlier, "HTTP 503");
-    await dead(user.id, "saved_search.run", { savedSearchId: deletedSearch.id }, earlier, "Every source failed: Remotive");
+    await dead(user.id, "saved_search.run", { savedSearchId: deletedSearch.id }, earlier, "Every source failed: RemoteOK");
     await dead(stranger.id, "stale.scan", {}, earlier, "disk I/O error");
     await prisma.application.delete({ where: { id: deletedApplication.id } });
     await prisma.savedSearch.delete({ where: { id: deletedSearch.id } });

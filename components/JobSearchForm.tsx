@@ -401,13 +401,13 @@ export function JobSearchForm() {
 
   return (
     <div>
-      <form onSubmit={search} className="card-soft mb-6 flex flex-wrap items-center gap-2 p-4">
+      <form onSubmit={search} className="surface-inset mb-6 flex flex-wrap items-center gap-2 p-4">
         <input
           value={keywords}
           onChange={(e) => setKeywords(e.target.value)}
           placeholder="Job title (e.g. backend engineer)"
           required
-          className="input-soft min-w-[220px] flex-1 px-3 py-2 text-base"
+          className="input-soft min-w-[min(220px,100%)] flex-1 px-3 py-2 text-base"
         />
         <input
           value={location}

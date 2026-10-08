@@ -120,7 +120,7 @@ describe("lib/privacy/purge", () => {
     const seedAutomation = async (userId: string) => {
       const search = await prisma.savedSearch.create({ data: { userId, name: "Remote frontend", keywords: "frontend engineer" } });
       await prisma.savedSearchHit.create({
-        data: { savedSearchId: search.id, listingId: "remotive:1", familyId: "remotive:1", url: "https://remotive.test/jobs/1", listingJson: "{}" },
+        data: { savedSearchId: search.id, listingId: "remoteok:1", familyId: "remoteok:1", url: "https://remoteok.test/jobs/1", listingJson: "{}" },
       });
       await prisma.automationJob.create({
         data: { userId, kind: "saved_search.run", idempotencyKey: `saved_search:${search.id}:2026-09-28T04:00:00.000Z` },

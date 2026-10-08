@@ -152,7 +152,7 @@ describe("attention queue", () => {
     });
     for (const [n, firstSeenAt] of [[1, firstHitAt], [2, new Date(firstHitAt.getTime() + DAY_MS)]] as const) {
       await prisma.savedSearchHit.create({
-        data: { savedSearchId: search.id, listingId: `remotive:${n}`, familyId: `remotive:${n}`, url: `https://remotive.test/jobs/${n}`, listingJson: "{}", firstSeenAt },
+        data: { savedSearchId: search.id, listingId: `remoteok:${n}`, familyId: `remoteok:${n}`, url: `https://remoteok.test/jobs/${n}`, listingJson: "{}", firstSeenAt },
       });
     }
 

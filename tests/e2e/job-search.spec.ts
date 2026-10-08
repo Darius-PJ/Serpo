@@ -7,8 +7,8 @@ async function prepareWorkspace(page: import("@playwright/test").Page) {
 
 function listing(n: number) {
   return {
-    id: `remotive:${n}`,
-    source: "remotive",
+    id: `remoteok:${n}`,
+    source: "remoteok",
     company: "Acme",
     role: `Backend Engineer ${n}`,
     location: "Remote",
@@ -65,8 +65,8 @@ test("job search renders a per-source cloud cell and clickable suggested-title c
       json: {
         results: [
           {
-            source: "remotive",
-            label: "Remotive",
+            source: "remoteok",
+            label: "RemoteOK",
             listings: [listing(1), listing(2), listing(3)],
           },
         ],
@@ -79,7 +79,7 @@ test("job search renders a per-source cloud cell and clickable suggested-title c
   await page.locator('input[placeholder^="Job title"]').fill("backend engineer");
   await page.getByRole("button", { name: "Search" }).click();
 
-  await expect(page.getByText("Remotive")).toBeVisible();
+  await expect(page.getByText("RemoteOK")).toBeVisible();
   await expect(page.getByText("Backend Engineer 1")).toBeVisible();
   expect(searchCalls).toBe(1);
   expect(lastKeywords).toBe("backend engineer");
@@ -98,7 +98,7 @@ test("eliminating a job hides it from results and can be undone in-session", asy
   await page.route("**/api/jobs/search", async (route) => {
     await route.fulfill({
       json: {
-        results: [{ source: "remotive", label: "Remotive", listings: [listing(1), listing(2)] }],
+        results: [{ source: "remoteok", label: "RemoteOK", listings: [listing(1), listing(2)] }],
         suggestedTitles: [],
       },
     });
@@ -146,7 +146,7 @@ test("results-per-page selector and pagination controls work", async ({ page }) 
   await page.route("**/api/jobs/search", async (route) => {
     await route.fulfill({
       json: {
-        results: [{ source: "remotive", label: "Remotive", listings }],
+        results: [{ source: "remoteok", label: "RemoteOK", listings }],
         suggestedTitles: [],
       },
     });
@@ -177,8 +177,8 @@ test("family-tier matches collapse under related titles and can be promoted to a
       json: {
         results: [
           {
-            source: "remotive",
-            label: "Remotive",
+            source: "remoteok",
+            label: "RemoteOK",
             listings: [
               { ...listing(1), relevance: "exact" },
               { ...listing(2), role: "Network Administrator", relevance: "family" },

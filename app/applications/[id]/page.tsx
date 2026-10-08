@@ -45,28 +45,30 @@ export default async function ApplicationDetailPage({
       <Link href="/pipeline" className="mb-3 inline-flex text-base link-accent">
         Back to pipeline
       </Link>
-      <div className="card-soft mb-6 p-4">
-        <h1 className="text-2xl font-extrabold text-heading">
-          {application.role} <span className="font-medium text-foreground-muted">at {application.company}</span>
-        </h1>
-        <div className="mt-2 flex items-center gap-3 text-base text-foreground-muted">
-          <StatusSelect
-            applicationId={application.id}
-            status={application.status}
-            label={`Status for ${application.company} — ${application.role}`}
-          />
-          {application.url && (
-            <a href={application.url} target="_blank" rel="noopener noreferrer" className="link-accent">
-              Original posting
-            </a>
+      <div className="page-heading mb-6">
+        <div>
+          <h1 className="text-2xl font-extrabold text-heading">
+            {application.role} <span className="font-medium text-foreground-muted">at {application.company}</span>
+          </h1>
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-base text-foreground-muted">
+            <StatusSelect
+              applicationId={application.id}
+              status={application.status}
+              label={`Status for ${application.company} — ${application.role}`}
+            />
+            {application.url && (
+              <a href={application.url} target="_blank" rel="noopener noreferrer" className="link-accent">
+                Original posting
+              </a>
+            )}
+            <span>Source: {application.source}</span>
+          </div>
+          {application.appliedAt && (
+            <p className="mt-1 text-sm text-foreground-muted">
+              Applied {application.appliedAt.toLocaleDateString()}
+            </p>
           )}
-          <span>Source: {application.source}</span>
         </div>
-        {application.appliedAt && (
-          <p className="mt-1 text-sm text-foreground-muted">
-            Applied {application.appliedAt.toLocaleDateString()}
-          </p>
-        )}
       </div>
 
       <ApplicationDetailsForm

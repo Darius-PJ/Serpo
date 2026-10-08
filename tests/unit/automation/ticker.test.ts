@@ -15,14 +15,14 @@ import { listSavedSearchHits } from "@/lib/savedSearches/savedSearches";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-// Remotive is remote-only, so its listings pass the US-or-remote filter.
+// RemoteOK is remote-only, so its listings pass the US-or-remote filter.
 function listing(role: string, n: number): NormalizedJobListing {
   return {
-    id: `remotive:${n}`,
-    source: "remotive",
+    id: `remoteok:${n}`,
+    source: "remoteok",
     company: `Company ${n}`,
     role,
-    url: `https://remotive.test/jobs/${n}`,
+    url: `https://remoteok.test/jobs/${n}`,
     // Words no other listing shares, so dedupe keeps each listing in its own family.
     description: Array.from({ length: 40 }, (_, word) => `posting${n}word${word}`).join(" "),
   };
@@ -50,8 +50,8 @@ describe("automation ticker", () => {
     });
     searchAllAdaptersMock.mockImplementation(async (criteria: JobSearchCriteria) => [
       {
-        source: "remotive",
-        label: "Remotive",
+        source: "remoteok",
+        label: "RemoteOK",
         listings:
           criteria.keywords === "frontend engineer"
             ? [listing("Frontend Engineer", 1), listing("Frontend Engineer", 2)]

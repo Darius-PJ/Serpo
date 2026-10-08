@@ -16,7 +16,6 @@ import { arbeitnowAdapter } from "./adapters/arbeitnow";
 import { jobSpyAdapters } from "./adapters/jobspy";
 import { remoteOkAdapter } from "./adapters/remoteok";
 import { adzunaAdapter } from "./adapters/adzuna";
-import { remotiveAdapter } from "./adapters/remotive";
 import { himalayasAdapter } from "./adapters/himalayas";
 import { jobicyAdapter } from "./adapters/jobicy";
 import { usaJobsAdapter } from "./adapters/usajobs";
@@ -30,7 +29,6 @@ const ADAPTERS: Adapter[] = [
   ...jobSpyAdapters,
   remoteOkAdapter,
   adzunaAdapter,
-  remotiveAdapter,
   himalayasAdapter,
   jobicyAdapter,
   usaJobsAdapter,

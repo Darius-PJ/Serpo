@@ -45,7 +45,7 @@ export default async function SourcingPage({
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      <div className="page-heading mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-heading">Sourcing</h1>
           <p className="page-lede mb-0">Job boards, saved resources, and the AI scout. The quick search also lives on the dashboard.</p>

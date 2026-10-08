@@ -46,7 +46,7 @@ export default async function DashboardPage() {
   const hasTracked = trackedCount > 0;
 
   const attention = (
-    <section aria-labelledby="needs-attention" className="mb-10">
+    <section aria-labelledby="needs-attention" className="card-soft mb-10 p-5 sm:p-6">
       <h2 id="needs-attention" className="mb-1 text-lg font-bold text-heading">
         Needs attention
       </h2>
@@ -57,18 +57,18 @@ export default async function DashboardPage() {
         <TaskQuickAdd />
       </div>
       {allCaughtUp && (
-        <p className="card-soft p-4 text-base text-foreground-muted">
+        <p className="surface-inset p-4 text-base text-foreground-muted">
           Nothing is waiting on you. When a follow-up comes due it appears here first.
         </p>
       )}
       {attentionItems.length > 0 && (
-        <ul className="card-soft divide-y divide-border-soft p-4">
+        <ul className="surface-inset divide-y divide-border-soft p-4">
           {attentionItems.map((item, index) => (
-            <li key={`${item.kind}-${item.applicationId}-${index}`} className="flex items-center gap-3 py-2 text-base">
+            <li key={`${item.kind}-${item.applicationId}-${index}`} className="flex flex-wrap items-center gap-2 py-2 text-base sm:gap-3">
               <span className="rounded-full border border-border-soft px-2 py-0.5 text-sm font-semibold text-foreground">
                 {KIND_BADGES[item.kind]}
               </span>
-              <span className="min-w-0 flex-1">
+              <span className="min-w-0 basis-full sm:flex-1">
                 {item.applicationId ? (
                   <>
                     <Link href={`/applications/${item.applicationId}`} className="link-accent font-semibold">
@@ -87,7 +87,7 @@ export default async function DashboardPage() {
               </span>
               {item.kind === "task" && item.taskId && <TaskActions taskId={item.taskId} title={item.detail} />}
               {item.kind === "automation_failed" && item.jobId && <AutomationRetryButton jobId={item.jobId} label={item.detail} />}
-              <span className="shrink-0 text-sm text-foreground-muted">since {item.since.toLocaleDateString()}</span>
+              <span className="shrink-0 text-sm text-foreground-muted sm:ml-auto">since {item.since.toLocaleDateString()}</span>
             </li>
           ))}
         </ul>
@@ -96,7 +96,7 @@ export default async function DashboardPage() {
   );
 
   const search = (
-    <section aria-labelledby="search-heading" className="mb-10">
+    <section aria-labelledby="search-heading" className="card-soft mb-10 p-5 sm:p-6">
       <h2 id="search-heading" className="mb-1 text-lg font-bold text-heading">
         {hasTracked ? "Find the next one" : "Start with a search"}
       </h2>
@@ -117,7 +117,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      <div className="page-heading mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-heading">Dashboard</h1>
           <p className="page-lede mb-0">
@@ -143,7 +143,7 @@ export default async function DashboardPage() {
 
       <StaleReviewPanel applications={staleApplications} />
 
-      <section aria-labelledby="pipeline-summary" className="mb-10">
+      <section aria-labelledby="pipeline-summary" className="card-soft mb-10 p-5 sm:p-6">
         <div className="mb-1 flex items-center justify-between">
           <h2 id="pipeline-summary" className="text-lg font-bold text-heading">
             Pipeline
@@ -157,7 +157,7 @@ export default async function DashboardPage() {
             ? `${trackedCount} ${trackedCount === 1 ? "application" : "applications"} by stage.`
             : "Your applications will sit here by stage once you keep a result or add one by hand."}
         </p>
-        <ul className="flex flex-wrap gap-2">
+        <ul className="surface-inset flex flex-wrap gap-2 p-3">
           {APPLICATION_STATUSES.map((status) => (
             <li key={status}>
               <Link href="/pipeline" className="card-soft inline-block px-3 py-1.5 text-base hover:border-foreground-muted">

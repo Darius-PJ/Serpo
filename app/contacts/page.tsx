@@ -12,8 +12,12 @@ export default async function ContactsPage() {
 
   return (
     <div>
-      <h1 className="mb-1 text-2xl font-extrabold text-heading">Contacts</h1>
-      <p className="page-lede">People you have met or found, grouped by company, with what was said and when. Follow-ups start here.</p>
+      <div className="page-heading mb-6">
+        <div>
+          <h1 className="mb-1 text-2xl font-extrabold text-heading">Contacts</h1>
+          <p className="page-lede mb-0">People you have met or found, grouped by company, with what was said and when. Follow-ups start here.</p>
+        </div>
+      </div>
       <ContactAddForm />
 
       {groups.length === 0 ? (
@@ -22,7 +26,7 @@ export default async function ContactsPage() {
         </p>
       ) : (
         groups.map((group) => (
-          <section key={group.company} aria-label={`Contacts at ${group.company}`} className="mb-6">
+          <section key={group.company} aria-label={`Contacts at ${group.company}`} className="surface-inset mb-6 p-4">
             <h2 className="mb-2 text-base font-bold text-heading">{group.company}</h2>
             <ul className="space-y-3">
               {group.contacts.map((contact) => (

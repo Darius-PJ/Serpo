@@ -2,7 +2,7 @@ import type { NormalizedJobListing } from "../types";
 
 type EmploymentType = NormalizedJobListing["employment"]["type"];
 
-// Maps a source's own employment-type labels (enum values like Remotive's "full_time"
+// Maps a source's own employment-type labels (enum values like Adzuna's "full_time"
 // or free text like Lever's commitment and Arbeitnow's "fulltime fixed term") onto the
 // schema. Order is precedence: a listing labelled both full-time and contract is
 // contract work. Labels matching nothing ("Permanent", "Intern", "") map to null.

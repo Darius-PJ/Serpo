@@ -1,4 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
+import { assertCwdCasing } from "./scripts/assertCwdCasing.mjs";
+
+assertCwdCasing("Playwright");
 
 const PORT = 3100;
 const baseURL = `http://127.0.0.1:${PORT}`;

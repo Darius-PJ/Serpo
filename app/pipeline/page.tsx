@@ -12,7 +12,7 @@ export default async function PipelinePage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      <div className="page-heading mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-heading">Pipeline</h1>
           <p className="page-lede mb-0">Every application by stage. Drag a card or change its status; each move is kept in the application&apos;s timeline.</p>

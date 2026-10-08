@@ -7,7 +7,6 @@ import { arbeitnowAdapter } from "@/lib/jobAdapters/adapters/arbeitnow";
 import { himalayasAdapter } from "@/lib/jobAdapters/adapters/himalayas";
 import { jobicyAdapter } from "@/lib/jobAdapters/adapters/jobicy";
 import { joobleAdapter } from "@/lib/jobAdapters/adapters/jooble";
-import { remotiveAdapter } from "@/lib/jobAdapters/adapters/remotive";
 import { usaJobsAdapter } from "@/lib/jobAdapters/adapters/usajobs";
 import { employmentTypeFromLabels } from "@/lib/jobAdapters/services/employmentLabels";
 import type { Adapter, AdapterContext, NormalizedQuery } from "@/lib/jobAdapters/types";
@@ -59,16 +58,6 @@ describe("normalize maps each source's own type labels (real fixtures)", () => {
     expect(mappings(himalayasAdapter, jobs, (job) => job.employmentType)).toEqual([
       ["Full Time", "full-time"],
       ["Contractor", "contract"],
-    ]);
-  });
-
-  it("remotive: freelance is contract, an empty job_type is unknown", () => {
-    const { jobs } = fixtureBody<{ jobs: RawOf<typeof remotiveAdapter>[] }>("remotive", "typical");
-    expect(mappings(remotiveAdapter, jobs, (job) => job.job_type)).toEqual([
-      ["freelance", "contract"],
-      ["full_time", "full-time"],
-      ["part_time", "part-time"],
-      ["", null],
     ]);
   });
 

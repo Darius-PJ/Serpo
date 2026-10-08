@@ -33,8 +33,12 @@ export default async function WorkQueuePage() {
 
   return (
     <div>
-      <h1 className="mb-1 text-2xl font-extrabold text-heading">Work queue</h1>
-      <p className="page-lede">Your next actions, unsent outreach, and who you have not spoken to in a while, in one place.</p>
+      <div className="page-heading mb-6">
+        <div>
+          <h1 className="mb-1 text-2xl font-extrabold text-heading">Work queue</h1>
+          <p className="page-lede mb-0">Your next actions, unsent outreach, and who you have not spoken to in a while, in one place.</p>
+        </div>
+      </div>
 
       <section className="card-soft mb-6 p-4" aria-labelledby="open-tasks">
         <h2 id="open-tasks" className="mb-3 font-bold text-heading">Open tasks</h2>

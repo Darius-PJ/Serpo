@@ -19,7 +19,7 @@ all on your own machine.
   public hosting.
 - **Integrations are opt-in.** AI assistance (Claude) and keyed job-search APIs
   activate only when you add keys to `.env.local`; every feature degrades
-  gracefully without them. Keyless sources (Remotive, Himalayas, Jobicy,
+  gracefully without them. Keyless sources (Himalayas, Jobicy,
   Arbeitnow, RemoteOK) work out of the box.
 - **Your data is yours to destroy.** Settings include a wipe-everything purge,
   and per-application contact research can be deleted without touching
@@ -58,6 +58,13 @@ all on your own machine.
   once the next time it opens. Automation searches, flags, and drafts; it never
   tracks a job, applies, or sends a message.
 - **Résumé workspace** — keep a template, tailor per application, export DOCX.
+- **Sculpted interface** — light/dark raised surfaces and recessed controls over
+  fixed patterned wallpaper. The theme button beside Local workspace switches
+  light/dark mode. Settings → Appearance offers System, Full, and Reduced motion
+  and shows the effective mode; both preferences stay in this browser. Full motion
+  forms surfaces over 1.5 seconds, with text fading at the same rate and all effects
+  starting together; the navigation rails stay still. Reduced skips the reveal;
+  System follows the device's motion preference.
 
 ## Getting started
 
@@ -91,13 +98,15 @@ show its initial command window. To create or update the desktop shortcut, run
 
 **Quit**, at the bottom of the left rail, closes Serpo's dedicated browser window
 and stops its owned Node server tree (including in-flight JobSpy subprocesses).
+The interface blanks immediately during shutdown. If Quit fails, it returns
+with an error and preserves your current inputs.
 Closing the dedicated window with X also stops the session. Ordinary browser
 windows are untouched. The hidden server shell exits when its managed host ends.
 The app window uses installed Microsoft Edge, falling back to Chrome, with a
 separate profile under `%LOCALAPPDATA%\Serpo\browser-profile`.
 
-Existing sessions started before this update must be closed once manually.
-Relaunch from the updated shortcut to enable managed Quit. Servers started with
+Sessions started with an older launcher must be closed manually, then reopened
+from the updated shortcut to enable managed Quit. Servers started with
 `npm run dev` are intentionally not terminated by the Quit endpoint.
 Startup failures are logged in `%LOCALAPPDATA%\Serpo\launcher.log` and
 `server-<port>.log`. Windowless startup errors also show a short error dialog.
@@ -149,7 +158,7 @@ it now or any time later, and you only ever do it once.
 
 These boards are on from the start — no account, no key:
 
-- **Remotive, Himalayas, Jobicy, Arbeitnow, RemoteOK** — remote-focused boards,
+- **Himalayas, Jobicy, Arbeitnow, RemoteOK** — remote-focused boards,
   always searched.
 - **LinkedIn, Indeed, Glassdoor, ZipRecruiter, Google Jobs** (via JobSpy) — if
   you installed with `Install-Serpo.cmd`, these quietly set themselves up in the

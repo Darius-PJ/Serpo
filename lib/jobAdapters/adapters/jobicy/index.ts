@@ -30,7 +30,7 @@ export const jobicyAdapter: Adapter<JobicyJob> = {
     sourceKind: "aggregator",
   },
   capabilities: {
-    // Unlike Remotive/Himalayas, Jobicy's `tag` param was live-verified in Phase 1 to
+    // Unlike Himalayas, Jobicy's `tag` param was live-verified in Phase 1 to
     // genuinely filter server-side (a clean typical/empty/error fixture triad) —
     // tests/fixtures/jobicy/empty.json is a real, verified empty result.
     supportsKeywordQuery: true,

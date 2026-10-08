@@ -5,6 +5,7 @@ import { systemTimeZone } from "@/lib/automation/slots";
 import { ProfileFieldList } from "@/components/ProfileFieldList";
 import { AutomationSettingsForm } from "@/components/AutomationSettingsForm";
 import { DangerZone } from "@/components/DangerZone";
+import { MotionPreferences } from "@/components/AppearanceControls";
 
 export const dynamic = "force-dynamic";
 
@@ -17,8 +18,20 @@ export default async function SettingsPage() {
 
   return (
     <div>
-      <h1 className="mb-1 text-2xl font-extrabold text-heading">Settings</h1>
-      <p className="page-lede">Everything Serpo knows is in one file on this computer. AI features run only with a key you add, and nothing is sent to anyone without your review.</p>
+      <div className="page-heading mb-6">
+        <div>
+          <h1 className="mb-1 text-2xl font-extrabold text-heading">Settings</h1>
+          <p className="page-lede mb-0">Everything Serpo knows is in one file on this computer. AI features run only with a key you add, and nothing is sent to anyone without your review.</p>
+        </div>
+      </div>
+      <section aria-labelledby="appearance-heading" className="mb-10">
+        <h2 id="appearance-heading" className="mb-1 text-lg font-bold text-heading">Appearance</h2>
+        <p className="mb-4 max-w-prose text-base text-foreground-muted">
+          Motion applies across all pages. System follows this device&apos;s preference; Reduced skips page formation.
+          This preference stays in this browser.
+        </p>
+        <MotionPreferences />
+      </section>
       <section aria-labelledby="automation-heading" className="mb-10">
         <h2 id="automation-heading" className="mb-1 text-lg font-bold text-heading">Automation</h2>
         <p className="mb-4 max-w-prose text-base text-foreground-muted">

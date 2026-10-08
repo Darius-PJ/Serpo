@@ -45,7 +45,7 @@ separate Python sidecar, not Playwright.
 | Path | What lives here |
 |---|---|
 | `app/` | App Router pages (server components) + `app/api/**/route.ts` HTTP handlers |
-| `components/` | Client React components (forms, panels, board); fetch the API |
+| `components/` | React UI: shared shell/artwork, plus client forms, panels and board that fetch the API |
 | `lib/` | All server-side domain logic (`"server-only"`), grouped by concern |
 | `lib/db/prisma.ts` | The singleton Prisma client (better-sqlite3 adapter) |
 | `lib/jobAdapters/` | Current per-source job fetch/normalize architecture |
@@ -77,10 +77,24 @@ app/api/**/route.ts               ── HTTP boundary
 
 Pages under `app/` are **server components**: they call `lib/*` directly (no
 self-fetch), then render client components that mutate via `app/api`. The root
-`app/layout.tsx` wraps every page in `components/SideNav.tsx` (Dashboard,
-Sourcing, Pipeline, Work, Contacts, Résumé, Settings, plus the **Quit** button).
+`app/layout.tsx` keeps `SideNav`, `WorkspaceHeader`, and `SerpoWallpaper` mounted
+outside the page-content transition. Navigation covers Dashboard, Sourcing,
+Pipeline, Work, Contacts, Résumé and Settings, plus the **Quit** button.
 Security headers (`nosniff`, `X-Frame-Options: DENY`, `no-referrer`) are set for
 all routes in `next.config.ts`.
+
+`app/globals.css` owns the palette and raised/inset surface primitives;
+`components/SerpoWallpaper.tsx` renders the fixed artwork.
+`components/AppearanceControls.tsx` shares browser-local theme and motion
+preferences between the header's theme toggle and Settings → Appearance.
+`app/layout.tsx` initializes the root theme/motion attributes before hydration.
+Explicit motion preferences override the OS; System follows live media changes.
+`components/PageTransition.tsx` keys content by pathname, so filters and refreshes
+do not replay the page reveal. `app/motion.css` forms raised and inset surfaces
+through background, border, and shadow changes over 1.5 seconds. Text shares
+the same duration and easing; all effects start together without a stagger.
+Page/card geometry stays fixed to preserve dialogs and board dragging.
+Reduced motion cancels an active reveal and shows settled surfaces immediately.
 
 ### Pages
 
@@ -182,7 +196,7 @@ flowchart TD
   G --> H["exclude tracked + eliminated URLs for this user"]
 ```
 
-Sources: keyless (Remotive, Himalayas, Jobicy, Arbeitnow, RemoteOK), keyed
+Sources: keyless (Himalayas, Jobicy, Arbeitnow, RemoteOK), keyed
 (Adzuna, USAJobs, Jooble, Careerjet), per-company ATS (Greenhouse, Lever), and five **JobSpy**
 adapters generated from `lib/jobSpyBoards.ts`: `jobspy:indeed`,
 `jobspy:linkedin`, `jobspy:zip_recruiter`, `jobspy:glassdoor`, `jobspy:google`.
@@ -331,8 +345,9 @@ or runs the fail-closed upgrade on an existing one.
 window, waits on `/api/health`, opens a dedicated Chromium window (installed Edge,
 falling back to Chrome) with a separate profile under
 `%LOCALAPPDATA%\Serpo\browser-profile`, and stands up a token-guarded local
-**control server**. The in-app **Quit** button (`components/SideNav.tsx`) POSTs
-`/api/app/quit`, which relays a bearer-authenticated shutdown to that control
+**control server**. The in-app **Quit** button (`components/SideNav.tsx`) blanks
+the interface immediately, restoring it and its inputs if the request fails.
+It POSTs `/api/app/quit`, which relays a bearer-authenticated shutdown to that control
 server (`SERPO_CONTROL_PORT`/`SERPO_CONTROL_TOKEN`) so only the owned server tree
 (including in-flight JobSpy subprocesses and the automation ticker) is stopped —
 never processes by name or PID. Logs go to `%LOCALAPPDATA%\Serpo`. `scripts/install.ps1` /

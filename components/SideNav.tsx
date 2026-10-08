@@ -73,7 +73,7 @@ type IconName = "dashboard" | "sourcing" | "pipeline" | "work" | "contacts" | "r
 
 // Sourcing sits directly after Dashboard: feeding the pipeline is the daily
 // action this workspace exists to prompt, so it gets the second slot.
-const NAV_ITEMS: Array<{ href: string; label: string; icon: IconName }> = [
+export const NAV_ITEMS: Array<{ href: string; label: string; icon: IconName }> = [
   { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
   { href: "/sourcing", label: "Sourcing", icon: "sourcing" },
   { href: "/pipeline", label: "Pipeline", icon: "pipeline" },
@@ -161,6 +161,7 @@ export function SideNav() {
 
   async function quit() {
     if (quitting) return;
+    document.documentElement.dataset.quitting = "true";
     setQuitting(true);
     setQuitError(null);
     try {
@@ -171,6 +172,7 @@ export function SideNav() {
       // navigation. An ordinary manually opened tab may refuse window.close().
       window.close();
     } catch (error) {
+      delete document.documentElement.dataset.quitting;
       setQuitError(error instanceof Error ? error.message : "Serpo could not quit.");
       setQuitting(false);
     }
@@ -187,13 +189,13 @@ export function SideNav() {
 
   return (
     <aside
-      className={`sticky top-0 flex h-screen w-[4.25rem] shrink-0 flex-col overflow-y-auto border-r border-border-soft bg-surface-sunken transition-[width] motion-reduce:transition-none ${
- collapsed ? "md:w-[102px]" : "md:w-56"
-      }`}
+      aria-label="Workspace navigation"
+      data-collapsed={collapsed}
+      className="serpo-sidebar"
     >
       <Link
         href="/dashboard"
-        className="mx-2 mt-3 flex flex-col items-center gap-1.5 rounded-xl px-3 py-2"
+        className="serpo-brand mx-2 mt-3 flex flex-col items-center gap-1.5 rounded-xl px-3 py-2"
         aria-label="Serpo home"
       >
         <Image
@@ -226,24 +228,17 @@ export function SideNav() {
               aria-label={label}
               aria-current={active ? "page" : undefined}
               title={label}
-              className={`relative flex items-center gap-3 rounded-xl px-3 py-2 text-base transition-colors ${
- collapsed ? "justify-center" : "justify-center md:justify-start"
-              } ${
-                active
-                  ? "bg-primary font-bold text-primary-ink"
-                  : "font-medium text-foreground-muted hover:bg-surface hover:text-foreground"
+              className={`rail-link relative flex items-center gap-3 rounded-xl px-3 py-2 text-base ${
+                collapsed ? "justify-center" : "justify-center md:justify-start"
               }`}
             >
               <Icon name={item.icon} className={collapsed ? "h-8 w-8" : "h-5 w-5"} />
               <span className={`truncate ${collapsed ? "hidden" : "hidden md:inline"}`}>{item.label}</span>
               {badge > 0 && (
                 // Over the icon when the label is hidden; after the label when it shows.
-                // Inverted on the active item so it keeps its shape against the fill.
                 <span
                   aria-hidden="true"
-                  className={`absolute right-1 top-0.5 min-w-6 rounded-full px-1.5 text-center text-sm font-bold leading-6 ${
-                    active ? "bg-primary-ink text-primary" : "bg-foreground text-background"
-                  } ${collapsed ? "" : "md:static md:ml-auto"}`}
+                  className={`rail-badge absolute right-1 top-0.5 min-w-6 rounded-lg px-1.5 text-center text-sm font-bold leading-6 ${collapsed ? "" : "md:static md:ml-auto"}`}
                 >
                   {badge > 99 ? "99+" : badge}
                 </span>
@@ -254,16 +249,15 @@ export function SideNav() {
       </nav>
       {quitError && <p role="alert" className="mx-2 rounded-xl bg-surface p-2 text-xs text-danger-dark">{quitError}</p>}
       <button type="button" onClick={quit} disabled={quitting} aria-label="Quit Serpo" title="Quit Serpo"
-        className={`mx-2 mb-1 flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-base font-medium text-foreground-muted transition-colors hover:bg-surface hover:text-foreground disabled:opacity-60 ${collapsed ? "justify-center" : "justify-center md:justify-start"}`}>
+        className={`rail-quiet mx-2 mb-1 flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-base font-medium disabled:opacity-60 ${collapsed ? "justify-center" : "justify-center md:justify-start"}`}>
         <Icon name="quit" className={collapsed ? "h-8 w-8" : "h-5 w-5"} />
-        <span className={collapsed ? "hidden" : "hidden md:inline"}>{quitting ? "Quitting…" : "Quit"}</span>
+        <span className={collapsed ? "hidden" : "hidden md:inline"}>Quit</span>
       </button>
-      {quitting && <div role="status" className="fixed inset-0 z-50 flex items-center justify-center bg-surface p-8 text-center"><div><h1 className="text-xl font-bold">Closing Serpo…</h1><p className="mt-2">The app window and local server are shutting down.</p><p className="mt-2 text-sm text-foreground-muted">If you opened this in a normal browser tab, you can close this tab.</p></div></div>}
       <button
         type="button"
         onClick={toggle}
         aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
-        className="m-2 hidden min-h-10 items-center justify-center rounded-xl border border-border-soft px-3 py-2 text-foreground-muted transition-colors hover:bg-surface hover:text-foreground md:flex"
+        className="rail-control m-2 hidden min-h-10 items-center justify-center rounded-xl px-3 py-2 md:flex"
       >
         <svg
           aria-hidden="true"

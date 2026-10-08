@@ -1,0 +1,117 @@
+/* The rails stay mounted. Only the new page forms out of the ground.
+   Animate depth, not card/page transforms: fixed dialogs and drag coordinates
+   must keep their original containing blocks. */
+:root {
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --relief-duration: 1500ms;
+}
+
+/* One shared fade keeps text in sync without multiplying nested opacities. */
+.page-transition {
+  animation: page-arrive var(--relief-duration) var(--ease-in-out) backwards;
+}
+
+/* Unlike a faded copy of the final shadow, a growing offset/blur makes the
+   plane visibly lift. The deliberately slow formation is the requested effect;
+   it never gates interaction or changes layout. */
+.page-transition :where(.card-soft, .cloud-cell, .page-heading) {
+  animation: relief-rise var(--relief-duration) var(--ease-in-out) backwards;
+}
+
+.page-transition :where(.surface-inset, .input-soft) {
+  animation: relief-press var(--relief-duration) var(--ease-in-out) backwards;
+}
+
+/* The hero has a gradient rather than a flat fill. This ground-coloured skin
+   dissolves below its content as the edges rise; it cannot intercept input. */
+.page-transition .page-heading {
+  position: relative;
+  isolation: isolate;
+}
+
+.page-transition .page-heading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--background);
+  pointer-events: none;
+  opacity: 0;
+  animation: ground-release var(--relief-duration) var(--ease-in-out) backwards;
+}
+
+/* Reveal a focused surface immediately, rather than making keyboard users
+   wait for a decorative entrance to finish. */
+.page-transition:focus-within,
+.page-transition :focus-within,
+.page-transition .page-heading:focus-within::before {
+  animation: none;
+}
+
+.rail-link {
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms var(--ease-out);
+}
+
+.rail-link:active {
+  transform: scale(0.97);
+}
+
+@keyframes page-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes relief-rise {
+  from {
+    background-color: var(--background);
+    border-color: transparent;
+    box-shadow: 0 0 0 transparent, 0 0 0 transparent, inset 0 0 0 transparent;
+  }
+}
+
+@keyframes relief-press {
+  from {
+    background-color: var(--background);
+    border-color: transparent;
+    box-shadow: inset 0 0 0 transparent, inset 0 0 0 transparent;
+  }
+}
+
+@keyframes ground-release {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* The saved choice outranks the OS. With no script/attribute, keep the OS
+   fallback. Cancelling an active reveal exposes its settled base styles. */
+:root[data-motion="reduced"],
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation: none !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+:root[data-motion="reduced"] .rail-link:active {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]),
+  :root:not([data-motion="full"]) *,
+  :root:not([data-motion="full"]) *::before,
+  :root:not([data-motion="full"]) *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  :root:not([data-motion="full"]) .rail-link:active {
+    transform: none;
+  }
+}

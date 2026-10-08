@@ -1,69 +1,57 @@
 @import "tailwindcss";
+@import "./motion.css";
 
 /* Serpo colour system, from the Hesperia palette (Monet, 2026-09-04; see
    design/decisions.md D-001 and D-002).
 
-   Two themes follow the system setting. Light: Spear-gleam ground, violet as
-   ink, button, band, and focus ring. Dark ("Night Shift"): Vesper violet
-   ground, Spear-gleam text, gold-family accents. Every tint here is a palette
-   hue moved in lightness only, and is recorded in the brand file's tint scale.
+   Two themes follow the system setting until explicitly overridden. Light:
+   Spear-gleam ground, violet as ink, button, band, and focus ring. Dark
+   ("Night Shift"): Vesper violet ground, Spear-gleam text, gold-family accents.
+   Every tint here is a palette hue moved in lightness only, and is recorded
+   in the brand file's tint scale.
 
    Role semantics: --primary is the fill of the one primary action and
    --primary-ink the text that sits on it; --primary-dark is accent text on the
    ground (links, always underlined); --accent is for icons and large text
    only; --danger is a fill and --danger-dark is danger text on the ground. */
 :root {
+  /* light-dark() keeps the same palette for the OS default and explicit theme. */
   color-scheme: light dark;
+  --background: light-dark(#e9eef5, #33305e);       /* Spear-gleam / Vesper violet */
+  --surface: light-dark(#ffffff, #3e3b73);
+  --surface-sunken: light-dark(#dde3ec, #2c2951);
+  --foreground: light-dark(#33305e, #e9eef5);
+  --foreground-muted: light-dark(#55668a, #ddd4c5);
+  --heading: light-dark(#33305e, #c9982e);
 
-  /* light */
-  --background: #e9eef5;        /* Spear-gleam white */
-  --surface: #ffffff;
-  --surface-sunken: #dde3ec;    /* Spear-gleam, lightness 0.90 */
-  --foreground: #33305e;        /* Vesper violet as ink */
-  --foreground-muted: #55668a;  /* Earth-shadow blue: 5.75 on white, 4.93 on Spear-gleam */
-  --heading: #33305e;           /* headings are ink on the light ground */
+  --primary: light-dark(#33305e, #ead4a4);
+  --primary-light: light-dark(#2c2951, #f2e3c1);
+  --primary-dark: light-dark(#33305e, #ead4a4);
+  --primary-ink: light-dark(#e9eef5, #33305e);
 
-  --primary: #33305e;           /* Vesper violet fill */
-  --primary-light: #2c2951;     /* violet, lightness 0.24: hover fill */
-  --primary-dark: #33305e;      /* accent text on the light ground: violet, underlined */
-  --primary-ink: #e9eef5;       /* Spear-gleam on violet: 10.4 to 1, Lc 90 */
+  --accent: light-dark(#b0703a, #c9982e);
+  --accent-light: light-dark(#c9982e, #ead4a4);
 
-  --accent: #b0703a;            /* Cyprian copper: icons and large text on light grounds, 4.02 on white */
-  --accent-light: #c9982e;      /* Apple-gold: decorative only on light grounds (2.62 on white) */
+  --danger: #8e3a2c;
+  --danger-light: light-dark(#7a3226, #a3463a);
+  --danger-dark: light-dark(#8e3a2c, #e4b2a9);
 
-  --danger: #8e3a2c;            /* Ember fill; white text on it 7.52 */
-  --danger-light: #7a3226;      /* Ember, lightness 0.32: hover fill */
-  --danger-dark: #8e3a2c;       /* Ember as text: 7.52 on white */
+  --border-soft: light-dark(#7c78ba, #908cc4);
+  --focus: light-dark(#33305e, #ead4a4);
 
-  --border-soft: #7c78ba;       /* violet, lightness 0.60: 4.00 on white, 3.43 on Spear-gleam */
-  --focus: #33305e;
+  /* Approved relief recipes extend the Hesperia surfaces, not the brand hues. */
+  --divider: color-mix(in srgb, var(--border-soft) 30%, transparent);
+  --shadow-shade: light-dark(#bec8d5, #211e40);
+  --shadow-glow: light-dark(#ffffff, #4b4681);
+  --raised: 8px 8px 19px var(--shadow-shade), -8px -8px 19px var(--shadow-glow);
+  --small: 4px 4px 9px var(--shadow-shade), -4px -4px 9px var(--shadow-glow);
+  --inset: inset 4px 4px 9px var(--shadow-shade), inset -4px -4px 9px var(--shadow-glow);
+  --radius: 22px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #33305e;      /* Vesper violet */
-    --surface: #3e3b73;         /* violet, lightness 0.34 */
-    --surface-sunken: #2c2951;  /* violet, lightness 0.24 */
-    --foreground: #e9eef5;      /* Spear-gleam: 10.4 on violet, Lc 90 */
-    --foreground-muted: #ddd4c5; /* Tufa dust, lightness 0.82: 8.29 on violet, Lc 74; 6.88 on surface */
-    --heading: #c9982e;         /* Apple-gold: headings stand apart from body text on violet, 4.65, Lc 44 (owner's call, see design/decisions.md section 7) */
-
-    --primary: #ead4a4;         /* Apple-gold light fill; violet ink on it 8.38, Lc 74 */
-    --primary-light: #f2e3c1;   /* Apple-gold, lightness 0.85: hover fill */
-    --primary-dark: #ead4a4;    /* Apple-gold light as accent text: 8.38 on violet, Lc 75, always underlined as a link */
-    --primary-ink: #33305e;
-
-    --accent: #c9982e;          /* Apple-gold: icons and large text on violet, 4.65, Lc 44 */
-    --accent-light: #ead4a4;
-
-    --danger: #8e3a2c;          /* Ember fill; Spear-gleam text on it 6.45, Lc 79 */
-    --danger-light: #a3463a;    /* Ember, lightness 0.43: hover fill */
-    --danger-dark: #e4b2a9;     /* Ember light as text: 6.52 on violet, Lc 61; short messages with an icon or role */
-
-    --border-soft: #908cc4;     /* violet, lightness 0.66: 3.90 on violet, 3.24 on surface */
-    --focus: #ead4a4;
-  }
-}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
 
 @theme inline {
   --color-background: var(--background);
@@ -134,51 +122,81 @@ body {
   line-height: 1.5;
 }
 
-/* Motion is opt-out for anyone who asked the system for less of it. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-  }
+/* Quit blanks the mounted interface immediately, including native top-layer
+   dialogs and elements that explicitly override inherited visibility. The
+   root keeps the existing theme's ground while a failed shutdown restores it. */
+:root[data-quitting] { background: var(--background); }
+:root[data-quitting] body,
+:root[data-quitting] body *,
+:root[data-quitting] body *::before,
+:root[data-quitting] body *::after,
+:root[data-quitting] body *::backdrop {
+  visibility: hidden !important;
 }
 
 @layer components {
   .btn-primary {
     @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 font-semibold text-primary-ink transition-colors hover:bg-primary-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+    border: 1px solid var(--divider);
+    box-shadow: var(--small);
   }
 
   .btn-secondary {
-    @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-border-soft bg-surface px-4 font-medium text-foreground transition-colors hover:border-foreground-muted hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl px-4 font-medium text-foreground transition-colors hover:border-foreground-muted hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+    border: 1px solid var(--divider);
+    background: var(--background);
+    box-shadow: var(--small);
   }
 
   .btn-danger {
     @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-danger px-4 font-semibold text-white transition-colors hover:bg-danger-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+    border: 1px solid var(--divider);
+    box-shadow: var(--small);
   }
 
   .btn-danger-outline {
-    @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-danger-dark px-4 font-medium text-danger-dark transition-colors hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl px-4 font-medium text-danger-dark transition-colors hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+    border: 1px solid var(--danger-dark);
+    background: var(--background);
+    box-shadow: var(--small);
   }
 
   .card-soft {
-    @apply rounded-2xl border border-border-soft bg-surface;
+    @apply bg-surface;
+    --relief-shadow: var(--raised);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--relief-shadow);
+  }
+
+  .surface-inset {
+    --relief-shadow: var(--inset);
+    border: 1px solid color-mix(in srgb, var(--shadow-shade) 12%, transparent);
+    border-radius: 16px;
+    background: var(--surface-sunken);
+    box-shadow: var(--relief-shadow);
   }
 
   .input-soft {
-    @apply min-h-10 rounded-xl border border-border-soft bg-surface text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus;
+    @apply min-h-10 rounded-xl text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus;
+    max-width: 100%;
+    border: 1px solid var(--divider);
+    background: var(--surface-sunken);
+    box-shadow: var(--inset);
   }
 
   .chip {
-    @apply inline-flex min-h-8 items-center rounded-full border border-border-soft bg-surface px-3 py-1 text-sm text-foreground transition-colors hover:border-foreground-muted hover:bg-surface-sunken disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex min-h-8 items-center rounded-full px-3 py-1 text-sm text-foreground transition-colors hover:border-foreground-muted hover:bg-surface-sunken disabled:pointer-events-none disabled:opacity-50;
+    border: 1px solid var(--divider);
+    background: var(--surface-sunken);
+    box-shadow: inset 2px 2px 5px var(--shadow-shade), inset -2px -2px 5px var(--shadow-glow);
   }
 
-  /* A result cell: the same card as everywhere else. The earlier "cloud" glow
-     was the one shape used nowhere else in the product. */
   .cloud-cell {
-    @apply relative flex flex-col overflow-hidden rounded-2xl border border-border-soft bg-surface;
+    @apply relative flex flex-col overflow-hidden bg-surface;
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--raised);
   }
 
   /* Accent text on the ground is a link colour, and links are underlined so
@@ -191,4 +209,232 @@ body {
   .page-lede {
     @apply mb-6 max-w-prose text-base text-foreground-muted;
   }
+
+  .page-heading {
+    --relief-shadow: 14px 16px 34px var(--shadow-shade), -12px -12px 27px var(--shadow-glow), inset 1px 1px 0 color-mix(in srgb, var(--shadow-glow) 70%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 190px;
+    margin-bottom: 30px;
+    padding: 30px clamp(25px, 3vw, 42px);
+    border: 1px solid var(--divider);
+    border-radius: calc(var(--radius) + 9px);
+    background: linear-gradient(135deg, var(--surface), color-mix(in srgb, var(--surface) 85%, var(--background)));
+    box-shadow: var(--relief-shadow);
+  }
+
+  .page-heading > div:first-child { min-width: 0; }
+  .page-heading > :last-child:not(:first-child) { flex-shrink: 0; }
+
+  .serpo-shell {
+    --sidebar-width: 4.25rem;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  /* The rail wash is below the SVG; the sticky, transparent rail carries
+     interactive content above it. Its grid column follows collapse state. */
+  .serpo-shell::before {
+    content: "";
+    grid-column: 1;
+    grid-row: 1;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: -2;
+    border-radius: 0 23px 23px 0;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--surface-sunken) 70%, var(--surface)), var(--surface));
+    box-shadow: inset 4px 4px 10px color-mix(in srgb, var(--shadow-shade) 74%, transparent),
+      inset -4px -4px 10px color-mix(in srgb, var(--shadow-glow) 82%, transparent),
+      -3px -3px 9px color-mix(in srgb, var(--shadow-glow) 80%, transparent),
+      9px 5px 23px color-mix(in srgb, var(--shadow-shade) 82%, transparent);
+  }
+
+  .serpo-sidebar {
+    grid-column: 1;
+    grid-row: 1;
+    position: sticky;
+    top: 0;
+    display: flex;
+    height: 100vh;
+    min-width: 0;
+    flex-direction: column;
+    overflow-y: auto;
+    border-right: 1px solid var(--divider);
+    box-shadow: inset -2px 0 0 color-mix(in srgb, var(--shadow-glow) 75%, transparent);
+  }
+
+  .serpo-brand img {
+    box-shadow: inset 2px 2px 5px color-mix(in srgb, var(--shadow-shade) 82%, transparent),
+      inset -2px -2px 5px color-mix(in srgb, var(--shadow-glow) 86%, transparent),
+      -1px -1px 2px color-mix(in srgb, var(--shadow-glow) 75%, transparent),
+      1px 1px 2px color-mix(in srgb, var(--shadow-shade) 70%, transparent);
+  }
+
+  .rail-link, .rail-quiet {
+    color: var(--foreground-muted);
+    text-decoration: none;
+  }
+  .rail-link:hover, .rail-quiet:hover {
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--surface) 35%, transparent);
+  }
+  .rail-link[aria-current="page"] {
+    color: var(--primary-dark);
+    font-weight: 700;
+    background: var(--surface-sunken);
+    box-shadow: inset 3px 3px 7px color-mix(in srgb, var(--shadow-shade) 80%, transparent),
+      inset -3px -3px 7px color-mix(in srgb, var(--shadow-glow) 85%, transparent),
+      -1px -1px 2px color-mix(in srgb, var(--shadow-glow) 70%, transparent),
+      1px 1px 2px color-mix(in srgb, var(--shadow-shade) 65%, transparent);
+  }
+  .rail-link[aria-current="page"]:hover { background: var(--surface-sunken); }
+  .rail-badge {
+    color: var(--primary-dark);
+    background: var(--background);
+    box-shadow: 2px 2px 4px var(--shadow-shade), -2px -2px 4px var(--shadow-glow);
+  }
+  .rail-control {
+    color: var(--foreground-muted);
+    border: 1px solid var(--divider);
+    background: var(--background);
+    box-shadow: var(--small);
+  }
+  .rail-control:hover { color: var(--foreground); }
+
+  .serpo-workspace { grid-column: 2; grid-row: 1; min-width: 0; }
+  .serpo-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-width: 0;
+    min-height: 86px;
+    padding: 15px clamp(20px, 3vw, 42px);
+    border-bottom: 1px solid var(--divider);
+    box-shadow: inset 3px 3px 9px color-mix(in srgb, var(--shadow-shade) 72%, transparent),
+      inset -3px -3px 9px color-mix(in srgb, var(--shadow-glow) 82%, transparent),
+      0 7px 17px color-mix(in srgb, var(--shadow-shade) 70%, transparent),
+      0 -2px 7px color-mix(in srgb, var(--shadow-glow) 70%, transparent);
+  }
+  .serpo-breadcrumb, .serpo-topbar-actions { display: flex; align-items: center; min-width: 0; }
+  .serpo-breadcrumb {
+    gap: 12px;
+    font-size: 0.875rem;
+    color: var(--foreground-muted);
+    white-space: nowrap;
+  }
+  .serpo-breadcrumb svg { width: 14px; height: 14px; flex: none; }
+  .serpo-breadcrumb strong { overflow: hidden; color: var(--foreground); font-weight: 700; text-overflow: ellipsis; }
+  .serpo-topbar-actions { gap: 18px; flex: none; }
+  .serpo-local-identity { color: var(--foreground-muted); font-size: 0.875rem; white-space: nowrap; }
+  .serpo-topbar-link, .serpo-theme-toggle {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--divider);
+    border-radius: 12px;
+    background: var(--background);
+    box-shadow: var(--small);
+    color: var(--primary-dark);
+  }
+  .serpo-topbar-link {
+    padding: 6px 16px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .serpo-theme-toggle {
+    width: 40px;
+    flex: none;
+    cursor: pointer;
+  }
+  .serpo-theme-toggle svg { width: 20px; height: 20px; }
+  .serpo-topbar-link:hover, .serpo-theme-toggle:hover { background: var(--surface); }
+  .serpo-main { min-width: 0; padding: 35px clamp(20px, 3vw, 42px) 36px; }
+  .serpo-main-content { max-width: 1510px; margin-inline: auto; }
+
+  /* The same one fixed sheet stays put while the page and top rail scroll. */
+  .shell-wallpaper {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .wallpaper-island { opacity: var(--wallpaper-opacity); }
+  .spill-left { fill: var(--accent); fill-opacity: .26; }
+  .spill-right { fill: var(--foreground-muted); fill-opacity: .25; }
+  .spill-shafts { fill: none; stroke: url(#ridge-copper); stroke-opacity: .8; stroke-width: 5; stroke-linecap: round; }
+  .spill-shafts-right { stroke: url(#ridge-violet); }
+  .spill-top { fill: url(#spill-recess); fill-opacity: .32; }
+  .spill-upper { fill: none; stroke: url(#ridge-violet); stroke-opacity: .7; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+  .elevation-silhouette { fill: url(#elevation-volume); fill-opacity: .72; stroke: url(#ridge-violet); stroke-opacity: .45; stroke-width: .7; }
+  .elevation-mosaic { fill-opacity: .86; }
+  .elevation-roll { fill: url(#elevation-roll); }
+  .elevation-edge-return { fill: none; stroke: url(#elevation-edge); stroke-opacity: .65; stroke-width: 4; }
+}
+
+/* Heading scale overrides page titles' utility classes, not body type.
+   Night Shift keeps small raised-card headings legible while the large page
+   heading stays Apple-gold. */
+.page-heading { align-items: center; gap: 24px; margin-bottom: 30px; }
+.page-heading h1 { font-size: clamp(2rem, 2.8vw, 2.625rem); line-height: 1.15; letter-spacing: -.025em; }
+.page-heading .page-lede { margin-top: 10px; margin-bottom: 0; max-width: 44rem; font-size: 1.0625rem; }
+.rail-link:focus-visible, .rail-quiet:focus-visible, .rail-control:focus-visible,
+.serpo-brand:focus-visible, .serpo-topbar-link:focus-visible,
+.serpo-theme-toggle:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.card-soft :is(h2, h3).text-heading,
+.cloud-cell :is(h2, h3).text-heading {
+  color: light-dark(var(--heading), var(--primary-dark));
+}
+
+:root { --wallpaper-opacity: .11; }
+:root[data-theme="dark"] { --wallpaper-opacity: .14; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { --wallpaper-opacity: .14; }
+}
+
+/* The native snapshot bridges the wallpaper, shadows and painted surfaces. */
+:root[data-motion="full"]::view-transition-old(root),
+:root[data-motion="full"]::view-transition-new(root) {
+  animation-duration: 280ms;
+  animation-timing-function: ease;
+}
+/* CSS-color fallback for browsers without View Transitions; enabled only on a click. */
+:root[data-motion="full"][data-theme-switching] :where(*, *::before, *::after) {
+  transition-property: color, background-color, border-color, fill, stroke;
+  transition-duration: 280ms;
+  transition-timing-function: ease;
+}
+
+@media (min-width: 768px) {
+  .serpo-shell { --sidebar-width: 14rem; }
+  .serpo-shell:has(.serpo-sidebar[data-collapsed="true"]) { --sidebar-width: 6.375rem; }
+}
+
+@media (max-width: 767px) {
+  .serpo-topbar { min-height: 64px; flex-wrap: wrap; gap: 8px; padding: 12px 16px; }
+  .serpo-main { padding: 26px 17px 30px; }
+  .serpo-breadcrumb { flex-basis: 100%; gap: 7px; }
+  .serpo-topbar-actions { width: 100%; gap: 10px; }
+  .serpo-local-identity { display: none; }
+  .serpo-topbar-link { padding-inline: 10px; }
+  .page-heading { flex-direction: column; align-items: stretch; gap: 18px; min-height: 0; padding: 28px 25px; }
+  .page-heading > :last-child:not(:first-child) { align-self: flex-start; flex-wrap: wrap; max-width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .page-heading { padding: 24px 20px; border-radius: 24px; }
 }

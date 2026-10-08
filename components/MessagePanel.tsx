@@ -76,9 +76,9 @@ export function MessagePanel({
 
   return (
     <section className="card-soft mb-6 p-4">
-      <div className="mb-2 flex items-center justify-between gap-2">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-bold text-heading">Outreach drafts</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setRequestedType("IMMEDIATE")}
             disabled={!submissionConfirmed || generating !== null}

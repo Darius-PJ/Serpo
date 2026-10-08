@@ -163,7 +163,7 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
 function BoardColumn({ status, cards }: { status: string; cards: PipelineCard[] }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   return (
-    <div ref={setNodeRef} className={`card-soft p-3 ${isOver ? "ring-2 ring-primary" : ""}`}>
+    <div ref={setNodeRef} className={`surface-inset p-3 ${isOver ? "ring-2 ring-primary" : ""}`}>
       <h2 className="mb-2 text-base font-bold text-heading">
         {status} ({cards.length})
       </h2>
@@ -185,7 +185,7 @@ function BoardCard({ card }: { card: PipelineCard }) {
     <li
       ref={setNodeRef}
       style={style}
-      className={`relative rounded-xl border border-border-soft bg-surface p-2 text-base ${
+      className={`card-soft relative p-2 text-base ${
         isDragging ? "z-10 opacity-90 shadow-lg" : ""
       }`}
     >

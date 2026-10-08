@@ -283,7 +283,7 @@ export function JobBoardPanel({ boards }: { boards: BoardWithPool[] }) {
             value={gatherQuery}
             onChange={(e) => setGatherQuery(e.target.value)}
             placeholder="A location, industry, or niche…"
-            className="input-soft flex-1 px-2.5 py-1 text-base"
+            className="input-soft min-w-0 flex-1 px-2.5 py-1 text-base"
           />
           <button type="submit" disabled={gathering} className="btn-secondary px-3 py-1 text-base">
             {gathering ? "Gathering…" : "Gather"}

@@ -43,14 +43,14 @@ function makeSearch(userId: string, criteria: Partial<JobSearchCriteria> = {}, c
   });
 }
 
-// Remotive is remote-only, so its listings pass the US-or-remote filter.
+// RemoteOK is remote-only, so its listings pass the US-or-remote filter.
 function listing(n: number, overrides: Partial<NormalizedJobListing> = {}): NormalizedJobListing {
   return {
-    id: `remotive:${n}`,
-    source: "remotive",
+    id: `remoteok:${n}`,
+    source: "remoteok",
     company: `Company ${n}`,
     role: "Frontend Engineer",
-    url: `https://remotive.test/jobs/${n}`,
+    url: `https://remoteok.test/jobs/${n}`,
     // Words no other listing shares, so dedupe keeps each listing in its own family.
     description: Array.from({ length: 40 }, (_, word) => `posting${n}word${word}`).join(" "),
     ...overrides,
@@ -59,11 +59,11 @@ function listing(n: number, overrides: Partial<NormalizedJobListing> = {}): Norm
 
 /** The same posting under a new id and URL: dedupe files it in the original's family. */
 function repost(original: NormalizedJobListing, n: number): NormalizedJobListing {
-  return { ...original, id: `remotive:${n}`, url: `https://remotive.test/jobs/${n}` };
+  return { ...original, id: `remoteok:${n}`, url: `https://remoteok.test/jobs/${n}` };
 }
 
 function sourcesReturn(...listings: NormalizedJobListing[]) {
-  searchAllAdaptersMock.mockResolvedValue([{ source: "remotive", label: "Remotive", listings }]);
+  searchAllAdaptersMock.mockResolvedValue([{ source: "remoteok", label: "RemoteOK", listings }]);
 }
 
 describe("saved searches", () => {
@@ -95,11 +95,11 @@ describe("saved searches", () => {
 
     const hits = await listSavedSearchHits(user.id, search.id);
     expect(hits?.map((hit) => [hit.listing.id, hit.isNew]).sort()).toEqual([
-      ["remotive:1", true],
-      ["remotive:2", true],
-      ["remotive:3", true],
+      ["remoteok:1", true],
+      ["remoteok:2", true],
+      ["remoteok:3", true],
     ]);
-    expect(hits?.find((hit) => hit.listing.id === "remotive:1")?.listing).toMatchObject(listing(1));
+    expect(hits?.find((hit) => hit.listing.id === "remoteok:1")?.listing).toMatchObject(listing(1));
     await expect(listNewListingCounts(user.id)).resolves.toEqual([
       { savedSearchId: search.id, name: "Remote frontend", count: 3, oldestAt: firstRunAt },
     ]);
@@ -118,7 +118,7 @@ describe("saved searches", () => {
     await expect(runSavedSearch(user.id, search.id)).resolves.toMatchObject({ newHits: 1 });
 
     const hits = await listSavedSearchHits(user.id, search.id);
-    expect(hits?.map((hit) => hit.listing.id).sort()).toEqual(["remotive:1", "remotive:3"]);
+    expect(hits?.map((hit) => hit.listing.id).sort()).toEqual(["remoteok:1", "remoteok:3"]);
   });
 
   it("never records a listing the user tracks or eliminated, and drops a hit tracked or eliminated later", async () => {
@@ -182,9 +182,9 @@ describe("saved searches", () => {
     await expect(listSavedSearches(user.id)).resolves.toMatchObject([{ id: search.id, newCount: 1 }]);
     const hits = await listSavedSearchHits(user.id, search.id);
     expect(hits?.map((hit) => [hit.listing.id, hit.isNew]).sort()).toEqual([
-      ["remotive:1", false],
-      ["remotive:2", false],
-      ["remotive:3", true],
+      ["remoteok:1", false],
+      ["remoteok:2", false],
+      ["remoteok:3", true],
     ]);
   });
 
@@ -223,17 +223,17 @@ describe("saved searches", () => {
   it("reports allSourcesFailed only when every source errored and nothing came back", async () => {
     const user = await makeUser();
     const search = await makeSearch(user.id);
-    const failed = { source: "remotive", label: "Remotive", listings: [], error: "HTTP 503" };
+    const failed = { source: "remoteok", label: "RemoteOK", listings: [], error: "HTTP 503" };
 
     searchAllAdaptersMock.mockResolvedValueOnce([failed, { source: "jobicy", label: "Jobicy", listings: [], error: "timed out" }]);
     await expect(runSavedSearch(user.id, search.id)).resolves.toMatchObject({
       allSourcesFailed: true,
-      failedSources: ["Remotive", "Jobicy"],
+      failedSources: ["RemoteOK", "Jobicy"],
     });
 
     // Another source answered, with nothing new.
     searchAllAdaptersMock.mockResolvedValueOnce([failed, { source: "jobicy", label: "Jobicy", listings: [] }]);
-    await expect(runSavedSearch(user.id, search.id)).resolves.toMatchObject({ allSourcesFailed: false, failedSources: ["Remotive"] });
+    await expect(runSavedSearch(user.id, search.id)).resolves.toMatchObject({ allSourcesFailed: false, failedSources: ["RemoteOK"] });
 
     // Every source reported a problem, but one still returned listings.
     const partial = { source: "jobicy", label: "Jobicy", listings: [listing(1, { id: "jobicy:1", source: "jobicy" })], error: "partial results" };

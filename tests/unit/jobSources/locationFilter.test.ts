@@ -20,7 +20,7 @@ describe("isUsOrRemoteListing", () => {
   });
 
   it("always passes remote-only sources regardless of location text", () => {
-    expect(isUsOrRemoteListing(listing({ source: "remotive", location: "Germany" }))).toBe(true);
+    expect(isUsOrRemoteListing(listing({ source: "remoteok", location: "Germany" }))).toBe(true);
     expect(isUsOrRemoteListing(listing({ source: "himalayas", location: undefined }))).toBe(true);
   });
 

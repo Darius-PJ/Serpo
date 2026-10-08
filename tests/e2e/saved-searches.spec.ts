@@ -12,16 +12,16 @@ const KEYWORDS = "zorbling technician";
 const SEARCH_NAME = "Zorbling watch";
 // The sources a search reaches with no keys set: playwright.config.ts blanks
 // every keyed source, and the test unchecks the JobSpy boards.
-const KEYLESS_SOURCES = ["arbeitnow", "remoteok", "remotive", "himalayas", "jobicy"];
+const KEYLESS_SOURCES = ["arbeitnow", "remoteok", "himalayas", "jobicy"];
 
 // Listings in the adapter record shape (lib/jobAdapters/types.ts) that the
 // search pipeline reads back from JobSourceCache. The URLs use an IP literal:
 // Track checks a listing URL with a DNS lookup, which Node answers locally
 // for an IP, so this test makes no network call at all.
-function remotiveListing(jobId: string, title: string, company: string, location: string, description: string) {
+function remoteokListing(jobId: string, title: string, company: string, location: string, description: string) {
   return {
     schemaVersion: 1,
-    sourceId: "remotive",
+    sourceId: "remoteok",
     sourceJobId: jobId,
     idIsDerived: false,
     canonicalUrl: `https://93.184.215.14/jobs/${jobId}`,
@@ -41,15 +41,15 @@ function remotiveListing(jobId: string, title: string, company: string, location
 }
 
 // Descriptions far enough apart that SimHash dedupe keeps both listings.
-const REMOTIVE_LISTINGS = [
-  remotiveListing(
+const REMOTEOK_LISTINGS = [
+  remoteokListing(
     "zorb-1001",
     "Zorbling Technician",
     "Quarkwell Labs",
     "Remote",
     "Calibrate the quantum zorbling arrays in our orbital fabrication lab. You will log resonance drift, swap cryogenic couplers during night maintenance windows, and write weekly reports for the hardware reliability group.",
   ),
-  remotiveListing(
+  remoteokListing(
     "zorb-1002",
     "Zorbling Technician, Field Team",
     "Brimstone Fabrication",
@@ -71,7 +71,7 @@ function seedSourceCache() {
      ON CONFLICT ("source", "criteriaHash") DO UPDATE SET "listingsJson" = excluded."listingsJson", "fetchedAt" = excluded."fetchedAt"`,
   );
   for (const source of KEYLESS_SOURCES) {
-    upsert.run(`e2e-${source}-${criteriaHash.slice(0, 12)}`, source, criteriaHash, JSON.stringify(source === "remotive" ? REMOTIVE_LISTINGS : []));
+    upsert.run(`e2e-${source}-${criteriaHash.slice(0, 12)}`, source, criteriaHash, JSON.stringify(source === "remoteok" ? REMOTEOK_LISTINGS : []));
   }
   db.close();
 }

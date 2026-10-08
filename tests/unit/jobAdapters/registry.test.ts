@@ -9,7 +9,6 @@ const ALL_SOURCE_IDS = [
   "jobspy:indeed", "jobspy:linkedin", "jobspy:zip_recruiter", "jobspy:glassdoor", "jobspy:google",
   "remoteok",
   "adzuna",
-  "remotive",
   "himalayas",
   "jobicy",
   "usajobs",
@@ -51,7 +50,7 @@ describe("job adapter registry", () => {
     // unconditionally present. jobspy is environment-dependent too: its
     // isConfigured() probes for the python-jobspy package (jobspyAdapter.test.ts
     // covers both probe outcomes deterministically).
-    for (const id of ["arbeitnow", "remoteok", "remotive", "himalayas", "jobicy", "greenhouse", "lever"]) {
+    for (const id of ["arbeitnow", "remoteok", "himalayas", "jobicy", "greenhouse", "lever"]) {
       expect(configuredIds).toContain(id);
     }
   });

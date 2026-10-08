@@ -1,7 +1,7 @@
 import type { NormalizedJobListing } from "./types";
 
 // Sources that are remote-only by definition (every listing they return is remote).
-const REMOTE_ONLY_SOURCES = new Set(["remoteok", "remotive", "himalayas", "jobicy"]);
+const REMOTE_ONLY_SOURCES = new Set(["remoteok", "himalayas", "jobicy"]);
 
 // Sources already structurally constrained to the US, independent of what their
 // location string looks like (Adzuna is queried with country=us; USAJobs is the
@@ -26,7 +26,7 @@ const US_HINT_RE = new RegExp(
  * "USA"/state names, ", NY"-style abbreviation suffixes, "Remote"/"Worldwide")
  * but can miss legitimately-US listings with sparse location strings (e.g. a
  * bare county name with no state). Sources already structurally guaranteed to
- * be US (Adzuna/USAJobs) or remote-only (RemoteOK/Remotive/Himalayas/Jobicy)
+ * be US (Adzuna/USAJobs) or remote-only (RemoteOK/Himalayas/Jobicy)
  * skip the string heuristic entirely rather than risk a false negative there.
  */
 export function isUsOrRemoteListing(listing: NormalizedJobListing): boolean {
