@@ -37,7 +37,7 @@ These are load-bearing; changes that violate them are almost always wrong.
 Next.js 16 (App Router, React 19 Server Components) · TypeScript · Prisma 7 +
 `better-sqlite3` adapter · Tailwind CSS 4 · Zod · Anthropic SDK · Playwright
 (the e2e runner, and the Chromium launcher for the dedicated app window in
-`scripts/serpoHost.mjs`) · Vitest + MSW (unit). JobSpy scraping runs in a
+`scripts/serpoHost.mjs`, which prefers installed Chrome and falls back to Edge) · Vitest + MSW (unit). JobSpy scraping runs in a
 separate Python sidecar, not Playwright.
 
 ## Directory map

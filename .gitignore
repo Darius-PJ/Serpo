@@ -47,8 +47,9 @@ yarn-error.log*
 .env*
 !.env.example
 
-# personal Claude Code permission grants stay off the shared repo
-.claude/settings.local.json
+# Local agent configuration
+/.claude/
+/.omp/
 
 # AI-assistant instruction files stay local (next dev re-creates AGENTS.md)
 AGENTS.md
@@ -74,3 +75,9 @@ next-env.d.ts
 
 # Local decision log, kept out of the repo
 docs/decisions.md
+
+# Local release planning and design references
+/RELEASE-TRAIN.md
+/V1.0-gates.md
+/elevation.jpg
+/pattern-spill-iii.jpg

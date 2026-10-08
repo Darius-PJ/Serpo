@@ -27,10 +27,11 @@ export function stopOwnedProcess(child) {
 export async function openSerpoWindow(url, profile) {
   const { chromium } = await import("playwright");
   const candidates = [
+    path.join(process.env.ProgramFiles || "C:\\Program Files", "Google/Chrome/Application/chrome.exe"),
+    path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Google/Chrome/Application/chrome.exe"),
+    path.join(process.env.LOCALAPPDATA || "", "Google/Chrome/Application/chrome.exe"),
     path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "Microsoft/Edge/Application/msedge.exe"),
     path.join(process.env.ProgramFiles || "C:\\Program Files", "Microsoft/Edge/Application/msedge.exe"),
-    path.join(process.env.ProgramFiles || "C:\\Program Files", "Google/Chrome/Application/chrome.exe"),
-    path.join(process.env.LOCALAPPDATA || "", "Google/Chrome/Application/chrome.exe"),
   ];
   const executablePath = candidates.find((candidate) => existsSync(candidate));
   if (!executablePath) throw new Error("Serpo's app window needs Microsoft Edge or Google Chrome installed.");

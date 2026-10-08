@@ -102,7 +102,7 @@ The interface blanks immediately during shutdown. If Quit fails, it returns
 with an error and preserves your current inputs.
 Closing the dedicated window with X also stops the session. Ordinary browser
 windows are untouched. The hidden server shell exits when its managed host ends.
-The app window uses installed Microsoft Edge, falling back to Chrome, with a
+The app window uses installed Chrome, falling back to Edge, with a
 separate profile under `%LOCALAPPDATA%\Serpo\browser-profile`.
 
 Sessions started with an older launcher must be closed manually, then reopened
