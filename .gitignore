@@ -47,10 +47,6 @@ yarn-error.log*
 .env*
 !.env.example
 
-# Local agent configuration
-/.claude/
-/.omp/
-
 # AI-assistant instruction files stay local (next dev re-creates AGENTS.md)
 AGENTS.md
 CLAUDE.md
