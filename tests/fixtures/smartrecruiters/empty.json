@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "capturedAt": "2026-10-09T01:56:08.315019Z",
+  "note": "Unknown company identifier: SmartRecruiters answers 200 with zero postings, not 404.",
+  "body": {
+    "offset": 0,
+    "limit": 100,
+    "totalFound": 0,
+    "content": []
+  }
+}

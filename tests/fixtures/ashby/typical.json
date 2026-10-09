@@ -1,0 +1,168 @@
+{
+  "status": 200,
+  "capturedAt": "2026-10-09T01:56:07.221260Z",
+  "note": "Real Linear board (2 jobs) plus one real Ramp job with a salary component, captured with includeCompensation=true; descriptions trimmed to 400 characters.",
+  "body": {
+    "apiVersion": "1",
+    "jobs": [
+      {
+        "id": "d3bc1ced-3ce4-4086-a050-555055dbb1ff",
+        "title": "Senior / Staff Fullstack Engineer",
+        "department": "Product",
+        "team": "Engineering",
+        "employmentType": "FullTime",
+        "location": "Europe",
+        "shouldDisplayCompensationOnJobPostings": false,
+        "secondaryLocations": [],
+        "publishedAt": "2021-04-27T20:13:45.158+00:00",
+        "isListed": true,
+        "isRemote": true,
+        "workplaceType": "Remote",
+        "address": {
+          "postalAddress": {
+            "addressCountry": "European Union"
+          }
+        },
+        "jobUrl": "https://jobs.ashbyhq.com/linear/d3bc1ced-3ce4-4086-a050-555055dbb1ff",
+        "applyUrl": "https://jobs.ashbyhq.com/linear/d3bc1ced-3ce4-4086-a050-555055dbb1ff/application",
+        "descriptionHtml": "<p style=\"min-height:1.5em\">At Linear, we're building the product development system for teams and agents. AI is fundamentally changing how software gets built, and we’re shaping the tools this new era requires. </p><p style=\"min-height:1.5em\">Founded in 2019, Linear has become the platform of choice for more than 40,000 companies (including OpenAI, Coinbase, and Ramp) to plan, build, and ship the…",
+        "descriptionPlain": "At Linear, we're building the product development system for teams and agents. AI is fundamentally changing how software gets built, and we’re shaping the tools this new era requires. \n\nFounded in 2019, Linear has become the platform of choice for more than 40,000 companies (including OpenAI, Coinbase, and Ramp) to plan, build, and ship their products. Today, our team is distributed across North A…",
+        "compensation": {
+          "compensationTierSummary": null,
+          "scrapeableCompensationSalarySummary": null,
+          "compensationTiers": [],
+          "summaryComponents": []
+        }
+      },
+      {
+        "id": "cd5ae036-0223-427a-b038-ba16ef9dcb32",
+        "title": "Senior / Staff Fullstack Engineer",
+        "department": "Product",
+        "team": "Engineering",
+        "employmentType": "FullTime",
+        "location": "North America",
+        "shouldDisplayCompensationOnJobPostings": false,
+        "secondaryLocations": [],
+        "publishedAt": "2021-08-18T20:48:26.891+00:00",
+        "isListed": true,
+        "isRemote": true,
+        "workplaceType": "Remote",
+        "address": {
+          "postalAddress": {
+            "addressCountry": "United States"
+          }
+        },
+        "jobUrl": "https://jobs.ashbyhq.com/linear/cd5ae036-0223-427a-b038-ba16ef9dcb32",
+        "applyUrl": "https://jobs.ashbyhq.com/linear/cd5ae036-0223-427a-b038-ba16ef9dcb32/application",
+        "descriptionHtml": "<p style=\"min-height:1.5em\">At Linear, we're building the product development system for teams and agents. AI is fundamentally changing how software gets built, and we’re shaping the tools this new era requires. </p><p style=\"min-height:1.5em\">Founded in 2019, Linear has become the platform of choice for more than 40,000 companies (including OpenAI, Coinbase, and Ramp) to plan, build, and ship the…",
+        "descriptionPlain": "At Linear, we're building the product development system for teams and agents. AI is fundamentally changing how software gets built, and we’re shaping the tools this new era requires. \n\nFounded in 2019, Linear has become the platform of choice for more than 40,000 companies (including OpenAI, Coinbase, and Ramp) to plan, build, and ship their products. Today, our team is distributed across North A…",
+        "compensation": {
+          "compensationTierSummary": null,
+          "scrapeableCompensationSalarySummary": null,
+          "compensationTiers": [],
+          "summaryComponents": []
+        }
+      },
+      {
+        "id": "34413f8d-26bf-4bbc-8ade-eb309a0e2245",
+        "title": " Security Engineer, Cloud",
+        "department": "Engineering",
+        "team": "Backend",
+        "employmentType": "FullTime",
+        "location": "New York, NY (HQ)",
+        "shouldDisplayCompensationOnJobPostings": true,
+        "secondaryLocations": [
+          {
+            "location": "Remote (Canada)",
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Canada"
+              }
+            }
+          },
+          {
+            "location": "Remote (US)",
+            "address": {
+              "postalAddress": {
+                "addressCountry": "United States"
+              }
+            }
+          },
+          {
+            "location": "Miami, FL",
+            "address": {
+              "postalAddress": {
+                "addressRegion": "Florida",
+                "addressCountry": "USA",
+                "addressLocality": "Miami"
+              }
+            }
+          }
+        ],
+        "publishedAt": "2026-04-07T17:12:35.753+00:00",
+        "isListed": true,
+        "isRemote": true,
+        "workplaceType": "Hybrid",
+        "address": {
+          "postalAddress": {
+            "addressRegion": "NY",
+            "addressCountry": "USA",
+            "addressLocality": "New York City"
+          }
+        },
+        "jobUrl": "https://jobs.ashbyhq.com/ramp/34413f8d-26bf-4bbc-8ade-eb309a0e2245",
+        "applyUrl": "https://jobs.ashbyhq.com/ramp/34413f8d-26bf-4bbc-8ade-eb309a0e2245/application",
+        "descriptionHtml": "<h1><strong>About Ramp</strong></h1><p style=\"min-height:1.5em\">Ramp is building the smart infrastructure for finance teams, embedded in the transaction flow of every dollar a business spends. We automate how over $200B in annualized spend flows in and out of 70,000+ companies: authorizing payments, flagging risk, categorizing spend, and closing books.</p><p style=\"min-height:1.5em\">The problems a…",
+        "descriptionPlain": "ABOUT RAMP\n\nRamp is building the smart infrastructure for finance teams, embedded in the transaction flow of every dollar a business spends. We automate how over $200B in annualized spend flows in and out of 70,000+ companies: authorizing payments, flagging risk, categorizing spend, and closing books.\n\nThe problems are high-stakes, data-dense, and unforgiving.\n\nWe hire people with high agency and …",
+        "compensation": {
+          "compensationTierSummary": "$211.4K – $290.6K • Offers Equity",
+          "scrapeableCompensationSalarySummary": "$211.4K - $290.6K",
+          "compensationTiers": [
+            {
+              "id": "5f7a903e-36e4-492c-ac09-f2745d717daa",
+              "tierSummary": "$211.4K – $290.6K • Offers Equity",
+              "title": null,
+              "additionalInformation": null,
+              "components": [
+                {
+                  "id": "feaef96f-559f-4df8-a38c-3eee072a8d74",
+                  "summary": "Offers Equity",
+                  "compensationType": "EquityPercentage",
+                  "interval": "NONE",
+                  "currencyCode": null,
+                  "minValue": null,
+                  "maxValue": null
+                },
+                {
+                  "id": "3481c194-45fd-4b89-8592-e8f4d4b51f20",
+                  "summary": "$211.4K – $290.6K",
+                  "compensationType": "Salary",
+                  "interval": "1 YEAR",
+                  "currencyCode": "USD",
+                  "minValue": 211400,
+                  "maxValue": 290600
+                }
+              ]
+            }
+          ],
+          "summaryComponents": [
+            {
+              "compensationType": "EquityPercentage",
+              "interval": "NONE",
+              "currencyCode": null,
+              "minValue": null,
+              "maxValue": null
+            },
+            {
+              "compensationType": "Salary",
+              "interval": "1 YEAR",
+              "currencyCode": "USD",
+              "minValue": 211400,
+              "maxValue": 290600
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

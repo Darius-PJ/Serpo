@@ -16,6 +16,8 @@ const ALL_SOURCE_IDS = [
   "greenhouse",
   "lever",
   "careerjet",
+  "ashby",
+  "smartrecruiters",
 ];
 
 describe("job adapter registry", () => {
@@ -34,11 +36,11 @@ describe("job adapter registry", () => {
     expect(findAdapterById("nonexistent")).toBeUndefined();
   });
 
-  it("greenhouse and lever are the only enumerate-target adapters", () => {
+  it("only the per-company ATS adapters are enumerate-target", () => {
     const ids = listEnumerateTargetAdapters()
       .map((adapter) => adapter.metadata.id)
       .sort();
-    expect(ids).toEqual(["greenhouse", "lever"]);
+    expect(ids).toEqual(["ashby", "greenhouse", "lever", "smartrecruiters"]);
   });
 
   it("configured adapters exclude those missing required env vars", () => {
@@ -50,7 +52,7 @@ describe("job adapter registry", () => {
     // unconditionally present. jobspy is environment-dependent too: its
     // isConfigured() probes for the python-jobspy package (jobspyAdapter.test.ts
     // covers both probe outcomes deterministically).
-    for (const id of ["arbeitnow", "remoteok", "himalayas", "jobicy", "greenhouse", "lever"]) {
+    for (const id of ["arbeitnow", "remoteok", "himalayas", "jobicy", "greenhouse", "lever", "ashby", "smartrecruiters"]) {
       expect(configuredIds).toContain(id);
     }
   });

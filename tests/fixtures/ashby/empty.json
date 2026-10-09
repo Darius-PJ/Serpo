@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "capturedAt": "2026-10-09T01:56:07.300420Z",
+  "note": "Real Deel board with no published postings at capture time.",
+  "body": {
+    "jobs": [],
+    "apiVersion": "1"
+  }
+}

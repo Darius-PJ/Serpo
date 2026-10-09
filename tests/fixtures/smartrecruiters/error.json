@@ -1,0 +1,11 @@
+{
+  "status": 400,
+  "capturedAt": "2026-10-09T01:56:17.083740Z",
+  "note": "Real validation error, provoked with limit=-1 (the adapter never sends this; the fixture stands in for any non-2xx answer).",
+  "body": {
+    "id": "2ef7e79b-0d14-437f-ad7f-c20038a3fb8f",
+    "httpCode": 400,
+    "code": "VALIDATION_ERROR",
+    "message": "[MDC: ppa-99a71513-d34a-4916-9ddf-ca0a6601ac8e] Response code: 400. Reason: Validation failed. Violations: [\"limit - must be greater than or equal to 0\"]"
+  }
+}

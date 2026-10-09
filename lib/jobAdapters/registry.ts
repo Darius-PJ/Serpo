@@ -23,6 +23,8 @@ import { joobleAdapter } from "./adapters/jooble";
 import { greenhouseAdapter } from "./adapters/greenhouse";
 import { leverAdapter } from "./adapters/lever";
 import { careerjetAdapter } from "./adapters/careerjet";
+import { ashbyAdapter } from "./adapters/ashby";
+import { smartRecruitersAdapter } from "./adapters/smartrecruiters";
 
 const ADAPTERS: Adapter[] = [
   arbeitnowAdapter,
@@ -36,6 +38,8 @@ const ADAPTERS: Adapter[] = [
   greenhouseAdapter,
   leverAdapter,
   careerjetAdapter,
+  ashbyAdapter,
+  smartRecruitersAdapter,
 ];
 
 export function listAdapters(): Adapter[] {

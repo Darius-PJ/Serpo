@@ -12,7 +12,8 @@ Concretely proved by this refactor's own history: Greenhouse and Lever were both
 migrated as `queryModel: "enumerate-target"` adapters using this exact checklist.
 Registering Lever required editing precisely one line (its own registry import +
 array entry) — zero further changes to `search.ts`, the pool-board wiring, or anything
-else, which is the confirming evidence this checklist actually holds.
+else, which is the confirming evidence this checklist actually holds. Ashby and
+SmartRecruiters were later added the same way, each needing only its own registry line.
 
 ## Checklist
 

@@ -1,0 +1,246 @@
+{
+  "status": 200,
+  "capturedAt": "2026-10-09T01:56:07.899064Z",
+  "note": "Real Equinox postings, first page with limit=3.",
+  "body": {
+    "offset": 0,
+    "limit": 3,
+    "totalFound": 740,
+    "content": [
+      {
+        "id": "744000154537089",
+        "name": "Housekeeping Associates, Nashville",
+        "uuid": "b0f0ee19-521a-43bd-9012-f9ed653fe5a0",
+        "jobAdId": "4c8bdc5d-d068-4362-ace9-7d7e4702718a",
+        "defaultJobAd": true,
+        "refNumber": "REF5399I",
+        "company": {
+          "identifier": "Equinox",
+          "name": "Equinox"
+        },
+        "releasedDate": "2026-10-08T22:39:10.051Z",
+        "location": {
+          "city": "Nashville",
+          "region": "TN",
+          "country": "us",
+          "remote": false,
+          "hybrid": false,
+          "latitude": "36.1626638",
+          "longitude": "-86.7816016",
+          "fullLocation": "Nashville, TN, United States"
+        },
+        "industry": {
+          "id": "health_wellness_fitness",
+          "label": "Health, Wellness And Fitness"
+        },
+        "department": {
+          "id": "660916",
+          "label": "Club - Staff"
+        },
+        "function": {
+          "id": "other",
+          "label": "Other"
+        },
+        "typeOfEmployment": {
+          "id": "part-time",
+          "label": "Part-time"
+        },
+        "experienceLevel": {
+          "id": "not_applicable",
+          "label": "Not Applicable"
+        },
+        "customField": [
+          {
+            "fieldId": "5d9f91b45d95674b7eff50f4",
+            "fieldLabel": "Location - Region",
+            "valueId": "13ae9a95-9e29-4e35-9c57-bc3f5601e5ca",
+            "valueLabel": "SOUTH"
+          },
+          {
+            "fieldId": "COUNTRY",
+            "fieldLabel": "Country/Region",
+            "valueId": "us",
+            "valueLabel": "United States"
+          },
+          {
+            "fieldId": "58b7e4d3e4b09a6d37a0cdc3",
+            "fieldLabel": "Department",
+            "valueId": "660916",
+            "valueLabel": "Club - Staff"
+          },
+          {
+            "fieldId": "57476804e4b056dd66cc2bf8",
+            "fieldLabel": "Brands",
+            "valueId": "default",
+            "valueLabel": "Equinox"
+          }
+        ],
+        "visibility": "PUBLIC",
+        "ref": "https://api.smartrecruiters.com/v1/companies/Equinox/postings/744000154537089",
+        "language": {
+          "code": "en",
+          "label": "English",
+          "labelNative": "English (US)"
+        }
+      },
+      {
+        "id": "744000154536989",
+        "name": "Front Desk Manager on Duty, Nashville",
+        "uuid": "2576221e-6772-415e-9899-a81f70002055",
+        "jobAdId": "7198d3ad-a660-4499-a108-40a89e97c20b",
+        "defaultJobAd": true,
+        "refNumber": "REF5400U",
+        "company": {
+          "identifier": "Equinox",
+          "name": "Equinox"
+        },
+        "releasedDate": "2026-10-08T22:37:30.781Z",
+        "location": {
+          "city": "Nashville",
+          "region": "TN",
+          "country": "us",
+          "remote": false,
+          "hybrid": false,
+          "latitude": "36.1626638",
+          "longitude": "-86.7816016",
+          "fullLocation": "Nashville, TN, United States"
+        },
+        "industry": {
+          "id": "health_wellness_fitness",
+          "label": "Health, Wellness And Fitness"
+        },
+        "department": {
+          "id": "660916",
+          "label": "Club - Staff"
+        },
+        "function": {
+          "id": "customer_service",
+          "label": "Customer Service"
+        },
+        "typeOfEmployment": {
+          "id": "part-time",
+          "label": "Part-time"
+        },
+        "experienceLevel": {
+          "id": "associate",
+          "label": "Associate"
+        },
+        "customField": [
+          {
+            "fieldId": "5d9f91b45d95674b7eff50f4",
+            "fieldLabel": "Location - Region",
+            "valueId": "13ae9a95-9e29-4e35-9c57-bc3f5601e5ca",
+            "valueLabel": "SOUTH"
+          },
+          {
+            "fieldId": "558d7f79e4b06067bdf6900e",
+            "fieldLabel": "Location",
+            "valueId": "b71e0e61-a528-4434-b87e-a6df7c7cf1b1",
+            "valueLabel": "430 - Nashville"
+          },
+          {
+            "fieldId": "COUNTRY",
+            "fieldLabel": "Country/Region",
+            "valueId": "us",
+            "valueLabel": "United States"
+          },
+          {
+            "fieldId": "58b7e4d3e4b09a6d37a0cdc3",
+            "fieldLabel": "Department",
+            "valueId": "660916",
+            "valueLabel": "Club - Staff"
+          },
+          {
+            "fieldId": "57476804e4b056dd66cc2bf8",
+            "fieldLabel": "Brands",
+            "valueId": "default",
+            "valueLabel": "Equinox"
+          }
+        ],
+        "visibility": "PUBLIC",
+        "ref": "https://api.smartrecruiters.com/v1/companies/Equinox/postings/744000154536989",
+        "language": {
+          "code": "en",
+          "label": "English",
+          "labelNative": "English (US)"
+        }
+      },
+      {
+        "id": "744000154536274",
+        "name": "Maintenance Manager on Duty, Nashville",
+        "uuid": "f36c386d-fe20-4d4b-bf79-2a6cd4a5a426",
+        "jobAdId": "c8cfbc5a-bbcb-40da-9869-43e957eda6ca",
+        "defaultJobAd": true,
+        "refNumber": "REF5401N",
+        "company": {
+          "identifier": "Equinox",
+          "name": "Equinox"
+        },
+        "releasedDate": "2026-10-08T22:36:02.264Z",
+        "location": {
+          "city": "Nashville",
+          "region": "TN",
+          "country": "us",
+          "remote": false,
+          "hybrid": false,
+          "latitude": "36.1626638",
+          "longitude": "-86.7816016",
+          "fullLocation": "Nashville, TN, United States"
+        },
+        "industry": {
+          "id": "health_wellness_fitness",
+          "label": "Health, Wellness And Fitness"
+        },
+        "department": {
+          "id": "660916",
+          "label": "Club - Staff"
+        },
+        "function": {
+          "id": "other",
+          "label": "Other"
+        },
+        "typeOfEmployment": {
+          "id": "permanent",
+          "label": "Full-time"
+        },
+        "experienceLevel": {
+          "id": "associate",
+          "label": "Associate"
+        },
+        "customField": [
+          {
+            "fieldId": "5d9f91b45d95674b7eff50f4",
+            "fieldLabel": "Location - Region",
+            "valueId": "13ae9a95-9e29-4e35-9c57-bc3f5601e5ca",
+            "valueLabel": "SOUTH"
+          },
+          {
+            "fieldId": "COUNTRY",
+            "fieldLabel": "Country/Region",
+            "valueId": "us",
+            "valueLabel": "United States"
+          },
+          {
+            "fieldId": "58b7e4d3e4b09a6d37a0cdc3",
+            "fieldLabel": "Department",
+            "valueId": "660916",
+            "valueLabel": "Club - Staff"
+          },
+          {
+            "fieldId": "57476804e4b056dd66cc2bf8",
+            "fieldLabel": "Brands",
+            "valueId": "default",
+            "valueLabel": "Equinox"
+          }
+        ],
+        "visibility": "PUBLIC",
+        "ref": "https://api.smartrecruiters.com/v1/companies/Equinox/postings/744000154536274",
+        "language": {
+          "code": "en",
+          "label": "English",
+          "labelNative": "English (US)"
+        }
+      }
+    ]
+  }
+}
