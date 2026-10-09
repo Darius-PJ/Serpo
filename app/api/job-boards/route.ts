@@ -60,7 +60,7 @@ export async function POST(request: Request) {
         ? body.jurisdiction
         : "other",
       region: body.region ?? null,
-      source: body.source === "ai-discovered" ? "ai-discovered" : "manual",
+      source: body.source === "ai-discovered" || body.source === "suggested" ? body.source : "manual",
       pinned: true,
     },
   });

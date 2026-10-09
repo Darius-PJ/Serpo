@@ -29,6 +29,9 @@ model User {
   savedSearches   SavedSearch[]
   automationJobs  AutomationJob[]
   automationSettings AutomationSettings?
+  searchHistory   SearchHistoryEntry[]
+  industryInterests IndustryInterest[]
+  hiddenCompanySuggestions HiddenCompanySuggestion[]
 }
 
 // A person in the job search — recruiter, hiring manager, referral. Promoted
@@ -147,6 +150,42 @@ model EliminatedJob {
 
   @@unique([userId, url])
   @@index([userId])
+}
+
+// Recent manual searches, kept on this computer to suggest companies to follow
+// (app/companies). Keywords are stored lowercased and trimmed, so repeating a
+// search moves it to the top instead of duplicating it. Newest 50 per account.
+model SearchHistoryEntry {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  keywords   String
+  location   String   @default("")
+  searchedAt DateTime @default(now())
+
+  @@unique([userId, keywords, location])
+  @@index([userId, searchedAt])
+}
+
+// An industry the account picked on the Companies page (lib/companies/industries.ts id).
+model IndustryInterest {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  industry String
+
+  @@unique([userId, industry])
+}
+
+// A suggested company the account declined ("Not interested"), keyed like the catalog.
+model HiddenCompanySuggestion {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform String // "greenhouse" | "lever" | "ashby" | "smartrecruiters"
+  token    String
+
+  @@unique([userId, platform, token])
 }
 
 // A search saved from Sourcing and re-run on a cadence while Serpo is open
@@ -297,14 +336,15 @@ model Message {
 model JobBoard {
   id           String   @id @default(cuid())
   // Permanently nullable: null = curated/shared with every account forever;
-  // non-null = privately added by that account ("manual" or "ai-discovered").
+  // non-null = privately added by that account ("manual", "ai-discovered", or
+  // "suggested" when followed from the Companies page).
   userId       String?
   user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
   url          String
   jurisdiction String // "federal" | "state" | "municipal" | "other"
   region       String? // e.g. "CA", "Cook County IL"
-  source       String   @default("curated") // "curated" | "ai-discovered" | "manual"
+  source       String   @default("curated") // "curated" | "ai-discovered" | "manual" | "suggested"
   // Only the default for user-owned boards. For curated (userId=null) boards,
   // pin state is per-account via JobBoardPin — this column is ignored for them.
   pinned       Boolean  @default(true)

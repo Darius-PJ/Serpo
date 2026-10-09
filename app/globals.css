@@ -192,6 +192,13 @@ body {
     box-shadow: inset 2px 2px 5px var(--shadow-shade), inset -2px -2px 5px var(--shadow-glow);
   }
 
+  /* A chip that toggles a choice. The markup adds a check mark too, so the
+     chosen state never rests on colour alone. */
+  .chip[aria-pressed="true"] {
+    @apply font-semibold text-primary-dark;
+    border-color: var(--primary-dark);
+  }
+
   .cloud-cell {
     @apply relative flex flex-col overflow-hidden bg-surface;
     border: 1px solid var(--divider);

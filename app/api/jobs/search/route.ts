@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { parseJobSearchCriteria, runJobSearch } from "@/lib/jobSources/runJobSearch";
+import { recordSearch } from "@/lib/companies/searchHistory";
 import { requireJsonRequest } from "@/lib/security/guard";
 import { requireApiUserId } from "@/lib/auth/session";
 
@@ -17,6 +18,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "keywords is required" }, { status: 400 });
   }
 
+  // Only searches run by hand reach this route; saved-search runs call runJobSearch directly.
+  await recordSearch(userId, criteria.keywords, criteria.location);
   const { results, titleAliases } = await runJobSearch(userId, criteria);
 
   // AI title suggestions are disabled by default; return an empty list so the

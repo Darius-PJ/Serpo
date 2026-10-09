@@ -63,7 +63,10 @@ export async function searchPoolBoardAdapters(userId: string, criteria: { keywor
       const envelope = await runAdapterSearch({ kind: "target", target: pin.integrationToken! }, [adapter], correlationId);
       const group = envelope.results[0];
       const err = envelope.errors[0];
-      return { source, label: pin.jobBoard.name, listings: group ? group.listings.map(toLegacyListing) : [], error: err?.message };
+      // Every listing on a company's own board belongs to that company, and the board's
+      // name ("DoorDash") reads better than the URL token the adapters know ("doordashusa").
+      const listings = group ? group.listings.map((listing) => ({ ...toLegacyListing(listing), company: pin.jobBoard.name })) : [];
+      return { source, label: pin.jobBoard.name, listings, error: err?.message };
     })
   );
 }

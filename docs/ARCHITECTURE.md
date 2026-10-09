@@ -105,6 +105,7 @@ Reduced motion cancels an active reveal and shows settled surfaces immediately.
 | `/` , `/login` | Redirect to `/dashboard` (single-user, no auth) |
 | `/dashboard` | Needs-attention queue, pipeline metrics, activity feed |
 | `/sourcing` | Federated job search form, saved-search inboxes, saved job-board panel |
+| `/companies` | Company suggestions from picked industries and recent searches; follow (verified into the search pool), not interested, recent-search history with Clear |
 | `/pipeline` | Drag-and-drop status board (`@dnd-kit`) |
 | `/work` | Task + apply-run work queue |
 | `/contacts` | Company-grouped contacts + interaction log |
@@ -129,6 +130,7 @@ Grouped; every mutating route runs `requireJsonRequest` + `requireApiUserId`.
 | Contacts | `/contacts`, `/contacts/[id]/interactions` | `lib/contacts/*`, `lib/osint/*` |
 | Tasks | `/tasks`, `/tasks/[id]` | `lib/tasks/tasks.ts` |
 | Job boards | `/job-boards`, `/job-boards/[id]`, `.../pool`, `/discover`, `/gather/integration-guide` | `lib/jobBoards/*` |
+| Companies | `/companies/industries`, `/companies/hidden`, `/search-history` (Follow reuses `/job-boards` + `.../pool`) | `lib/companies/*` |
 | Résumé | `/resume`, `/resume/[id]`, `.../regenerate`, `/resume-template` | `lib/resume/*` |
 | Profile / aliases | `/profile-fields[/id]`, `/title-aliases[/id]` | `ProfileField`, `TitleAlias` |
 | Privacy | `/privacy/purge` | `lib/privacy/purge.ts` |
@@ -153,6 +155,7 @@ Grouped; every mutating route runs `requireJsonRequest` + `requireApiUserId`.
 | `raekwon/` | Exploratory lead-report generation (Claude + `web_search`), archive |
 | `ai/` | `claudeClient` (gated Anthropic proxy), `generateMessage`, `suggestJobTitles`, prompts |
 | `jobBoards/` | Pool verification (is a pinned board live-queryable?), curated seed |
+| `companies/` | Verified company catalog (`catalog`), plain-language industries and the search words that point at them (`industries`), suggestion ranking (`suggestions`), followed-board detection (`following`), manual-search history (`searchHistory`) |
 | `privacy/` | Account purge + per-application OSINT purge |
 | `security/`, `http/`, `auth/`, `validators.ts` | Cross-cutting (below) |
 
@@ -183,7 +186,7 @@ The most involved area, split into two trees with a clear division of labor:
 
 `lib/jobAdapters/search.ts` bridges the two, translating the new schema back to
 the flat listing shape and exposing `searchAllAdapters` (static sources) and
-`searchPoolBoardAdapters` (a user's live-pinned Greenhouse/Lever boards).
+`searchPoolBoardAdapters` (a user's live-pinned company boards; listings take the board's name as their company).
 `lib/jobSources/runJobSearch.ts` is the one pipeline over both, shared by the
 search route and saved-search runs.
 
@@ -200,7 +203,7 @@ flowchart TD
 ```
 
 Sources: keyless (Himalayas, Jobicy, Arbeitnow, RemoteOK), keyed
-(Adzuna, USAJobs, Jooble, Careerjet), per-company ATS (Greenhouse, Lever), and five **JobSpy**
+(Adzuna, USAJobs, Jooble, Careerjet), per-company ATS (Greenhouse, Lever, Ashby, SmartRecruiters), and five **JobSpy**
 adapters generated from `lib/jobSpyBoards.ts`: `jobspy:indeed`,
 `jobspy:linkedin`, `jobspy:zip_recruiter`, `jobspy:glassdoor`, `jobspy:google`.
 The search form selects boards individually; each has separate cache/error state.
@@ -277,7 +280,8 @@ Model groups (`prisma/schema.prisma`):
 - **Pipeline:** `Application`, `ApplyRun`, `Message`, `AuditEvent`.
 - **CRM:** `Contact`, `ContactApplication`, `Interaction`, `Task`.
 - **Sourcing:** `JobBoard`, `JobBoardPin`, `TitleAlias`, `EliminatedJob`,
-  `SavedSearch`, `SavedSearchHit`, and the **global** `JobSourceCache` +
+  `SavedSearch`, `SavedSearchHit`, `SearchHistoryEntry`, `IndustryInterest`,
+  `HiddenCompanySuggestion`, and the **global** `JobSourceCache` +
   `JobListingFingerprint`.
 - **Automation:** `AutomationJob` (the durable queue), `AutomationSettings`.
 - **Résumé/leads:** `ResumeTemplate`, `ResumeWorkspace`, `ProfileField`,

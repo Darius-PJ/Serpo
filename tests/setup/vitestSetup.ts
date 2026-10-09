@@ -25,5 +25,8 @@ afterEach(async () => {
   await prisma.savedSearch.deleteMany();
   await prisma.automationJob.deleteMany();
   await prisma.automationSettings.deleteMany();
+  await prisma.searchHistoryEntry.deleteMany();
+  await prisma.industryInterest.deleteMany();
+  await prisma.hiddenCompanySuggestion.deleteMany();
   await prisma.user.deleteMany();
 });

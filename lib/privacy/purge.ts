@@ -77,6 +77,9 @@ export async function wipeAllData(userId: string) {
     const savedSearches = await tx.savedSearch.deleteMany({ where: { userId } });
     const automationJobs = await tx.automationJob.deleteMany({ where: { userId } });
     const automationSettings = await tx.automationSettings.deleteMany({ where: { userId } });
+    const searchHistory = await tx.searchHistoryEntry.deleteMany({ where: { userId } });
+    const industryInterests = await tx.industryInterest.deleteMany({ where: { userId } });
+    const hiddenCompanySuggestions = await tx.hiddenCompanySuggestion.deleteMany({ where: { userId } });
     const auditEvents = await tx.auditEvent.deleteMany({ where: { userId } });
     const deletedApplications = await tx.application.deleteMany({ where: { userId } });
     const resumeTemplates = await tx.resumeTemplate.deleteMany({ where: { userId } });
@@ -97,6 +100,9 @@ export async function wipeAllData(userId: string) {
       savedSearchHits: savedSearchHits.count,
       automationJobs: automationJobs.count,
       automationSettings: automationSettings.count,
+      searchHistory: searchHistory.count,
+      industryInterests: industryInterests.count,
+      hiddenCompanySuggestions: hiddenCompanySuggestions.count,
       auditEvents: auditEvents.count,
       resumeTemplates: resumeTemplates.count,
       resumeWorkspaces: resumeWorkspaces.count,

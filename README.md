@@ -50,6 +50,12 @@ deletion.
   automatically by the one-click installer), with dedup and relevance tiers. A
   "Contract & temp only" switch asks each board that supports it for contract
   work and keeps only contract, contract-to-hire, and temporary listings.
+- **Companies** — suggests employers whose own job pages Serpo can search, from
+  fields you pick (healthcare, retail, education, and so on) and from your recent
+  searches. Nothing is added until you choose Follow, which checks the company's
+  Greenhouse, Lever, Ashby, or SmartRecruiters page first; followed companies are
+  then searched with every search. Recent searches stay on this computer and can
+  be cleared there.
 - **Saved searches** — save any search with a cadence (daily, weekdays, or every
   6 or 12 hours) and review what it finds in its own inbox on Sourcing: Open,
   Track, or Dismiss each listing. A listing counts as new only once, even when

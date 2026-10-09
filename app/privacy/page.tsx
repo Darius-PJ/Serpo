@@ -41,6 +41,9 @@ export default function PrivacyPage() {
               {" "}(or the location in <code>DATABASE_URL</code>). It stores applications, job descriptions and notes,
               contacts and interactions, tasks, message drafts, extracted résumé text and generated résumé workspaces,
               saved form answers, saved searches and listing snapshots, lead reports, automation jobs/errors and audit history.
+              It also keeps your last 50 manual searches (keywords and location), the industries you pick on Companies and the
+              companies you mark Not interested, which are used only to suggest companies. Saved-search runs are not recorded;
+              Companies → Clear search history removes the history at any time.
             </li>
             <li>
               <strong className="text-foreground">Separate files:</strong> tailored DOCX files live in <code>data/resumes</code>;
@@ -130,9 +133,11 @@ export default function PrivacyPage() {
               User-Agent email. Each requires its corresponding credentials; leaving those unset skips that keyed source.
             </li>
             <li>
-              <strong className="text-foreground">Company boards:</strong> Greenhouse and Lever receive the pinned board
-              identifier and return its postings; your keyword/location filtering is local. Adding a board to the search
-              pool also verifies its ATS endpoint or visits the resource URL.
+              <strong className="text-foreground">Company boards:</strong> Greenhouse, Lever, Ashby and SmartRecruiters receive
+              the identifier of each board you follow or pin and return its postings; your keyword/location filtering is
+              local. Adding a board to the search pool, including Follow on Companies, also verifies its ATS endpoint or
+              visits the resource URL. Company suggestions are worked out on this computer; your searches and picked
+              industries are not sent anywhere to produce them.
             </li>
             <li>
               <strong className="text-foreground">JobSpy:</strong> the optional local Python helper contacts selected
@@ -250,8 +255,9 @@ export default function PrivacyPage() {
             <li>
               <strong className="text-foreground">Database records removed:</strong> this owner&apos;s applications and apply
               runs, messages, contacts and links, interactions, tasks, résumé templates/workspaces, saved answers, lead
-              reports/leads, saved searches/hits, automation jobs/settings, audit events, title aliases, eliminated jobs,
-              board pins and private job-board resources. Deleting automation settings restores fresh defaults on later use.
+              reports/leads, saved searches/hits, search history, picked industries and hidden company suggestions,
+              automation jobs/settings, audit events, title aliases, eliminated jobs, board pins and private job-board
+              resources, including followed companies. Deleting automation settings restores fresh defaults on later use.
             </li>
             <li>
               <strong className="text-foreground">Files attempted:</strong> recorded application DOCX paths and legacy files

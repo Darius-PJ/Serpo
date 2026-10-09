@@ -38,6 +38,25 @@ describe("lib/privacy/purge", () => {
     expect(bProfileFields).toHaveLength(1);
   });
 
+  it("wipeAllData clears this account's search history, industry picks and hidden suggestions, and no one else's", async () => {
+    const a = await seedUserWithData("purge-user-history-a");
+    const b = await seedUserWithData("purge-user-history-b");
+    for (const user of [a.user, b.user]) {
+      await prisma.searchHistoryEntry.create({ data: { userId: user.id, keywords: "night nurse" } });
+      await prisma.industryInterest.create({ data: { userId: user.id, industry: "healthcare" } });
+      await prisma.hiddenCompanySuggestion.create({ data: { userId: user.id, platform: "greenhouse", token: "zocdoc" } });
+    }
+
+    const result = await wipeAllData(a.user.id);
+
+    expect(result).toMatchObject({ searchHistory: 1, industryInterests: 1, hiddenCompanySuggestions: 1 });
+    for (const [userId, remaining] of [[a.user.id, 0], [b.user.id, 1]] as const) {
+      await expect(prisma.searchHistoryEntry.count({ where: { userId } })).resolves.toBe(remaining);
+      await expect(prisma.industryInterest.count({ where: { userId } })).resolves.toBe(remaining);
+      await expect(prisma.hiddenCompanySuggestion.count({ where: { userId } })).resolves.toBe(remaining);
+    }
+  });
+
   it("wipeAllData never touches curated (userId=null) job boards", async () => {
     const a = await seedUserWithData("purge-user-c");
     await prisma.jobBoard.create({
